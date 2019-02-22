@@ -3,6 +3,10 @@
 # Welcome to the OpenMV IDE! Click on the green run arrow button below to run the script!
 
 import sensor, image, time
+from pyb import UART
+
+uart = UART(3, 9600, timeout_char=1000)                         # init with given baudrate
+uart.init(9600, bits=8, parity=None, stop=1, timeout_char=1000)
 
 sensor.reset()                      # Reset and initialize the sensor.
 sensor.set_pixformat(sensor.RGB565) # Set pixel format to RGB565 (or GRAYSCALE)
@@ -13,5 +17,8 @@ clock = time.clock()                # Create a clock object to track the FPS.
 while(True):
     clock.tick()                    # Update the FPS clock.
     img = sensor.snapshot()         # Take a picture and return the image.
-    print(clock.fps())              # Note: OpenMV Cam runs about half as fast when connected
-                                    # to the IDE. The FPS should increase once disconnected.
+    uart.write('\nabc')
+    #uart.write(clock.fps())
+    print(clock.fps())
+    uart.write("Hello World!\r\n")
+
