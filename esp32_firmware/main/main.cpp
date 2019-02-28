@@ -12,6 +12,7 @@
 #include "mpu9250.cpp"
 #include "irDecoder.h"
 #include "Arduino.h"
+#include "esp_log.h"
 
 IrDecoder irDecoder;
 
@@ -40,7 +41,7 @@ void core0Task( void * pvParameters ){
 void core1Task( void * pvParameters ){
     while(true)
     {
-        
+        //ESP_LOGE("test","test");
     }
 }
 extern "C" void app_main()
