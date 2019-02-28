@@ -1,10 +1,11 @@
 #pragma once
 #include "esp_err.h"
 #include "esp_log.h"
+#include "driver/uart.h"
+#include <stdio.h>
+#include <string.h>
 
 
-
-#include "Arduino.h"
 
 #include "pins.h"
 class SerialConnection
