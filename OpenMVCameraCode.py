@@ -17,8 +17,10 @@ clock = time.clock()                # Create a clock object to track the FPS.
 while(True):
     clock.tick()                    # Update the FPS clock.
     img = sensor.snapshot()         # Take a picture and return the image.
-    uart.write('\nabc')
     #uart.write(clock.fps())
     print(clock.fps())
     uart.write("Hello World!\r\n")
+    if(uart.any()):
+        data  = uart.readline()
+        print(data)
 
