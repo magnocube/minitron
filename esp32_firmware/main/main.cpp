@@ -30,9 +30,10 @@ void core0Task( void * pvParameters ){
         irDecoder.read();//takes 0.005ms
         if(loopCounter%100 == 0)
         {
-            irDecoder.send();//takes 0.03ms
+            //irDecoder.send();//takes 0.03ms
+            irDecoder.runProximity();//takes 90ms
+
         }
-        irDecoder.runProximity();//takes 90ms
         
         loopCounter++;
     }
@@ -40,7 +41,7 @@ void core0Task( void * pvParameters ){
 void core1Task( void * pvParameters ){
     while(true)
     {
-        
+        vTaskDelay(1000/portMAX_DELAY);
     }
 }
 extern "C" void app_main()
