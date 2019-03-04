@@ -15,6 +15,7 @@
 #include "Arduino.h"
 #include "esp_log.h"
 
+
 IrDecoder irDecoder;
 
 int hz50=0;
@@ -30,7 +31,7 @@ void core0Task( void * pvParameters ){
         // mpu9250ReadMotion();//takes 0.65ms
         // mpu9250ReadCompass();//takes 0.5ms
 
-        // irDecoder.read();//takes 0.005ms
+        //irDecoder.read();//takes 0.005ms
         // if(loopCounter%100 == 0)
         // {
         //     irDecoder.send();//takes 0.03ms
@@ -48,8 +49,12 @@ void core1Task( void * pvParameters ){
     {
          vTaskDelay(10/portTICK_PERIOD_MS);
         if(MVCamera.dataAnvailable()){
-            MVCamera.ReadData();
+            MVCamera.ReadData(); // will also sand a confirmation
         }
+        MVCamera.setCameraAngle(10);
+        vTaskDelay(800/portTICK_PERIOD_MS);
+        MVCamera.setCameraAngle(170);
+        vTaskDelay(800/portTICK_PERIOD_MS);
     }
 }
 extern "C" void app_main()

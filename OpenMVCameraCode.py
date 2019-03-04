@@ -1,9 +1,14 @@
 # Hello World Example
 #
 # Welcome to the OpenMV IDE! Click on the green run arrow button below to run the script!
+                                                                                                                                                                                       |0
+import sensor, image, time, pyb                                                                                                                                                          -
+from pyb import UART                                                                                                                                                                   |0
 
-import sensor, image, time
-from pyb import UART
+red_led = pyb.LED(1)
+green_led = pyb.LED(2)
+blue_led = pyb.LED(3)
+ir_leds = pyb.LED(4)
 
 uart = UART(3, 9600, timeout_char=1000)                         # init with given baudrate
 uart.init(9600, bits=8, parity=None, stop=1, timeout_char=1000)
@@ -23,4 +28,6 @@ while(True):
     if(uart.any()):
         data  = uart.readline()
         print(data)
+        ir_leds.toggle()
+
 
