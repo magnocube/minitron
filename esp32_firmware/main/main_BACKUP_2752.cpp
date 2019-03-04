@@ -21,16 +21,17 @@ IrDecoder irDecoder;
 int hz50=0;
 
 void core0Task( void * pvParameters ){
-     mpu9250Setup();
-     compassSetup();
-     irDecoder.setup();
-     uint32_t loopCounter=0;
+    // mpu9250Setup();
+    // compassSetup();
+    // irDecoder.setup();
+    // uint32_t loopCounter=0;
     while(true)
     {
         vTaskDelay(200/portTICK_PERIOD_MS);
         // mpu9250ReadMotion();//takes 0.65ms
         // mpu9250ReadCompass();//takes 0.5ms
 
+<<<<<<< HEAD
         irDecoder.read();//takes 0.005ms
         if(loopCounter%100 == 0)
         {
@@ -38,9 +39,16 @@ void core0Task( void * pvParameters ){
             irDecoder.runProximity();//takes 90ms
 
         }
-
+=======
+        //irDecoder.read();//takes 0.005ms
+        // if(loopCounter%100 == 0)
+        // {
+        //     irDecoder.send();//takes 0.03ms
+        // }
+        // irDecoder.runProximity();//takes 90ms
+>>>>>>> 8ac0530a4b2487b8e4e387f02660d1bf47c35f3e
         
-        loopCounter++;
+        // loopCounter++;
     }
 }
 void core1Task( void * pvParameters ){
@@ -49,6 +57,9 @@ void core1Task( void * pvParameters ){
     MVCamera.setup();
     while(true)
     {
+<<<<<<< HEAD
+        vTaskDelay(1000/portMAX_DELAY);
+=======
          vTaskDelay(10/portTICK_PERIOD_MS);
         if(MVCamera.dataAnvailable()){
             MVCamera.ReadData(); // will also sand a confirmation
@@ -57,6 +68,7 @@ void core1Task( void * pvParameters ){
         vTaskDelay(800/portTICK_PERIOD_MS);
         MVCamera.setCameraAngle(170);
         vTaskDelay(800/portTICK_PERIOD_MS);
+>>>>>>> 8ac0530a4b2487b8e4e387f02660d1bf47c35f3e
     }
 }
 extern "C" void app_main()

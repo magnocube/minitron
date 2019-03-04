@@ -21,26 +21,24 @@ IrDecoder irDecoder;
 int hz50=0;
 
 void core0Task( void * pvParameters ){
-     mpu9250Setup();
-     compassSetup();
-     irDecoder.setup();
-     uint32_t loopCounter=0;
+    // mpu9250Setup();
+    // compassSetup();
+    // irDecoder.setup();
+    // uint32_t loopCounter=0;
     while(true)
     {
         vTaskDelay(200/portTICK_PERIOD_MS);
         // mpu9250ReadMotion();//takes 0.65ms
         // mpu9250ReadCompass();//takes 0.5ms
 
-        irDecoder.read();//takes 0.005ms
-        if(loopCounter%100 == 0)
-        {
-            //irDecoder.send();//takes 0.03ms
-            irDecoder.runProximity();//takes 90ms
-
-        }
-
+        //irDecoder.read();//takes 0.005ms
+        // if(loopCounter%100 == 0)
+        // {
+        //     irDecoder.send();//takes 0.03ms
+        // }
+        // irDecoder.runProximity();//takes 90ms
         
-        loopCounter++;
+        // loopCounter++;
     }
 }
 void core1Task( void * pvParameters ){
