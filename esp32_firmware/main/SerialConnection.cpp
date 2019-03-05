@@ -68,6 +68,10 @@
         }
         return false;
     }
+    /*
+    This function will read all the data anvailable in the serial perhepiral. 
+    After it has read the buffers it will send a confirmation back.
+    */
     char * SerialConnection::ReadData(){
 
         
