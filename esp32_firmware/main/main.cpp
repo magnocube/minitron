@@ -6,17 +6,9 @@
    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
    CONDITIONS OF ANY KIND, either express or implied.
 */
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "mpu9250.cpp"
-#include "irDecoder.h"
-#include "SerialConnection.h"
-#include "Arduino.h"
-#include "esp_log.h"
+#include "main.h"
 
 
-IrDecoder irDecoder;
 
 int hz50=0;
 
@@ -43,23 +35,29 @@ void core0Task( void * pvParameters ){
 }
 void core1Task( void * pvParameters ){
 
-    SerialConnection MVCamera;
-    MVCamera.setup();
+    
+
     while(true)
     {
-         vTaskDelay(10/portTICK_PERIOD_MS);
-        if(MVCamera.dataAnvailable()){
-            MVCamera.ReadData(); // will also sand a confirmation
+        vTaskDelay(10/portTICK_PERIOD_MS);
+        if(isoviv.Camera->dataAnvailable()){
+            isoviv.Camera->ReadData(); // will also sand a confirmation
         }
-        MVCamera.setCameraAngle(10);
-        vTaskDelay(800/portTICK_PERIOD_MS);
-        MVCamera.setCameraAngle(170);
-        vTaskDelay(800/portTICK_PERIOD_MS);
+        // MVCamera.setCameraAngle(10);
+        // vTaskDelay(800/portTICK_PERIOD_MS);
+        // MVCamera.setCameraAngle(170);
+        // vTaskDelay(800/portTICK_PERIOD_MS);
     }
 }
 extern "C" void app_main()
 {
     printf("minitron firmware started\n");
+    isoviv.MotorController = new MotorDriver();
+    isoviv.MotorController->setup();
+
+    isoviv.Camera = new SerialConnection();
+    isoviv.Camera->setup();
+
     xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     10000,      /* Stack size in words */
                     NULL,       /* Task input parameter */
