@@ -1,7 +1,6 @@
 
+
 #include "main.h"
-
-
 
 
 void core0Task( void * pvParameters ){
@@ -30,7 +29,6 @@ void core0Task( void * pvParameters ){
 }
 void core1Task( void * pvParameters ){
 
-    
 
     while(true)
     {
