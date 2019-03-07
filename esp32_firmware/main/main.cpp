@@ -1,4 +1,4 @@
-/* Hello World Example
+
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)
 
@@ -10,32 +10,33 @@
 
 
 
-int hz50=0;
-
 void core0Task( void * pvParameters ){
-    // mpu9250Setup();
-    // compassSetup();
-    // irDecoder.setup();
-    // uint32_t loopCounter=0;
+     //mpu9250Setup();
+     //compassSetup();
+     //irDecoder.setup();
+    //spiSetup();
+     uint32_t loopCounter=0;
     while(true)
     {
-        vTaskDelay(200/portTICK_PERIOD_MS);
-        // mpu9250ReadMotion();//takes 0.65ms
-        // mpu9250ReadCompass();//takes 0.5ms
+        //mpu9250ReadMotion();//takes 0.65ms
+        //mpu9250ReadCompass();//takes 0.5ms
 
-        //irDecoder.read();//takes 0.005ms
-        // if(loopCounter%100 == 0)
-        // {
-        //     irDecoder.send();//takes 0.03ms
-        // }
-        // irDecoder.runProximity();//takes 90ms
-        
-        // loopCounter++;
+        irDecoder.read();//takes 0.005ms
+        if(loopCounter%100 == 0)
+        {
+            //irDecoder.send();//takes 0.03ms
+
+        }
+        //irDecoder.runProximity();//takes 90ms
+
+        loopCounter++;
+        printf("test\n");
+        vTaskDelay(1000/portTICK_PERIOD_MS);
     }
 }
 void core1Task( void * pvParameters ){
 
-    
+
 
     while(true)
     {
@@ -48,6 +49,7 @@ void core1Task( void * pvParameters ){
         // MVCamera.setCameraAngle(170);
         // vTaskDelay(800/portTICK_PERIOD_MS);
     }
+
 }
 extern "C" void app_main()
 {
@@ -64,12 +66,13 @@ extern "C" void app_main()
                     1,          /* Priority of the task */
                     NULL,       /* Task handle. */
                     0); //core 0
-    xTaskCreatePinnedToCore(core1Task, "core1Task", 
-                    10000,      /* Stack size in words */
-                    NULL,       /* Task input parameter */
-                    1,          /* Priority of the task */
-                    NULL,       /* Task handle. */
+    /*xTaskCreatePinnedToCore(core1Task, "core1Task", 
+                    10000,      // Stack size in words 
+                    NULL,       // Task input parameter 
+                    1,          // Priority of the task 
+                    NULL,       // Task handle. 
                     1); //core 1
+*/
     while(true)
     {
         vTaskDelay(portMAX_DELAY);

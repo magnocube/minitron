@@ -29,6 +29,7 @@
 
 #include "Arduino.h"
 #include "pins.h"
+#include "settings.h"
 static const char* TAG = "mpu9250";
 
 static constexpr uint32_t CLOCK_SPEED = 400000;  // range from 100 KHz ~ 400Hz
@@ -74,12 +75,14 @@ void mpu9250ReadMotion()
         // Convert
         accelG = mpud::accelGravity(accelRaw, mpud::ACCEL_FS_4G);
         gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
-
+#ifdef PRINT_DURARIONS
         printf("- motionTime: %lu\n",micros()-startTime);
-
+#endif
+#ifdef PRINT_ACCEL
         // Debug
         printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", accelG.x, accelG.y, accelG.z);
         printf("gyro: [%+7.2f %+7.2f %+7.2f ] (º/s)\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
+#endif
 
 }
 
@@ -135,8 +138,11 @@ void mpu9250ReadCompass()
   float magZ = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
   compassAngle = atan2(magX, magY)* 180 / 3.14159;
 
+#ifdef PRINT_DURARIONS
   printf("- compassTime: %lu\n",micros()-startTime);
-
+#endif
   //printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", magX, magY, magZ);
+#ifdef PRINT_ACCEL
   printf("%f\n", compassAngle);
+#endif
 }
