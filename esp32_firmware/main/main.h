@@ -9,10 +9,10 @@
 #include "esp_log.h"
 
 typedef struct{  
-    SerialConnection * Camera;
-    IrDecoder * irDecoder;
-    MotorDriver * MotorController;
     uint16_t lastCompassValues[3];
 } very_important_variables;
+SerialConnection * Camera;
+IrDecoder * irDecoder;
+MotorDriver * MotorController;
 
 very_important_variables isoviv; //instanciated_struct_of_very_important_variables

@@ -2,7 +2,6 @@
 #include "main.h"
 
 
-
 void core0Task( void * pvParameters ){
      //mpu9250Setup();
      //compassSetup();
@@ -14,7 +13,7 @@ void core0Task( void * pvParameters ){
         //mpu9250ReadMotion();//takes 0.65ms
         //mpu9250ReadCompass();//takes 0.5ms
 
-        irDecoder.read();//takes 0.005ms
+        //irDecoder.read();//takes 0.005ms
         if(loopCounter%100 == 0)
         {
             //irDecoder.send();//takes 0.03ms
@@ -30,12 +29,11 @@ void core0Task( void * pvParameters ){
 void core1Task( void * pvParameters ){
 
 
-
     while(true)
     {
         vTaskDelay(10/portTICK_PERIOD_MS);
-        if(isoviv.Camera->dataAnvailable()){
-            isoviv.Camera->ReadData(); // will also sand a confirmation
+        if(Camera->dataAnvailable()){
+            Camera->ReadData(); // will also sand a confirmation
         }
         // MVCamera.setCameraAngle(10);
         // vTaskDelay(800/portTICK_PERIOD_MS);
@@ -47,11 +45,11 @@ void core1Task( void * pvParameters ){
 extern "C" void app_main()
 {
     printf("minitron firmware started\n");
-    isoviv.MotorController = new MotorDriver();
-    isoviv.MotorController->setup();
+    MotorController = new MotorDriver();
+    MotorController->setup();
 
-    isoviv.Camera = new SerialConnection();
-    isoviv.Camera->setup();
+    Camera = new SerialConnection();
+    Camera->setup();
 
     xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     10000,      /* Stack size in words */
