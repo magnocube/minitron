@@ -28,7 +28,7 @@ void IrDecoder::setupReceiver()
 	irDecoderConfig.gpio_num = IR_DECODER_PIN;
 	irDecoderConfig.mem_block_num = 1;
 	irDecoderConfig.rx_config.filter_en = true;
-	irDecoderConfig.rx_config.filter_ticks_thresh = 100;
+	irDecoderConfig.rx_config.filter_ticks_thresh = 255;
 	irDecoderConfig.rx_config.idle_threshold = 20000 / 10 * ((80000000/100 /100000));
 	ESP_ERROR_CHECK(rmt_config(&irDecoderConfig));
 	ESP_ERROR_CHECK(rmt_driver_install(irDecoderConfig.channel, 2000, ESP_INTR_FLAG_IRAM));
@@ -50,12 +50,12 @@ void IrDecoder::read()
 	rmt_item32_t* item = (rmt_item32_t*) xRingbufferReceiveFromISR(rxRingBuffer, &rx_size);
 	if(item) {
 		received = true;
-		printf("received %zu\n", rx_size);
-		for(int i=0;i<rx_size;i++)
-		{
-			printf("(%d, %d , %d, %d) ", item[i].duration0, item[i].level0, item[i].duration1, item[i].level1);
-		}
-		printf("\n");
+		// printf("received %zu\n", rx_size);
+		// for(int i=0;i<rx_size;i++)
+		// {
+		// 	printf("(%d, %d , %d, %d) ", item[i].duration0, item[i].level0, item[i].duration1, item[i].level1);
+		// }
+		// printf("\n");
 		vRingbufferReturnItem(rxRingBuffer, (void*) item);
 	}
 #ifdef PRINT_DURARIONS
@@ -91,7 +91,7 @@ void IrDecoder::setupProximity()
 	pinMode(IR_LED1_PIN,OUTPUT);
 
     adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_config_channel_atten(IR_PHOTODIODE1_PIN, ADC_ATTEN_DB_6);
+    adc1_config_channel_atten(IR_PHOTODIODE1_PIN, ADC_ATTEN_DB_11);
 }
 void IrDecoder::runProximity()
 {
@@ -100,9 +100,9 @@ void IrDecoder::runProximity()
 
 
 
-    int lowLevel =0;//= adc1_get_raw(IR_PHOTODIODE1_PIN);
+    int lowLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
     digitalWrite(IR_LED1_PIN, HIGH);
-    int highLevel =0;//= adc1_get_raw(IR_PHOTODIODE1_PIN);
+    int highLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
     digitalWrite(IR_LED1_PIN, LOW);
 
     lowBuffer[bufferIndex] = lowLevel;
@@ -148,18 +148,20 @@ void IrDecoder::runProximity()
 				temp = highBufferSort[i];
 				highBufferSort[i] = highBufferSort[j];
 				highBufferSort[j] = temp;
-			}
+			}	
 		}
 	}
 	if(received == true)
 	{
-		receiveStrength = (highBufferSort[BUFFER_SIZE] + highBufferSort[0]);
+		receiveStrength = lowBufferSort[BUFFER_SIZE-1]-lowBufferSort[0];
+		received = false;
 	}
 	else
 	{
 		receiveStrength = 0;
 	}
-	printf("%d,%d,%d, %d,1200\n",lowBufferSort[0],highBufferSort[0],(highBufferSort[0]+highBufferSort[0]), receiveStrength);
+	int result = 
+	printf("%d,%d,%d, %d,1200\n",lowBufferSort[1],highBufferSort[1],(highBufferSort[1] - lowBufferSort[1]), receiveStrength);
 
 
   
