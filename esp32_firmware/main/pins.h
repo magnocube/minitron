@@ -1,7 +1,7 @@
 #pragma once
 
-#define SDA_PIN GPIO_NUM_27
-#define SCL_PIN GPIO_NUM_14
+#define SDA_PIN GPIO_NUM_21
+#define SCL_PIN GPIO_NUM_22
 
 #define IR_DECODER_PIN GPIO_NUM_26
 #define IR_PHOTODIODE1_PIN ADC1_CHANNEL_5

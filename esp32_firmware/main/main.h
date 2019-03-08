@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -7,12 +8,11 @@
 #include "MotorDriver.h"
 #include "Arduino.h"
 #include "esp_log.h"
+#include "TOFSensor.h"
+#include "sharedVariables.h"
+#include "wifiConnection.h"
 
-typedef struct{  
-    uint16_t lastCompassValues[3];
-} very_important_variables;
 SerialConnection * Camera;
 IrDecoder * irDecoder;
 MotorDriver * MotorController;
-
-very_important_variables isoviv; //instanciated_struct_of_very_important_variables
+TOFSensor * tofSensor;
