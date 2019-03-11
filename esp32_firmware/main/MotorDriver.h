@@ -3,7 +3,7 @@
 #include "esp_log.h"
 #include <stdio.h>
 #include <string.h>
-#include <Arduino.h>
+#include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 #include "pins.h"

@@ -1,19 +1,17 @@
 #pragma once
 #include "esp_err.h"
 #include "esp_log.h"
-#include "FreeRTOS.h"
+#include "freertos/FreeRTOS.h"
 #include "freertos/ringbuf.h"
 #include "driver/rmt.h"
 
 #include "driver/ledc.h"
 
-#include "Arduino.h"
 #include <rom/ets_sys.h>
 #include <driver/adc.h>
 
 #include "pins.h"
 #include "settings.h"
-#include "freertos/ringbuf.h"
 #define BUFFER_SIZE 15
 
 class IrDecoder

@@ -6,7 +6,6 @@
 #include "irDecoder.h"
 #include "SerialConnection.h"
 #include "MotorDriver.h"
-#include "Arduino.h"
 #include "esp_log.h"
 #include "TOFSensor.h"
 #include "sharedVariables.h"

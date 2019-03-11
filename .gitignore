@@ -1,2 +1,4 @@
 esp-idf
 esp32_firmware/build
+esp32_firmware/sdkconfig
+esp32_firmware/sdkconfig.old

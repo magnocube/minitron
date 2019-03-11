@@ -1,12 +1,14 @@
 {
     "configurations": [
         {
-            "name": "ESP32-Win",
+            "name": "Win32",
             "includePath": [
                 "${workspaceRoot}",
                 "${workspaceRoot}/components",
                 "${workspaceRoot}/build",
                 "${workspaceRoot}/build/include",
+                "C:/esp/esp-idf/components/arduino/cores/esp32",
+                "C:/esp/esp-idf/components/arduino/libraries/WiFi/src",
                 "C:/esp/esp-idf/components/bt/bluedroid/utils/include",
                 "C:/esp/esp-idf/components/bt/bluedroid/stack/smp/include",
                 "C:/esp/esp-idf/components/bt/bluedroid/stack/sdp/include",

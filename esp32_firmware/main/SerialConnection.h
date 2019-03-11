@@ -4,7 +4,6 @@
 #include "driver/uart.h"
 #include <stdio.h>
 #include <string.h>
-#include <Arduino.h>
 #include "freertos/task.h"
 
 #include "driver/mcpwm.h"

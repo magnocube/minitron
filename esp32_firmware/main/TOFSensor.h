@@ -1,7 +1,6 @@
 #pragma once
 #include "esp_err.h"
 #include "esp_log.h"
-#include "FreeRTOS.h"
 #include "freertos/FreeRTOS.h"
 
 #include "I2Cbus.hpp"
