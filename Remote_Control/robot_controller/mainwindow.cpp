@@ -8,6 +8,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     robotConnection = new UDP_Connection();
     robotConnection->send("lol+lol=hihi");
+
+
+    scene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);
+
+
+
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+ //  QMainWindow::resizeEvent(event);
+
+
+
+
 }
 
 MainWindow::~MainWindow()
