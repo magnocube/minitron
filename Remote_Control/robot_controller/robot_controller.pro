@@ -25,11 +25,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    udp_connection.cpp
+    udp_connection.cpp \
+    graphicspeedsensor.cpp \
+    graphicstofsensor.cpp \
+    graphicproxysensor.cpp
 
 HEADERS += \
         mainwindow.h \
-    udp_connection.h
+    udp_connection.h \
+    graphicspeedsensor.h \
+    graphicstofsensor.h \
+    graphicproxysensor.h
 
 FORMS += \
         mainwindow.ui

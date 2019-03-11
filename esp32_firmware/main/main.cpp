@@ -25,10 +25,14 @@ void core0Task( void * pvParameters ){
         loopCounter++;
         printf("test\n");
         
-        MotorController->setTargetSpeed(7000,-7000);
-        vTaskDelay(800/portTICK_PERIOD_MS);
-        MotorController->setTargetSpeed(-7000,7000);
-        vTaskDelay(800/portTICK_PERIOD_MS);
+        // MotorController->setTargetSpeed(3000,-3000);
+        // vTaskDelay(1000/portTICK_PERIOD_MS);
+        // MotorController->setTargetSpeed(-3000,3000);
+        // vTaskDelay(1000/portTICK_PERIOD_MS);
+        MotorController->setTargetSpeed(10000,10000);
+        vTaskDelay(200/portTICK_PERIOD_MS);
+        MotorController->setTargetSpeed(-10000,-10000);
+        vTaskDelay(200/portTICK_PERIOD_MS);
     }
 }
 void core1Task( void * pvParameters ){
