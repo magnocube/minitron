@@ -58,10 +58,10 @@ void MainWindow::setupUI()
 
     proxySensorLeft = new graphicProxySensor(0);
     proxySensorLeft->setPos(0,180);
-    proxySensorLeft->setProxy(50);
+    proxySensorLeft->setProxy(2);
     proxySensorRight = new graphicProxySensor(1);
     proxySensorRight->setPos(800,180);
-    proxySensorRight->setProxy(50);
+    proxySensorRight->setProxy(5);
 
     scene->addItem(speedMotor1);
     scene->addItem(speedMotor2);
