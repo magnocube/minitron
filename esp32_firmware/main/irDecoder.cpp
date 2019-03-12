@@ -42,7 +42,7 @@ void IrDecoder::setupReceiver()
 }
 void IrDecoder::read()
 {
-	uint32_t startTime = micros();
+	uint32_t startTime = esp_timer_get_time();
 	size_t rx_size = 0;
 	//try to receive data from ringbuffer.
 	//RMT driver will push all the data it receives to its ringbuffer.
@@ -59,13 +59,13 @@ void IrDecoder::read()
 		vRingbufferReturnItem(rxRingBuffer, (void*) item);
 	}
 #ifdef PRINT_DURARIONS
-	printf("- readtime: %lu\n",micros()-startTime);
+	printf("- readtime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 
 }
 void IrDecoder::send()
 {
-	uint32_t startTime=micros();
+	uint32_t startTime=esp_timer_get_time();
 	ESP_ERROR_CHECK(rmt_driver_install(irSenderConfig.channel, 0, 0));
 
 	size_t size = sizeof(rmt_item32_t)*10;
@@ -79,31 +79,31 @@ void IrDecoder::send()
 	}
 
     ESP_ERROR_CHECK(rmt_write_items(RMT_CHANNEL_1, item, 10, false));
-    timeUntilLedAvailable = micros() + size * 8 * 30;
+    timeUntilLedAvailable = esp_timer_get_time() + size * 8 * 30;
 	free(item);
 	ESP_ERROR_CHECK(rmt_driver_uninstall(irSenderConfig.channel));
 #ifdef PRINT_DURARIONS
-	printf("- sendTime: %lu\n",micros()-startTime);
+	printf("- sendTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 }
 void IrDecoder::setupProximity()
 {
-	pinMode(IR_LED1_PIN,OUTPUT);
-
+ 	gpio_pad_select_gpio(IR_LED1_PIN);
+	 gpio_set_direction(IR_LED1_PIN, GPIO_MODE_OUTPUT);
     adc1_config_width(ADC_WIDTH_BIT_12);
     adc1_config_channel_atten(IR_PHOTODIODE1_PIN, ADC_ATTEN_DB_11);
 }
 void IrDecoder::runProximity()
 {
-	if(micros() < timeUntilLedAvailable) return;
-	uint32_t startTime = micros();
+	if(esp_timer_get_time() < timeUntilLedAvailable) return;
+	uint32_t startTime = esp_timer_get_time();
 
 
 
     int lowLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
-    digitalWrite(IR_LED1_PIN, HIGH);
+    gpio_set_level(IR_LED1_PIN, 1);
     int highLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
-    digitalWrite(IR_LED1_PIN, LOW);
+    gpio_set_level(IR_LED1_PIN, 0);
 
     lowBuffer[bufferIndex] = lowLevel;
     highBuffer[bufferIndex] = highLevel;
@@ -113,7 +113,7 @@ void IrDecoder::runProximity()
     	bufferIndex = 0;
     }
 #ifdef PRINT_DURARIONS
-	printf("- proximityTime: %lu\n",micros()-startTime);
+	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 #ifdef PRINT_PROXIMITY
 	printf("%d\n", highLevel-lowLevel);
