@@ -88,8 +88,8 @@ void IrDecoder::send()
 }
 void IrDecoder::setupProximity()
 {
-	//pinMode(IR_LED1_PIN,OUTPUT);
-
+ 	gpio_pad_select_gpio(IR_LED1_PIN);
+	 gpio_set_direction(IR_LED1_PIN, GPIO_MODE_OUTPUT);
     adc1_config_width(ADC_WIDTH_BIT_12);
     adc1_config_channel_atten(IR_PHOTODIODE1_PIN, ADC_ATTEN_DB_11);
 }
@@ -101,9 +101,9 @@ void IrDecoder::runProximity()
 
 
     int lowLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
-    //digitalWrite(IR_LED1_PIN, HIGH);
+    gpio_set_level(IR_LED1_PIN, 1);
     int highLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
-    //digitalWrite(IR_LED1_PIN, LOW);
+    gpio_set_level(IR_LED1_PIN, 0);
 
     lowBuffer[bufferIndex] = lowLevel;
     highBuffer[bufferIndex] = highLevel;
