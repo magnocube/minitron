@@ -33,11 +33,11 @@ void core0Task( void * pvParameters ){
 }
 void core1Task( void * pvParameters ){
 
-    wifiSetup();
+   // wifiSetup();
 
     while(true)
     {
-        wifiLoop();
+        //  wifiLoop();
         
         MotorController->setTargetSpeed(3000,3000);
         vTaskDelay(100/portTICK_PERIOD_MS);
@@ -70,13 +70,13 @@ extern "C" void app_main()
                     NULL,       // Task handle. 
                     0); //core 0
                     
-    /*xTaskCreatePinnedToCore(core1Task, "core1Task", 
+    xTaskCreatePinnedToCore(core1Task, "core1Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
                     1); //core 1
-*/
+
     while(true)
     {
         vTaskDelay(portMAX_DELAY);

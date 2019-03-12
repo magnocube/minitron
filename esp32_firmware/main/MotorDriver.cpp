@@ -27,9 +27,9 @@ void MotorDriver::setup(){
   //gpio_set_direction(MOTOR_2_STEP_PIN, GPIO_MODE_OUTPUT);
     
  
-    gpio_set_level(MOTOR_MICROSTEP_1, HIGH);
-    gpio_set_level(MOTOR_MICROSTEP_2, HIGH);
-    gpio_set_level(MOTOR_MICROSTEP_3, HIGH);
+    gpio_set_level(MOTOR_MICROSTEP_1, 1);
+    gpio_set_level(MOTOR_MICROSTEP_2, 1);
+    gpio_set_level(MOTOR_MICROSTEP_3, 1);
     gpio_set_level(MOTOR_1_DIRECTION_PIN, FORWARD_MOTOR_1);
     gpio_set_level(MOTOR_2_DIRECTION_PIN, FORWARD_MOTOR_2);
    

@@ -3,8 +3,9 @@
 #include "esp_log.h"
 #include <stdio.h>
 #include <string.h>
-#include <Arduino.h>
-#include "freertos/task.h"
+
+#include "freertos/FreeRTOS.h"
+
 
 #include "pins.h"
 #include "driver/gpio.h"
