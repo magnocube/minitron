@@ -28,7 +28,7 @@ void core0Task( void * pvParameters ){
         irDecoder->runProximity();//takes 90ms
 
         loopCounter++;
-        vTaskDelay(1);
+        vTaskDelay(100);
     }
 }
 void core1Task( void * pvParameters ){

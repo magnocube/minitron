@@ -97,6 +97,8 @@ void mpu9250ReadMotion()
         printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", accelG.x, accelG.y, accelG.z);
         printf("gyro: [%+7.2f %+7.2f %+7.2f ] (º/s)\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
 #endif
+ printf("%6.2f %6.2f %6.2f ", accelG.x, accelG.y, accelG.z);
+ printf("%7.2f %7.2f %7.2f\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
 
 }
 
@@ -140,10 +142,9 @@ int16_t magGet(uint8_t high, uint8_t low) {
 float adjustMagValue(int16_t value, uint8_t adjust) {
   return ((float) value * (((((float) adjust - 128) * 0.5) / 128) + 1));
 }
-float compassAngle;
 void mpu9250ReadCompass()
 {
-        uint32_t startTime=esp_timer_get_time();
+  uint32_t startTime=esp_timer_get_time();
 
   uint8_t magBuf[7];
   i2c0.readBytes(AK8963_ADDRESS, AK8963_RA_HXL, 6, magBuf);
@@ -155,8 +156,8 @@ void mpu9250ReadCompass()
 #ifdef PRINT_DURARIONS
   printf("- compassTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
-  //printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", magX, magY, magZ);
+  //printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", sharedVariables.magnetometerValues[0],sharedVariables.magnetometerValues[1],sharedVariables.magnetometerValues[2]);
 #ifdef PRINT_ACCEL
-  printf("%f\n", compassAngle);
+  printf("%f\n",  sharedVariables.compassAngle);
 #endif
 }
