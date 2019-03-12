@@ -31,7 +31,7 @@
 #include "sharedVariables.h"
 static const char* TAG = "mpu9250";
 
-static constexpr uint32_t CLOCK_SPEED = 500000;  // range from 100 KHz ~ 400Hz
+static constexpr uint32_t CLOCK_SPEED = 400000;  // range from 100 KHz ~ 400Hz
 
 MPU_t MPU;  // create a default MPU object
 mpud::raw_axes_t accelRaw;   // x, y, z axes as int16
