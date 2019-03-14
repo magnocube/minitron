@@ -25,10 +25,10 @@ void core0Task( void * pvParameters ){
             irDecoder->send();//takes 0.03ms
 
         }
-        irDecoder->runProximity();//takes 90ms
+        irDecoder->runProximity();//takes 0.90ms
 
         loopCounter++;
-        vTaskDelay(100);
+        vTaskDelay(1);
     }
 }
 void core1Task( void * pvParameters ){
@@ -59,20 +59,20 @@ extern "C" void app_main()
     // Camera = new SerialConnection();
     // Camera->setup();
 
-    xTaskCreatePinnedToCore(core0Task, "core0Task", 
+    /*xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
                     0); //core 0
-                    
-    /*xTaskCreatePinnedToCore(core1Task, "core1Task", 
+            */        
+    xTaskCreatePinnedToCore(core1Task, "core1Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
                     1); //core 1
-*/
+
     while(true)
     {
         vTaskDelay(portMAX_DELAY);

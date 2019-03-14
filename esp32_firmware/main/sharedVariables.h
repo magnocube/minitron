@@ -1,4 +1,5 @@
 #pragma once
+
 typedef struct{  
 	//mpu9250
     float acceleration[3];//x,y,z
@@ -23,10 +24,10 @@ typedef struct{
     //todo add next command
 
     //proximity sensors 
-    uint8_t proximityLeft;
-    uint8_t proximityRight;
-    uint8_t lightLeft;
-    uint8_t lightRight;
+    int proximityLeft;
+    int proximityRight;
+    int lightLeft;
+    int lightRight;
     bool proximityErrorOccured = false;
     bool proximityWorking = true;
 
@@ -69,4 +70,4 @@ typedef struct{
 
 } SharedVariables;
 
-SharedVariables sharedVariables; //instanciated_struct_of_very_important_variables
+static SharedVariables sharedVariables; //instanciated_struct_of_very_important_variables
