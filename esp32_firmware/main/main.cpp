@@ -14,6 +14,9 @@ void core0Task( void * pvParameters ){
     uint32_t loopCounter=0;
     while(true)
     {
+       
+        MotorController->setTargetSpeed(25000,25000);
+        vTaskDelay(10000/portTICK_PERIOD_MS);
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
@@ -28,17 +31,18 @@ void core0Task( void * pvParameters ){
         irDecoder->runProximity();//takes 90ms
 
         loopCounter++;
-        vTaskDelay(100);
+        //vTaskDelay(100);
     }
 }
 void core1Task( void * pvParameters ){
 
-    wifiSetup();
+    //wifiSetup();
 
     while(true)
     {
-        wifiLoop();
-        vTaskDelay(100/portTICK_PERIOD_MS);
+        //wifiLoop();
+        MotorController->loop();
+        vTaskDelay(10/portTICK_PERIOD_MS);
 
         // if(Camera->dataAnvailable()){
         //     Camera->ReadData(); // will also sand a confirmation
@@ -53,8 +57,8 @@ void core1Task( void * pvParameters ){
 extern "C" void app_main()
 {
     printf("minitron firmware started\n");  
-    // MotorController = new MotorDriver();
-    // MotorController->setup();
+    MotorController = new MotorDriver();
+    MotorController->setup();
 
     // Camera = new SerialConnection();
     // Camera->setup();
@@ -66,13 +70,13 @@ extern "C" void app_main()
                     NULL,       // Task handle. 
                     0); //core 0
                     
-    /*xTaskCreatePinnedToCore(core1Task, "core1Task", 
+    xTaskCreatePinnedToCore(core1Task, "core1Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
                     1); //core 1
-*/
+
     while(true)
     {
         vTaskDelay(portMAX_DELAY);

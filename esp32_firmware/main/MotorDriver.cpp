@@ -7,8 +7,8 @@ void MotorDriver::setup(){
     motor2Speed = 0;
     motor1OldSpeed = 0;
     motor2OldSpeed = 0;
-    acceleration_motor1 = 100000;
-    acceleration_motor2 = 100000;
+    acceleration_motor1 = 25000;
+    acceleration_motor2 = 25000;
 
     gpio_pad_select_gpio(MOTOR_1_DIRECTION_PIN);
     gpio_pad_select_gpio(MOTOR_2_DIRECTION_PIN);
