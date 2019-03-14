@@ -28,7 +28,7 @@ void core0Task( void * pvParameters ){
             irDecoder->send();//takes 0.03ms
 
         }
-        irDecoder->runProximity();//takes 90ms
+        irDecoder->runProximity();//takes 0.90ms
 
         loopCounter++;
         //vTaskDelay(100);
@@ -63,7 +63,7 @@ extern "C" void app_main()
     // Camera = new SerialConnection();
     // Camera->setup();
 
-    xTaskCreatePinnedToCore(core0Task, "core0Task", 
+   xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 

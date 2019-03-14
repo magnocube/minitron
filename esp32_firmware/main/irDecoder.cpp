@@ -5,7 +5,7 @@ void IrDecoder::setupSender()
 	irSenderConfig.rmt_mode = RMT_MODE_TX;
 	irSenderConfig.channel = RMT_CHANNEL_1;
 	irSenderConfig.clk_div = 255;
-	irSenderConfig.gpio_num = IR_LED1_PIN;
+	irSenderConfig.gpio_num = IR_LED_PIN;
 	irSenderConfig.mem_block_num = 1;
 
 	irSenderConfig.tx_config.loop_en = false;
@@ -88,82 +88,97 @@ void IrDecoder::send()
 }
 void IrDecoder::setupProximity()
 {
- 	gpio_pad_select_gpio(IR_LED1_PIN);
-	 gpio_set_direction(IR_LED1_PIN, GPIO_MODE_OUTPUT);
+	//set led pin
+ 	gpio_pad_select_gpio(IR_LED_PIN);
+	gpio_set_direction(IR_LED_PIN, GPIO_MODE_OUTPUT);
+	//configure adc 12bit max range
     adc1_config_width(ADC_WIDTH_BIT_12);
     adc1_config_channel_atten(IR_PHOTODIODE1_PIN, ADC_ATTEN_DB_11);
+    adc1_config_channel_atten(IR_PHOTODIODE2_PIN, ADC_ATTEN_DB_11);
 }
 void IrDecoder::runProximity()
 {
 	if(esp_timer_get_time() < timeUntilLedAvailable) return;
 	uint32_t startTime = esp_timer_get_time();
 
+	//read without led
+	int lowLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
+	int lowLevel2 = adc1_get_raw(IR_PHOTODIODE2_PIN);
 
+	//turn led on
+    gpio_set_level(IR_LED_PIN, 1);
 
-    int lowLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
-    gpio_set_level(IR_LED1_PIN, 1);
-    int highLevel = adc1_get_raw(IR_PHOTODIODE1_PIN);
-    gpio_set_level(IR_LED1_PIN, 0);
+	//read with led
+    int highLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
+	int highLevel2 = adc1_get_raw(IR_PHOTODIODE2_PIN);
 
-    lowBuffer[bufferIndex] = lowLevel;
-    highBuffer[bufferIndex] = highLevel;
-    bufferIndex++;
+	//turn led off
+    gpio_set_level(IR_LED_PIN, 0);
+
+	//add measurements to buffer (to do aditional filtering later)
+	left.lowBuffer[bufferIndex] = lowLevel1;
+    left.highBuffer[bufferIndex] = highLevel1;
+	right.lowBuffer[bufferIndex] = lowLevel2;
+    right.highBuffer[bufferIndex] = highLevel2;
+
+	bufferIndex++;
     if(bufferIndex == BUFFER_SIZE)
     {
     	bufferIndex = 0;
     }
+
+	//do aditional filtering
+	calculateProximity(&left);
+	calculateProximity(&right);
+
+	//save it in shared variables
+	sharedVariables.proximityLeft = left.highBufferSort[1] - left.lowBufferSort[1];
+    sharedVariables.proximityRight = right.highBufferSort[1] - right.lowBufferSort[1];
+    sharedVariables.lightLeft = left.lowBufferSort[1];
+    sharedVariables.lightRight = right.lowBufferSort[1];
+
+#ifdef PRINT_PROXIMITY
+	printf("%d\n", left.highBufferSort[1] - left.lowBufferSort[1]);
+#endif
 #ifdef PRINT_DURARIONS
 	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
-#ifdef PRINT_PROXIMITY
-	printf("%d\n", highLevel-lowLevel);
-#endif
 #ifdef PRINT_PROXIMITY_ALL
-	// if(oldHighLevel<highLevel)
-	// {
-	// 	printf("%d,%d,%d,1200\n",oldLowLevel,oldHighLevel,(oldHighLevel-oldLowLevel));
-	// }
-	// else
-	// {
-	// 	printf("%d,%d,%d,1200\n",lowLevel,highLevel,(highLevel-lowLevel));
-	// }
-	// oldLowLevel = lowLevel;
-	// oldHighLevel = highLevel;
-
+	printf("%d,%d,%d,1200\n",left.lowBufferSort[1], left.highBufferSort[1], left.highBufferSort[1] - left.lowBufferSort[1]);
+#endif
+}
+void IrDecoder::calculateProximity(ProximitySensor* obj)//this method takes the best measurement out of the buffer as a kind of medium filter
+{
+	//copy the buffer into a sorted buffer
 	for(int i=0;i<BUFFER_SIZE;i++)
 	{
-		lowBufferSort[i] = lowBuffer[i];
-		highBufferSort[i] = highBuffer[i];
+		obj->lowBufferSort[i] = obj->lowBuffer[i];
+		obj->highBufferSort[i] = obj->highBuffer[i];
 	}
+	//sort the buffer
 	for(int i=0;i<BUFFER_SIZE-1;i++)
 	{
 		for(int j = i+1;j<BUFFER_SIZE;j++)
 		{
-			if(lowBufferSort[j]+highBufferSort[j] < lowBufferSort[i]+highBufferSort[i])
+			if(obj->lowBufferSort[j]+obj->highBufferSort[j] < obj->lowBufferSort[i]+obj->highBufferSort[i])
 			{
-				int temp = lowBufferSort[i];
-				lowBufferSort[i] = lowBufferSort[j];
-				lowBufferSort[j] = temp;
+				int temp = obj->lowBufferSort[i];
+				obj->lowBufferSort[i] = obj->lowBufferSort[j];
+				obj->lowBufferSort[j] = temp;
 
-				temp = highBufferSort[i];
-				highBufferSort[i] = highBufferSort[j];
-				highBufferSort[j] = temp;
+				temp = obj->highBufferSort[i];
+				obj->highBufferSort[i] = obj->highBufferSort[j];
+				obj->highBufferSort[j] = temp;
 			}	
 		}
 	}
-	if(received == true)
-	{
-		receiveStrength = lowBufferSort[BUFFER_SIZE-1]-lowBufferSort[0];
-		received = false;
-	}
-	else
-	{
-		receiveStrength = 0;
-	}
-	int result = 
-	printf("%d,%d,%d, %d,1200\n",lowBufferSort[1],highBufferSort[1],(highBufferSort[1] - lowBufferSort[1]), receiveStrength);
-
-
-  
-#endif
+	// if(received == true)
+	// {
+	// 	receiveStrength = lowBufferSort[BUFFER_SIZE-1]-lowBufferSort[0];
+	// 	received = false;
+	// }
+	// else
+	// {
+	// 	receiveStrength = 0;
+	// }
 }

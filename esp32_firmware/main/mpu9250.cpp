@@ -54,10 +54,12 @@ void mpu9250Setup (){
     int counter=0;
     while (esp_err_t err = MPU.testConnection()) {
         printf( "Failed to connect to the MPU, error");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        vTaskDelay(100 / portTICK_PERIOD_MS);
         counter++;
         if(counter >= TIME_OUT)
         {
+            sharedVariables.MPU9250ErrorOccured = true;
+            sharedVariables.MPU9250Working = false;
             printf( "Can't connect, returning");
             return;
         }
@@ -75,6 +77,8 @@ void mpu9250Setup (){
 }
 void mpu9250ReadMotion()
 {
+        if(sharedVariables.MPU9250Working!=true) return;
+
         uint32_t startTime=esp_timer_get_time();
         // Read
         MPU.motion(&accelRaw, &gyroRaw);  // fetch raw data from the registers
@@ -97,8 +101,10 @@ void mpu9250ReadMotion()
         printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", accelG.x, accelG.y, accelG.z);
         printf("gyro: [%+7.2f %+7.2f %+7.2f ] (º/s)\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
 #endif
- printf("%6.2f %6.2f %6.2f ", accelG.x, accelG.y, accelG.z);
- printf("%7.2f %7.2f %7.2f\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
+#ifdef PRINT_MOTION_VISUAL
+        printf("%6.2f %6.2f %6.2f ", accelG.x, accelG.y, accelG.z);
+        printf("%7.2f %7.2f %7.2f\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
+#endif
 
 }
 
@@ -131,6 +137,7 @@ void magReadAdjustValues() {
 }
 void compassSetup() {//setup only possible if mpu9250 is allready initizalized, otherwise the i2c aux bypass isn't set, see datasheet for reference
    
+  if(sharedVariables.MPU9250Working!=true) return;
   magReadAdjustValues();
   magSetMode(MAG_MODE_POWERDOWN);
   magSetMode(MAG_MODE_CONTINUOUS_8HZ);
@@ -144,6 +151,7 @@ float adjustMagValue(int16_t value, uint8_t adjust) {
 }
 void mpu9250ReadCompass()
 {
+  if(sharedVariables.MPU9250Working!=true) return;
   uint32_t startTime=esp_timer_get_time();
 
   uint8_t magBuf[7];

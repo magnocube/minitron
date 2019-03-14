@@ -9,7 +9,7 @@
 #include "esp_log.h"
 #include "TOFSensor.h"
 #include "sharedVariables.h"
-#include "wifiConnection.h"
+#include "wifiConnection.c"
 
 SerialConnection * Camera;
 IrDecoder * irDecoder;

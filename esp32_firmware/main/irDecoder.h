@@ -13,17 +13,19 @@
 
 #include "pins.h"
 #include "settings.h"
+#include "sharedVariables.h"
 #define BUFFER_SIZE 15
 
 class IrDecoder
 {
-
 	int bufferIndex = 0;
-    int lowBuffer[BUFFER_SIZE];
-    int highBuffer[BUFFER_SIZE];
-	int lowBufferSort[BUFFER_SIZE];
-    int highBufferSort[BUFFER_SIZE];
-
+	struct ProximitySensor
+	{
+		int lowBuffer[BUFFER_SIZE];
+		int highBuffer[BUFFER_SIZE];
+		int lowBufferSort[BUFFER_SIZE];
+		int highBufferSort[BUFFER_SIZE];
+	}left,right;
     bool received = false;
     int receiveStrength=0;
 	uint32_t timeUntilLedAvailable = 0;//in ms
@@ -47,4 +49,5 @@ public:
 	void read();
 	void send();
 	void runProximity();
+	void calculateProximity(ProximitySensor* obj);
 };
