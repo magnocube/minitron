@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/backgroundImages">
+        <file>images/transpartentImagev1.png</file>
+    </qresource>
+</RCC>

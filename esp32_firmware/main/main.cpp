@@ -1,49 +1,52 @@
 
 
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
 #include "main.h"
 
 
-
 void core0Task( void * pvParameters ){
-     //mpu9250Setup();
-     //compassSetup();
-     //irDecoder.setup();
+    mpu9250Setup();
+    compassSetup();
+    irDecoder = new IrDecoder();
+    irDecoder->setup();
     //spiSetup();
-     uint32_t loopCounter=0;
+    tofSensor = new TOFSensor();
+    //tofSensor->init();
+    uint32_t loopCounter=0;
     while(true)
     {
-        //mpu9250ReadMotion();//takes 0.65ms
-        //mpu9250ReadCompass();//takes 0.5ms
+       
+        MotorController->setTargetSpeed(25000,25000);
+        vTaskDelay(10000/portTICK_PERIOD_MS);
+        mpu9250ReadMotion();//takes 0.65ms
+        mpu9250ReadCompass();//takes 0.5ms
 
-        irDecoder.read();//takes 0.005ms
+        //tofSensor->measure();
+
+        irDecoder->read();//takes 0.005ms
         if(loopCounter%100 == 0)
         {
-            //irDecoder.send();//takes 0.03ms
+            irDecoder->send();//takes 0.03ms
 
         }
-        //irDecoder.runProximity();//takes 90ms
+        irDecoder->runProximity();//takes 0.90ms
 
         loopCounter++;
-        printf("test\n");
-        vTaskDelay(1000/portTICK_PERIOD_MS);
+        //vTaskDelay(100);
     }
 }
 void core1Task( void * pvParameters ){
 
-
+    //wifiSetup();
 
     while(true)
     {
+        //wifiLoop();
+        MotorController->loop();
         vTaskDelay(10/portTICK_PERIOD_MS);
-        if(isoviv.Camera->dataAnvailable()){
-            isoviv.Camera->ReadData(); // will also sand a confirmation
-        }
+
+        // if(Camera->dataAnvailable()){
+        //     Camera->ReadData(); // will also sand a confirmation
+        // }
         // MVCamera.setCameraAngle(10);
         // vTaskDelay(800/portTICK_PERIOD_MS);
         // MVCamera.setCameraAngle(170);
@@ -53,26 +56,27 @@ void core1Task( void * pvParameters ){
 }
 extern "C" void app_main()
 {
-    printf("minitron firmware started\n");
-    isoviv.MotorController = new MotorDriver();
-    isoviv.MotorController->setup();
+    printf("minitron firmware started\n");  
+    MotorController = new MotorDriver();
+    MotorController->setup();
 
-    isoviv.Camera = new SerialConnection();
-    isoviv.Camera->setup();
+    // Camera = new SerialConnection();
+    // Camera->setup();
 
-    xTaskCreatePinnedToCore(core0Task, "core0Task", 
-                    10000,      /* Stack size in words */
-                    NULL,       /* Task input parameter */
-                    1,          /* Priority of the task */
-                    NULL,       /* Task handle. */
+   xTaskCreatePinnedToCore(core0Task, "core0Task", 
+                    100000,      // Stack size in words 
+                    NULL,       // Task input parameter 
+                    1,          // Priority of the task 
+                    NULL,       // Task handle. 
                     0); //core 0
-    /*xTaskCreatePinnedToCore(core1Task, "core1Task", 
-                    10000,      // Stack size in words 
+                    
+    xTaskCreatePinnedToCore(core1Task, "core1Task", 
+                    100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
                     1); //core 1
-*/
+
     while(true)
     {
         vTaskDelay(portMAX_DELAY);
