@@ -10,7 +10,7 @@
 #include "TOFSensor.h"
 #include "sharedVariables.h"
 #include "wifiConnection.c"
-
+#include "powerManagement.h"
 SerialConnection * Camera;
 IrDecoder * irDecoder;
 MotorDriver * MotorController;

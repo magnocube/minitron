@@ -4,6 +4,7 @@
 
 
 void core0Task( void * pvParameters ){
+    batteryCheckerSetup();
     mpu9250Setup();
     compassSetup();
     irDecoder = new IrDecoder();
@@ -29,23 +30,26 @@ void core0Task( void * pvParameters ){
 
         loopCounter++;
         vTaskDelay(1);
+        checkBattery();
     }
 }
 void core1Task( void * pvParameters ){
 
-    wifiSetup();
+    Camera = new SerialConnection();
+    Camera->setup();
+    //wifiSetup();
 
     while(true)
     {
-        wifiLoop();
-        vTaskDelay(100/portTICK_PERIOD_MS);
+        //wifiLoop();
+        vTaskDelay(1);
 
-        // if(Camera->dataAnvailable()){
-        //     Camera->ReadData(); // will also sand a confirmation
-        // }
-        // MVCamera.setCameraAngle(10);
+        if(Camera->dataAnvailable()){
+            Camera->ReadData(); // will also sand a confirmation
+        }
+        Camera->setCameraAngle(10);
         // vTaskDelay(800/portTICK_PERIOD_MS);
-        // MVCamera.setCameraAngle(170);
+        // Camera->setCameraAngle(170);
         // vTaskDelay(800/portTICK_PERIOD_MS);
     }
 
@@ -56,16 +60,14 @@ extern "C" void app_main()
     // MotorController = new MotorDriver();
     // MotorController->setup();
 
-    // Camera = new SerialConnection();
-    // Camera->setup();
+    
 
-    /*xTaskCreatePinnedToCore(core0Task, "core0Task", 
+    xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
-                    0); //core 0
-            */        
+                    0); //core 0       
     xTaskCreatePinnedToCore(core1Task, "core1Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
