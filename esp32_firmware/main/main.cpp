@@ -15,7 +15,7 @@ void core0Task( void * pvParameters ){
     while(true)
     {
        
-        MotorController->setTargetSpeed(25000,25000);
+        MotorController->setTargetSpeed(65000,65000);
         vTaskDelay(10000/portTICK_PERIOD_MS);
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms

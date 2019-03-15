@@ -5,18 +5,12 @@
 import sensor, image, time, pyb
 from pyb import UART
 
-red_led = pyb.LED(1)
-green_led = pyb.LED(2)
-blue_led = pyb.LED(3)
-ir_leds = pyb.LED(4)
-resX = 320
-resY = 240
 
 threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
 # The below thresholds track in general red/green/blue things. You may wish to tune them...
-thresholds = [(29, 87, 40, 127, -36, 103), # generic_red_thresholds
+thresholds = [(36, 88, 37, 127, -17, 27), # generic_red_thresholds
               (30, 100, -64, -8, -32, 32), # generic_green_thresholds
               (0, 30, 0, 64, -128, 0),      #generic_blue_thresholds
               (63, 100, -128, 127, 20, 127)] # generic_Yellow_thresholds
@@ -31,10 +25,21 @@ uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QVGA)
+#sensor.set_framesize(sensor.QVGA)
 sensor.skip_frames(time = 2000)
 sensor.set_auto_gain(False) # must be turned off for color tracking
 sensor.set_auto_whitebal(False) # must be turned off for color tracking
 clock = time.clock()
+
+
+
+red_led = pyb.LED(1)
+green_led = pyb.LED(2)
+blue_led = pyb.LED(3)
+ir_leds = pyb.LED(4)
+resX = sensor.width()
+resY = sensor.height()
+
 
 
 while(True):

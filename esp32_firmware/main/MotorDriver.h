@@ -24,7 +24,7 @@ class MotorDriver
 public:	
 	void setup();	
 	void setAcceleration(int a, int a2);
-	void setTargetSpeed(int16_t motor1, int16_t motor2);
+	void setTargetSpeed(int32_t motor1, int32_t motor2);
 	void loop();
 	void setSpeed(uint16_t motor1, uint16_t motor2);
 	//todo:
@@ -40,8 +40,8 @@ private:
     float motor2Speed;				//current motorspeed
 	float motor1OldSpeed;
 	float motor2OldSpeed;
-	int16_t motor1TargetSpeed;			//target speed of motor 1
-    int16_t motor2TargetSpeed;			//target speed of motor 2
+	int32_t motor1TargetSpeed;			//target speed of motor 1
+    int32_t motor2TargetSpeed;			//target speed of motor 2
 	uint32_t acceleration_motor1; 				//acceleration of current speed to target speed in steps/s^1
 	uint32_t acceleration_motor2; 				//acceleration of current speed to target speed in steps/s^2
 	uint64_t lastTimeSincePreviousLoop; //used for calculating the delta-T for the acceleration

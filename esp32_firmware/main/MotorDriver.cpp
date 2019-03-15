@@ -7,8 +7,8 @@ void MotorDriver::setup(){
     motor2Speed = 0;
     motor1OldSpeed = 0;
     motor2OldSpeed = 0;
-    acceleration_motor1 = 25000;
-    acceleration_motor2 = 25000;
+    acceleration_motor1 = 15000;
+    acceleration_motor2 = 15000;
 
     gpio_pad_select_gpio(MOTOR_1_DIRECTION_PIN);
     gpio_pad_select_gpio(MOTOR_2_DIRECTION_PIN);
@@ -81,7 +81,7 @@ void MotorDriver::setAcceleration(int a, int a2){
 }
 
 
-void MotorDriver::setTargetSpeed(int16_t motor1, int16_t motor2){
+void MotorDriver::setTargetSpeed(int32_t motor1, int32_t motor2){
     motor1TargetSpeed = motor1;
     motor2TargetSpeed = motor2;
 
