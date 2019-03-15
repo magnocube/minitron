@@ -16,7 +16,8 @@ void core0Task( void * pvParameters ){
     while(true)
     {
        
-      
+        vTaskDelay(10/portTICK_PERIOD_MS);
+        MotorController->loop();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
@@ -31,7 +32,7 @@ void core0Task( void * pvParameters ){
         irDecoder->runProximity();//takes 0.90ms
 
         loopCounter++;
-        vTaskDelay(1);
+        
         checkBattery();
     }
 }
@@ -48,8 +49,7 @@ void core1Task( void * pvParameters ){
     while(true)
     {
         //wifiLoop();
-        vTaskDelay(10/portTICK_PERIOD_MS);
-        MotorController->loop();
+        
 
         if(Camera->dataAnvailable()){
             Camera->ReadData(); // will also sand a confirmation
