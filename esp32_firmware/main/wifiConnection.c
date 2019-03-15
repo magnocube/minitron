@@ -40,7 +40,6 @@ static EventGroupHandle_t wifi_event_group;
 const int IPV4_GOTIP_BIT = BIT0;
 const int IPV6_GOTIP_BIT = BIT1;
 
-static const char *payload = "Message from ESP32 ";
 
 char rx_buffer[1460];
 char addr_str[128];
@@ -51,7 +50,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     switch (event->event_id) {
     case SYSTEM_EVENT_STA_START:
         esp_wifi_connect();
-        ESP_LOGI(WIFI_TAG, "SYSTEM_EVENT_STA_START");
+        printf("SYSTEM_EVENT_STA_START\n");
         break;
     case SYSTEM_EVENT_STA_CONNECTED:
         /* enable ipv6 */
@@ -59,7 +58,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         break;
     case SYSTEM_EVENT_STA_GOT_IP:
         xEventGroupSetBits(wifi_event_group, IPV4_GOTIP_BIT);
-        ESP_LOGI(WIFI_TAG, "SYSTEM_EVENT_STA_GOT_IP");
+        printf("SYSTEM_EVENT_STA_GOT_IP\n");
         break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
         /* This is a workaround as ESP32 WiFi libs don't currently auto-reassociate. */
@@ -70,10 +69,10 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     case SYSTEM_EVENT_AP_STA_GOT_IP6:
     {
         xEventGroupSetBits(wifi_event_group, IPV6_GOTIP_BIT);
-        ESP_LOGI(WIFI_TAG, "SYSTEM_EVENT_STA_GOT_IP6");
+        printf("SYSTEM_EVENT_STA_GOT_IP6\n");
 
         char *ip6 = ip6addr_ntoa(&event->event_info.got_ip6.ip6_info.ip);
-        ESP_LOGI(WIFI_TAG, "IPv6: %s", ip6);
+        printf("IPv6: %s\n", ip6);
     }
     default:
         break;
@@ -83,6 +82,18 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     static void initialise_wifi(void)
     {
         tcpip_adapter_init();
+        tcpip_adapter_dhcps_stop(TCPIP_ADAPTER_IF_AP);
+
+        tcpip_adapter_ip_info_t ip_info;
+        IP4_ADDR(&ip_info.ip,192,168,1,99);
+        IP4_ADDR(&ip_info.gw,192,168,1,1);
+        IP4_ADDR(&ip_info.netmask,255,255,255,0);
+        printf("set ip ret: %d\n", tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_AP, &ip_info)); //set static IP
+
+        tcpip_adapter_dhcps_start(TCPIP_ADAPTER_IF_AP);
+
+
+
         wifi_event_group = xEventGroupCreate();
         ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
         wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
@@ -157,10 +168,11 @@ static uint8_t setupUDP()
         fcntl(udp_server, F_SETFL, O_NONBLOCK);
         return 1;
 }
+struct sockaddr_in si_other;
+int slen = sizeof(si_other) , len;
 int readUDP(uint8_t* dataBuffer)
 {
-  struct sockaddr_in si_other;
-  int slen = sizeof(si_other) , len;
+  
 
   if ((len = recvfrom(udp_server, dataBuffer, 1460, MSG_DONTWAIT, (struct sockaddr *) &si_other, (socklen_t *)&slen)) == -1){
     if(errno == EWOULDBLOCK){
@@ -171,46 +183,37 @@ int readUDP(uint8_t* dataBuffer)
   return len;
 }
 uint8_t incomingPacket[1460];
+uint8_t tx_buffer[1460];
+int tx_buffer_len = 1460;
+int sendUDP()
+{
+    if(si_other.sin_addr.s_addr == 0)
+    {
+        printf("missing ip\n");
+        return 0;
+    }
+    struct sockaddr_in recipient;
+    recipient.sin_addr.s_addr = si_other.sin_addr.s_addr;
+    recipient.sin_family = AF_INET;
+    recipient.sin_port = htons(PORT);
+    int sent = sendto(udp_server, tx_buffer, tx_buffer_len, MSG_DONTWAIT, (struct sockaddr*) &recipient, sizeof(recipient));
+    if(sent < 0){
+        printf("could not send data\n");
+        return 0;
+    }
+    return 1;
+}
 void wifiLoop()
 {
-        printf(".");
         int len  = readUDP(incomingPacket);
         if(len > 0)
         {
-            printf("received\n");
+            printf("+");
         }
-        //     int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&destAddr, sizeof(destAddr));
-        //     if (err < 0) {
-        //         printf("Error occured during sending: errno %d\n", errno);
-        //         break;
-        //     }
-        //     printf("Message sent\n");
-
-        //      // Large enough for both IPv4 or IPv6
-        //     struct sockaddr_in sourceAddr; // Large enough for both IPv4 or IPv6
-        //     socklen_t socklen = sizeof(sourceAddr);
-        //     int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, MSG_DONTWAIT, (struct sockaddr *)&sourceAddr, &socklen);
-
-        //     // Error occured during receiving
-        //     if (len < 0) {
-        //         printf("recvfrom failed: errno %d\n", errno);
-                
-        //     }
-        //     // Data received
-        //     else {
-        //         rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
-        //         printf("Received %d bytes from %s:\n", len, addr_str);
-        //         printf("%s", rx_buffer);
-        //     }
-
-        //     vTaskDelay(2000 / portTICK_PERIOD_MS);
-
-        // if (sock != -1) {
-        //     printf("Shutting down socket and restarting...\n");
-        //     shutdown(sock, 0);
-        //     close(sock);
-        // }
-
+        if(sendUDP())
+        {
+            printf("-\n");
+        }
 }
 
 void wifiSetup()

@@ -4,6 +4,7 @@
 
 
 void core0Task( void * pvParameters ){
+    batteryCheckerSetup();
     mpu9250Setup();
     compassSetup();
     irDecoder = new IrDecoder();
@@ -15,8 +16,7 @@ void core0Task( void * pvParameters ){
     while(true)
     {
        
-        MotorController->setTargetSpeed(65000,65000);
-        vTaskDelay(10000/portTICK_PERIOD_MS);
+      
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
@@ -31,25 +31,32 @@ void core0Task( void * pvParameters ){
         irDecoder->runProximity();//takes 0.90ms
 
         loopCounter++;
-        //vTaskDelay(100);
+        vTaskDelay(1);
+        checkBattery();
     }
 }
 void core1Task( void * pvParameters ){
 
+    Camera = new SerialConnection();
+    Camera->setup();
+    Camera->setCameraAngle(10);
+
+    MotorController->setTargetSpeed(65000,65000);
+  
     //wifiSetup();
 
     while(true)
     {
         //wifiLoop();
-        MotorController->loop();
         vTaskDelay(10/portTICK_PERIOD_MS);
+        MotorController->loop();
 
-        // if(Camera->dataAnvailable()){
-        //     Camera->ReadData(); // will also sand a confirmation
-        // }
-        // MVCamera.setCameraAngle(10);
+        if(Camera->dataAnvailable()){
+            Camera->ReadData(); // will also sand a confirmation
+        }
+        
         // vTaskDelay(800/portTICK_PERIOD_MS);
-        // MVCamera.setCameraAngle(170);
+        // Camera->setCameraAngle(170);
         // vTaskDelay(800/portTICK_PERIOD_MS);
     }
 
@@ -60,16 +67,14 @@ extern "C" void app_main()
     MotorController = new MotorDriver();
     MotorController->setup();
 
-    // Camera = new SerialConnection();
-    // Camera->setup();
+    
 
-   xTaskCreatePinnedToCore(core0Task, "core0Task", 
+    xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
-                    0); //core 0
-                    
+                    0); //core 0       
     xTaskCreatePinnedToCore(core1Task, "core1Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 

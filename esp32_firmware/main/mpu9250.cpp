@@ -137,7 +137,11 @@ void magReadAdjustValues() {
 }
 void compassSetup() {//setup only possible if mpu9250 is allready initizalized, otherwise the i2c aux bypass isn't set, see datasheet for reference
    
-  if(sharedVariables.MPU9250Working!=true) return;
+  if(sharedVariables.MPU9250Working!=true) 
+  {
+    printf("can't setup compass because the mpu9250 is not working");
+    return;
+  }
   magReadAdjustValues();
   magSetMode(MAG_MODE_POWERDOWN);
   magSetMode(MAG_MODE_CONTINUOUS_8HZ);
@@ -155,7 +159,7 @@ void mpu9250ReadCompass()
   uint32_t startTime=esp_timer_get_time();
 
   uint8_t magBuf[7];
-  i2c0.readBytes(AK8963_ADDRESS, AK8963_RA_HXL, 6, magBuf);
+  i2c0.readBytes(AK8963_ADDRESS, AK8963_RA_HXL, 7, magBuf);
   sharedVariables.magnetometerValues[0] = adjustMagValue(magGet(magBuf[1], magBuf[0]), magXAdjust);
   sharedVariables.magnetometerValues[1] = adjustMagValue(magGet(magBuf[3], magBuf[2]), magYAdjust);
   sharedVariables.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
@@ -164,8 +168,8 @@ void mpu9250ReadCompass()
 #ifdef PRINT_DURARIONS
   printf("- compassTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
-  //printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", sharedVariables.magnetometerValues[0],sharedVariables.magnetometerValues[1],sharedVariables.magnetometerValues[2]);
-#ifdef PRINT_ACCEL
+  //printf("mag: [%+6.2f %+6.2f %+6.2f ] (G) \t", sharedVariables.magnetometerValues[0],sharedVariables.magnetometerValues[1],sharedVariables.magnetometerValues[2]);
+#ifdef PRINT_COMPASS
   printf("%f\n",  sharedVariables.compassAngle);
 #endif
 }
