@@ -16,7 +16,6 @@ void core0Task( void * pvParameters ){
     while(true)
     {
        
-        vTaskDelay(10/portTICK_PERIOD_MS);
         MotorController->loop();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
@@ -31,27 +30,24 @@ void core0Task( void * pvParameters ){
         }
         irDecoder->runProximity();//takes 0.90ms
 
+        checkBattery();
         loopCounter++;
         
-        checkBattery();
+        vTaskDelay(10/portTICK_PERIOD_MS);
+
     }
 }
 void core1Task( void * pvParameters ){
 
-  
-
-    MotorController->setTargetSpeed(-35000,35000);
   
     //wifiSetup();
 
     while(true)
     {
         //wifiLoop();
+        programLoop();
         
-
-      
-        
-        // vTaskDelay(800/portTICK_PERIOD_MS);
+         vTaskDelay(50/portTICK_PERIOD_MS);
         // Camera->setCameraAngle(170);
         // vTaskDelay(800/portTICK_PERIOD_MS);
     }
@@ -67,7 +63,6 @@ extern "C" void app_main()
     Camera->setup();
     Camera->setCameraAngle(10);
 
-    
 
     xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 

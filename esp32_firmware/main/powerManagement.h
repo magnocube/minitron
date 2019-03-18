@@ -9,7 +9,9 @@
 #include "pins.h"
 #include "settings.h"
 #include "sharedVariables.h"
-
+#include "esp_sleep.h"
+#include "esp_bt.h"
+#include "esp_wifi.h"
 void checkBattery()
 {
     int batteryValue = adc1_get_raw(BATTERY_VOLTAGE_PIN);
@@ -21,9 +23,12 @@ void checkBattery()
 #ifdef PRINT_VOLTAGE
     printf("%f, %d\n",sharedVariables.voltage, batteryValue);
 #endif
-    if(sharedVariables.voltage <10.20)
+    if(sharedVariables.voltage < 10.20)
     {
-            //restart
+            esp_deep_sleep(1000000000000000000);
+            esp_bt_controller_disable();
+            esp_wifi_stop();
+
     }
 }
 void batteryCheckerSetup()

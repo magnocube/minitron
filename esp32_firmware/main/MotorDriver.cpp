@@ -142,9 +142,4 @@ void MotorDriver::loop(){
     motor1OldSpeed = motor1Speed;
     motor2OldSpeed = motor2Speed;
 
-    
-        
-
-    
-
 }

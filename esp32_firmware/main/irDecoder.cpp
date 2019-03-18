@@ -146,7 +146,7 @@ void IrDecoder::runProximity()
 	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 #ifdef PRINT_PROXIMITY_ALL
-	printf("%d,%d,%d,1200\n",left.lowBufferSort[1], left.highBufferSort[1], left.highBufferSort[1] - left.lowBufferSort[1]);
+	printf("%d,%d,%d,1200\n",left.lowBufferSort[1], left.highBufferSort[1], sharedVariables.proximityLeft);
 #endif
 }
 void IrDecoder::calculateProximity(ProximitySensor* obj)//this method takes the best measurement out of the buffer as a kind of medium filter
