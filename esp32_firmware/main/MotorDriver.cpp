@@ -9,7 +9,9 @@ void MotorDriver::setup(){
     motor2OldSpeed = 0;
     acceleration_motor1 = 15000;
     acceleration_motor2 = 15000;
+    
 
+    gpio_pad_select_gpio(MOTOR_ENABLE_PIN);
     gpio_pad_select_gpio(MOTOR_1_DIRECTION_PIN);
     gpio_pad_select_gpio(MOTOR_2_DIRECTION_PIN);
     gpio_pad_select_gpio(MOTOR_MICROSTEP_1);
@@ -18,6 +20,7 @@ void MotorDriver::setup(){
    // gpio_pad_select_gpio(MOTOR_1_STEP_PIN);    //done by ledc driver
    // gpio_pad_select_gpio(MOTOR_2_STEP_PIN);
 
+    gpio_set_direction(MOTOR_ENABLE_PIN, GPIO_MODE_OUTPUT);
     gpio_set_direction(MOTOR_1_DIRECTION_PIN, GPIO_MODE_OUTPUT);
     gpio_set_direction(MOTOR_2_DIRECTION_PIN, GPIO_MODE_OUTPUT);
     gpio_set_direction(MOTOR_MICROSTEP_1, GPIO_MODE_OUTPUT);
@@ -26,7 +29,7 @@ void MotorDriver::setup(){
   //  gpio_set_direction(MOTOR_1_STEP_PIN, GPIO_MODE_OUTPUT);
   //gpio_set_direction(MOTOR_2_STEP_PIN, GPIO_MODE_OUTPUT);
     
- 
+    setMotorDriverEnabled(false);
     gpio_set_level(MOTOR_MICROSTEP_1, 1);
     gpio_set_level(MOTOR_MICROSTEP_2, 1);
     gpio_set_level(MOTOR_MICROSTEP_3, 1);
@@ -142,9 +145,29 @@ void MotorDriver::loop(){
     motor1OldSpeed = motor1Speed;
     motor2OldSpeed = motor2Speed;
 
-    
-        
-
-    
-
 }
+	void MotorDriver::setMotorDriverEnabled(bool b){
+        motorsEnabled = b;
+        //enable signal on IO
+        if(motorsEnabled){
+            gpio_set_level(MOTOR_ENABLE_PIN, 0);
+        }else{
+            gpio_set_level(MOTOR_ENABLE_PIN, 1);
+        }
+        
+    }
+	bool MotorDriver::isMotorDriverEnabled(){
+        return motorsEnabled;
+    }
+	uint16_t MotorDriver::getMotor1TargetSpeed(){
+        return motor1TargetSpeed;
+    }
+	uint16_t MotorDriver::getMotor2TargetSpeed(){
+        return motor2TargetSpeed;
+    }
+	uint16_t MotorDriver::getMotor1Speed(){
+        return motor1Speed;
+    }
+	uint16_t MotorDriver::getMotor2Speed(){
+        return motor2Speed;
+    }
