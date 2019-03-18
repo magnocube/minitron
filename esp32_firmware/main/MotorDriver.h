@@ -27,12 +27,20 @@ public:
 	void setTargetSpeed(int32_t motor1, int32_t motor2);
 	void loop();
 	void setSpeed(uint16_t motor1, uint16_t motor2);
+	void setMotorDriverEnabled(bool b);
+
+	bool isMotorDriverEnabled();
+	uint16_t getMotor1TargetSpeed();
+	uint16_t getMotor2TargetSpeed();
+	uint16_t getMotor1Speed();
+	uint16_t getMotor2Speed();
+
 	//todo:
 	//void moveToXY();
 	//void moveBackToStart();
 
 private:
-	
+	bool motorsEnabled;
 	ledc_timer_config_t ledc_timer_motor_1;
 	ledc_timer_config_t ledc_timer_motor_2;
 
