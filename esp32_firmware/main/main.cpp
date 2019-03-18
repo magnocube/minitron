@@ -38,11 +38,9 @@ void core0Task( void * pvParameters ){
 }
 void core1Task( void * pvParameters ){
 
-    Camera = new SerialConnection();
-    Camera->setup();
-    Camera->setCameraAngle(10);
+  
 
-    MotorController->setTargetSpeed(65000,65000);
+    MotorController->setTargetSpeed(-35000,35000);
   
     //wifiSetup();
 
@@ -51,9 +49,7 @@ void core1Task( void * pvParameters ){
         //wifiLoop();
         
 
-        if(Camera->dataAnvailable()){
-            Camera->ReadData(); // will also sand a confirmation
-        }
+      
         
         // vTaskDelay(800/portTICK_PERIOD_MS);
         // Camera->setCameraAngle(170);
@@ -66,6 +62,10 @@ extern "C" void app_main()
     printf("minitron firmware started\n");  
     MotorController = new MotorDriver();
     MotorController->setup();
+
+    Camera = new SerialConnection();
+    Camera->setup();
+    Camera->setCameraAngle(10);
 
     
 

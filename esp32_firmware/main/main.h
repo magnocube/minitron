@@ -11,7 +11,11 @@
 #include "sharedVariables.h"
 #include "wifiConnection.c"
 #include "powerManagement.h"
+
+
 SerialConnection * Camera;
 IrDecoder * irDecoder;
 MotorDriver * MotorController;
 TOFSensor * tofSensor;
+
+#include "keuzeMaker.h"

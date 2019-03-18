@@ -70,4 +70,4 @@ typedef struct{
 
 } SharedVariables;
 
-static SharedVariables sharedVariables; //instanciated_struct_of_very_important_variables
+static SharedVariables sharedVariables; //instanciated_struct_of_very_important_variables   --> isoviv

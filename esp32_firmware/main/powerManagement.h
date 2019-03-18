@@ -14,13 +14,17 @@ void checkBattery()
 {
     int batteryValue = adc1_get_raw(BATTERY_VOLTAGE_PIN);
     const int maxValue = 4096;
-    const float r1 = 6000;
+    const float r1 = 7500;
     const float r2 = 1000;
     const float vref = 3.6;
-    sharedVariables.voltage = ((r1+r2)/r2)*(batteryValue/maxValue)*vref;
+    sharedVariables.voltage = ((r1+r2)/r2)*((float)batteryValue/maxValue)*vref;
 #ifdef PRINT_VOLTAGE
-    printf("%d\n",sharedVariables.voltage);
+    printf("%f, %d\n",sharedVariables.voltage, batteryValue);
 #endif
+    if(sharedVariables.voltage <10.20)
+    {
+            //restart
+    }
 }
 void batteryCheckerSetup()
 {

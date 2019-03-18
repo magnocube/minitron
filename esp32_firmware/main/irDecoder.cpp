@@ -91,6 +91,8 @@ void IrDecoder::setupProximity()
 	//set led pin
  	gpio_pad_select_gpio(IR_LED_PIN);
 	gpio_set_direction(IR_LED_PIN, GPIO_MODE_OUTPUT);
+
+
 	//configure adc 12bit max range
     adc1_config_width(ADC_WIDTH_BIT_12);
     adc1_config_channel_atten(IR_PHOTODIODE1_PIN, ADC_ATTEN_DB_11);
