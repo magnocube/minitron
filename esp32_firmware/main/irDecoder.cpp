@@ -1,5 +1,6 @@
 #include "irDecoder.h"
 
+
 void IrDecoder::setupSender()
 {
 	irSenderConfig.rmt_mode = RMT_MODE_TX;
@@ -134,10 +135,15 @@ void IrDecoder::runProximity()
 	calculateProximity(&right);
 
 	//save it in shared variables
-	sharedVariables.proximityLeft = left.highBufferSort[1] - left.lowBufferSort[1];
-    sharedVariables.proximityRight = right.highBufferSort[1] - right.lowBufferSort[1];
-    sharedVariables.lightLeft = left.lowBufferSort[1];
-    sharedVariables.lightRight = right.lowBufferSort[1];
+	sharedVariables->proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - 400)/3;
+	sharedVariables->proximityLeft = std::max(0, sharedVariables->proximityLeft);
+	sharedVariables->proximityLeft = std::min(sharedVariables->proximityLeft, 1000);
+    sharedVariables->proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-400)/3;
+	sharedVariables->proximityRight = std::max(0, sharedVariables->proximityRight);
+	sharedVariables->proximityRight = std::min(sharedVariables->proximityRight, 1000);
+
+    sharedVariables->lightLeft = left.lowBufferSort[1];
+    sharedVariables->lightRight = right.lowBufferSort[1];
 
 #ifdef PRINT_PROXIMITY
 	printf("%d\n", left.highBufferSort[1] - left.lowBufferSort[1]);
@@ -146,7 +152,7 @@ void IrDecoder::runProximity()
 	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 #ifdef PRINT_PROXIMITY_ALL
-	printf("%d,%d,%d,1200\n",left.lowBufferSort[1], left.highBufferSort[1], sharedVariables.proximityLeft);
+	printf("%d,%d,%d,1200\n",left.lowBufferSort[1], left.highBufferSort[1], left.highBufferSort[1] - left.lowBufferSort[1]);
 #endif
 }
 void IrDecoder::calculateProximity(ProximitySensor* obj)//this method takes the best measurement out of the buffer as a kind of medium filter

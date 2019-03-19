@@ -4,50 +4,54 @@
 
 
 void core0Task( void * pvParameters ){
-    batteryCheckerSetup();
     mpu9250Setup();
     compassSetup();
-    irDecoder = new IrDecoder();
+    batteryCheckerSetup();
+    
+
+    irDecoder = new IrDecoder(sharedVariables);
     irDecoder->setup();
     //spiSetup();
     tofSensor = new TOFSensor();
     //tofSensor->init();
     uint32_t loopCounter=0;
+    uint32_t lastTime = 0;
     while(true)
     {
-       
-        MotorController->loop();
+        //MotorController->loop();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
         //tofSensor->measure();
 
-        irDecoder->read();//takes 0.005ms
+       // irDecoder->read();//takes 0.005ms
         if(loopCounter%100 == 0)
         {
-            irDecoder->send();//takes 0.03ms
+            //irDecoder->send();//takes 0.03ms
 
         }
         irDecoder->runProximity();//takes 0.90ms
 
-        checkBattery();
+        //checkBattery();
         loopCounter++;
-        
-        vTaskDelay(10/portTICK_PERIOD_MS);
+        while(esp_timer_get_time() - lastTime < 5000);
+        lastTime = esp_timer_get_time();
 
+        esp_task_wdt_feed();
     }
 }
 void core1Task( void * pvParameters ){
 
-  
     //wifiSetup();
+    
 
+    vTaskDelay(500/portTICK_PERIOD_MS);
     while(true)
     {
         //wifiLoop();
-        programLoop();
+       // programLoop();
         
-         vTaskDelay(50/portTICK_PERIOD_MS);
+        vTaskDelay(10/portTICK_PERIOD_MS);
         // Camera->setCameraAngle(170);
         // vTaskDelay(800/portTICK_PERIOD_MS);
     }
@@ -56,14 +60,13 @@ void core1Task( void * pvParameters ){
 extern "C" void app_main()
 {
     printf("minitron firmware started\n");  
-    MotorController = new MotorDriver();
-    MotorController->setup();
-
-    Camera = new SerialConnection();
-    Camera->setup();
-    Camera->setCameraAngle(10);
-
-
+    // MotorController = new MotorDriver(sharedVariables);
+    // MotorController->setup();
+    // MotorController->setMotorDriverEnabled(true);
+    
+    // Camera = new SerialConnection();
+    // Camera->setup();
+    // Camera->setCameraAngle(10);
     xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 

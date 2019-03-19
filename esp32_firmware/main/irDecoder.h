@@ -9,12 +9,12 @@
 
 #include <rom/ets_sys.h>
 #include <driver/adc.h>
-
-
+#include "math.h"
+#include <algorithm>
 #include "pins.h"
 #include "settings.h"
 #include "sharedVariables.h"
-#define BUFFER_SIZE 15
+#define BUFFER_SIZE 5//larger buffer will filter better, but slow down to reaction speed
 
 class IrDecoder
 {
@@ -39,7 +39,11 @@ class IrDecoder
 	void setupSender();
 	void setupProximity();
 public:
-	
+	SharedVariables* sharedVariables;
+	IrDecoder(SharedVariables& _sharedVariables)
+	{
+		sharedVariables = &_sharedVariables;
+	}
 	void setup()
 	{
 		setupSender();

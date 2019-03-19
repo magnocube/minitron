@@ -25,10 +25,10 @@
 
 
         // Set UART pins(TX: IO16 (UART2 default), RX: IO17 (UART2 default), RTS: IO18, CTS: IO19)
-        ESP_ERROR_CHECK(uart_set_pin(uart_num, 17, 16, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+        ESP_ERROR_CHECK(uart_set_pin(uart_num, 1, 3, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 
         // Setup UART buffered IO with event queue
-        const int uart_buffer_size = 256;
+        const int uart_buffer_size = 2048;
         QueueHandle_t uart_queue;
         // Install UART driver using an event queue here
         ESP_ERROR_CHECK(uart_driver_install(uart_num, uart_buffer_size, uart_buffer_size, 10, &uart_queue, 0));
@@ -61,7 +61,7 @@
     }
     bool SerialConnection::dataAnvailable(){
         int length = 0;
-        uart_get_buffered_data_len(UART_NUM_2, (size_t*)&length);
+        uart_get_buffered_data_len(UART_NUM_0, (size_t*)&length);
 
         if(length > 0){
             return true;

@@ -30,6 +30,8 @@
 #include "settings.h"
 #include "sharedVariables.h"
 
+extern SharedVariables sharedVariables;
+
 static constexpr uint32_t CLOCK_SPEED = 400000;  // range from 100 KHz ~ 400Hz
 
 MPU_t MPU;  // create a default MPU object

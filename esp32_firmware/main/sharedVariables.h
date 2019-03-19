@@ -10,7 +10,9 @@ enum class controlModes{
     AUTOMATIC_HEADLESS_MODE = 6,
     AUTOMATIC_EPILEPTIC_MODE = 7,
     AUTOMATIC_BALANCE_OBJECT_SEARCH = 8,
-    AUTOMAITC_BALANCE_DYSON_MODE = 9
+    AUTOMAITC_BALANCE_DYSON_MODE = 9,
+    MANUAL_WIFI_BALANCE = 10
+
 };
 enum class objects
 {
@@ -50,7 +52,7 @@ typedef struct{
     bool proximityWorking = true;
 
     //motorcontroller
-    bool enabled = true;
+    bool motorsEnabled = false;
     uint32_t steppers1Acceleration;
     uint32_t steppers2Acceleration;
     int16_t steppers1Speed;
@@ -87,5 +89,3 @@ typedef struct{
 
 
 } SharedVariables;
-
-static SharedVariables sharedVariables; //instanciated_struct_of_very_important_variables   --> isoviv
