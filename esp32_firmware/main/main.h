@@ -6,6 +6,7 @@
 #include "soc/timer_group_reg.h"
 #include "esp_task_wdt.h"
 #include "sharedVariables.h"
+#include <string.h>
 
 #include "irDecoder.h"
 #include "SerialConnection.h"

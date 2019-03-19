@@ -28,6 +28,7 @@ public:
 	uint8_t* ReadData();
 	void setCameraAngle(int degrees);
 	int getCameraAngle();
+	
 private:
     int serialIdex;
 	const uart_port_t uart_num = UART_NUM_2;

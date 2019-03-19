@@ -32,8 +32,9 @@ void core0Task( void * pvParameters ){
 
         checkBattery();
         loopCounter++;
-        while(esp_timer_get_time() - lastTime < 5000);
-        lastTime = esp_timer_get_time();
+        // while(esp_timer_get_time() - lastTime < 5000);
+        // lastTime = esp_timer_get_time();
+        vTaskDelay(10/portTICK_PERIOD_MS);
     }
 }
 void core1Task( void * pvParameters ){
