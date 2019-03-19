@@ -6,7 +6,7 @@
 void core0Task( void * pvParameters ){
     mpu9250Setup();
     compassSetup();
-    batteryCheckerSetup();
+    //batteryCheckerSetup();
 
     irDecoder = new IrDecoder(sharedVariables);
     irDecoder->setup();
@@ -21,25 +21,20 @@ void core0Task( void * pvParameters ){
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
-        
-
-       // irDecoder->read();//takes 0.005ms
+        irDecoder->read();//takes 0.005ms
         if(loopCounter%10 == 0)
         {
             tofSensor->measure();
         }
         irDecoder->runProximity();//takes 0.90ms
 
-        checkBattery();
+        //checkBattery();
         loopCounter++;
         while(esp_timer_get_time() - lastTime < 5000);
-        lastTime = esp_timer_get_time();
-    }
+        lastTime = esp_timer_get_time();    }
 }
 void core1Task( void * pvParameters ){
-
     wifiSetup();
-    vTaskDelay(500/portTICK_PERIOD_MS);
     while(true)
     {
         wifiLoop();

@@ -21,71 +21,85 @@ enum class objects
     OBJECT_BLUE_BALL
 };
 typedef struct{  
-	//mpu9250
-    float acceleration[3];//x,y,z
-    float gyroValues[3];//x,y,z
-    float magnetometerValues[3];//x,y,z
-    float compassAngle;
-    float MPU9250Temperature;
-    bool MPU9250ErrorOccured = false;
-    bool MPU9250Working = true;
+    struct Inputs
+    {
+        //motorcontroller
+        bool motorsEnabled = false;
+        uint32_t steppers1Acceleration = 0;
+        uint32_t steppers2Acceleration = 0;
+        int16_t steppers1Speed = 0;
+        int16_t steppers2Speed = 0;
+        uint16_t stepperMaxSpeed = 0;
+        //todo add manual control and location
 
-    //tof sensor
-    uint16_t TOFSensorDistanceMM;
-    bool TOFSensorErrorOccured = false;
-    bool TOFSensorWorking = true;
+        //balancing
+        uint8_t PID_p = 0;
+        uint8_t PID_i = 0;
+        uint8_t PID_d = 0;
 
-    //ir receiver
-    //todo add last command
-    bool IRReceiverErrorOccured = false;
-    bool IRReceiverWorking = true;
+        //servo
+        uint8_t servoPosition = 80; //in degrees
 
-    //ir leds
-    //todo add next command
+        //modes
+        controlModes mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
+    }inputs;
+    struct Outputs
+    {
+        //mpu9250
+        float acceleration[3];//x,y,z
+        float gyroValues[3];//x,y,z
+        float magnetometerValues[3];//x,y,z
+        float compassAngle;
+        float MPU9250Temperature;
+        bool MPU9250ErrorOccured = false;
+        bool MPU9250Working = true;
 
-    //proximity sensors 
-    int proximityLeft;
-    int proximityRight;
-    int lightLeft;
-    int lightRight;
-    bool proximityErrorOccured = false;
-    bool proximityWorking = true;
+        //tof sensor
+        uint16_t TOFSensorDistanceMM;
+        bool TOFSensorErrorOccured = false;
+        bool TOFSensorWorking = true;
+        //ir receiver
+        //todo add last command
+        bool IRReceiverErrorOccured = false;
+        bool IRReceiverWorking = true;
 
-    //motorcontroller
-    bool motorsEnabled = false;
-    uint32_t steppers1Acceleration;
-    uint32_t steppers2Acceleration;
-    int16_t steppers1Speed;
-    int16_t steppers2Speed;
-    uint16_t stepperMaxSpeed;
+        //ir leds
+        //todo add next command
 
-    //todo add manual control and location
+        //proximity sensors 
+        int proximityLeft;
+        int proximityRight;
+        int lightLeft;
+        int lightRight;
+        bool proximityErrorOccured = false;
+        bool proximityWorking = true;
 
-    //balancing
-    uint8_t PID_p;
-    uint8_t PID_i;
-	uint8_t PID_d;
+        //motorcontroller
+        bool motorsEnabled = false;
+        uint32_t steppers1Acceleration;
+        uint32_t steppers2Acceleration;
+        int16_t steppers1Speed;
+        int16_t steppers2Speed;
+        uint16_t stepperMaxSpeed;
 
-	//camera
-	uint8_t cameraFrameRate;
-	bool cameraImageAvailable = false;
-	bool cameraErrorOccured = false;
-    bool cameraWorking = true;
-    
-    //servo
-    uint8_t servoPosition; //in degrees
+        //camera
+        uint8_t cameraFrameRate;
+        bool cameraImageAvailable = false;
+        bool cameraErrorOccured = false;
+        bool cameraWorking = true;
 
-    //wifi udp
-    bool wifiAvailable = false;
-    bool wifiConnected = false;
-    uint8_t wifiSignalStrength = false;
+        //servo
+        uint8_t servoPosition; //in degrees
 
-    //battery
-    float voltage;
-    bool on = true;
+         //wifi udp
+        bool wifiAvailable = false;
+        bool wifiConnected = false;
+        uint8_t wifiSignalStrength = false;
 
-    //modes
-    controlModes mode=controlModes::AUTOMATIC_OBJECT_SEARCH;
+        //battery
+        float voltage=0;
+        bool on = true;
 
+    }outputs;
 
 } SharedVariables;

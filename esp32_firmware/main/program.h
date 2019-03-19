@@ -12,11 +12,11 @@ uint64_t ObjectSearchLastTimeImage;
 void dysonMode()
 {   
     int speed = 6000;
-    int steering = (DYSON_PROXIMITY_TARGET - sharedVariables.proximityLeft);
+    int steering = (DYSON_PROXIMITY_TARGET - sharedVariables.outputs.proximityLeft);
     if(steering>0)
     {
         steering *=2;
-        if(sharedVariables.proximityLeft<80)
+        if(sharedVariables.outputs.proximityLeft<80)
         {
             MotorController->setAcceleration(30000,30000);
             speed = 4000;
@@ -26,13 +26,13 @@ void dysonMode()
     }else
     {
         MotorController->setAcceleration(10000,10000);
-        steering *= 3 + sharedVariables.proximityLeft/100;
+        steering *= 3 + sharedVariables.outputs.proximityLeft/100;
     }
     
     int leftSpeed = speed + steering;
     int rightSpeed = speed - steering;
     MotorController->setTargetSpeed(leftSpeed, rightSpeed);
-    printf("%d,%d,1000\n",sharedVariables.proximityLeft, sharedVariables.proximityRight);
+    printf("%d,%d,1000\n",sharedVariables.outputs.proximityLeft, sharedVariables.outputs.proximityRight);
 
 }
 
@@ -49,10 +49,10 @@ void programLoop(){
         ObjectSearchLastTimeImage = esp_timer_get_time();
     }
 
-    if(sharedVariables.mode == controlModes::AUTOMATIC_DYSON_MODE)
+    if(sharedVariables.inputs.mode == controlModes::AUTOMATIC_DYSON_MODE)
     {
         dysonMode();
-    } else if(sharedVariables.mode == controlModes::AUTOMATIC_OBJECT_SEARCH){
+    } else if(sharedVariables.inputs.mode == controlModes::AUTOMATIC_OBJECT_SEARCH){
         AutomaticObjectSearch();
     }
 

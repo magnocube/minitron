@@ -135,18 +135,18 @@ void IrDecoder::runProximity()
 	calculateProximity(&right);
 
 	//save it in shared variables
-	sharedVariables->proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - 400)/3;
-	sharedVariables->proximityLeft = std::max(0, sharedVariables->proximityLeft);
-	sharedVariables->proximityLeft = std::min(sharedVariables->proximityLeft, 1000);
-    sharedVariables->proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-400)/3;
-	sharedVariables->proximityRight = std::max(0, sharedVariables->proximityRight);
-	sharedVariables->proximityRight = std::min(sharedVariables->proximityRight, 1000);
+	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - 400)/3;
+	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
+	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);
+    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-400)/3;
+	sharedVariables->outputs.proximityRight = std::max(0, sharedVariables->outputs.proximityRight);
+	sharedVariables->outputs.proximityRight = std::min(sharedVariables->outputs.proximityRight, 1000);
 
-    sharedVariables->lightLeft = left.lowBufferSort[1];
-    sharedVariables->lightRight = right.lowBufferSort[1];
+    sharedVariables->outputs.lightLeft = left.lowBufferSort[1];
+    sharedVariables->outputs.lightRight = right.lowBufferSort[1];
 
 #ifdef PRINT_PROXIMITY
-	printf("%d\n", left.highBufferSort[1] - left.lowBufferSort[1]);
+	printf("%d\n", sharedVariables->outputs.proximityLeft);
 #endif
 #ifdef PRINT_DURARIONS
 	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);

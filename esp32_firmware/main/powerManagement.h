@@ -22,11 +22,11 @@ void checkBattery()
     const float r1 = 7500;
     const float r2 = 1000;
     const float vref = 3.6;
-    sharedVariables.voltage = ((r1+r2)/r2)*((float)batteryValue/maxValue)*vref;
+    sharedVariables.outputs.voltage = ((r1+r2)/r2)*((float)batteryValue/maxValue)*vref;
 #ifdef PRINT_VOLTAGE
-    printf("%f, %d\n",sharedVariables.voltage, batteryValue);
+    printf("%f, %d\n",sharedVariables.outputs.voltage, batteryValue);
 #endif
-    if(sharedVariables.voltage < 10.50)
+    if(sharedVariables.outputs.voltage < 10.50)
     {
             esp_deep_sleep(1000000000000000000);
             esp_bt_controller_disable();

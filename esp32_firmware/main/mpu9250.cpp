@@ -39,7 +39,7 @@ mpud::raw_axes_t accelRaw;   // x, y, z axes as int16
 mpud::raw_axes_t gyroRaw;    // x, y, z axes as int16
 mpud::float_axes_t accelG;   // accel axes in (g) gravity format
 mpud::float_axes_t gyroDPS;  // gyro    axes in (DPS) º/s format
-#define TIME_OUT 5
+#define TIME_OUT 4
 void mpu9250Setup (){
 
     // Initialize I2C on port 0 using I2Cbus interface
@@ -55,12 +55,12 @@ void mpu9250Setup (){
     int counter=0;
     while (MPU.testConnection()) {
         printf( "Failed to connect to the MPU, error");
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(50 / portTICK_PERIOD_MS);
         counter++;
         if(counter >= TIME_OUT)
         {
-            sharedVariables.MPU9250ErrorOccured = true;
-            sharedVariables.MPU9250Working = false;
+            sharedVariables.outputs.MPU9250ErrorOccured = true;
+            sharedVariables.outputs.MPU9250Working = false;
             printf( "Can't connect, returning");
             return;
         }
@@ -78,20 +78,20 @@ void mpu9250Setup (){
 }
 void mpu9250ReadMotion()
 {
-        if(sharedVariables.MPU9250Working!=true) return;
+        if(sharedVariables.outputs.MPU9250Working!=true) return;
 
         uint32_t startTime=esp_timer_get_time();
         // Read
         MPU.motion(&accelRaw, &gyroRaw);  // fetch raw data from the registers
         // Convert
         accelG = mpud::accelGravity(accelRaw, mpud::ACCEL_FS_4G);
-        sharedVariables.acceleration[0] = accelG.x;
-        sharedVariables.acceleration[1] = accelG.y;
-        sharedVariables.acceleration[2] = accelG.z;
+        sharedVariables.outputs.acceleration[0] = accelG.x;
+        sharedVariables.outputs.acceleration[1] = accelG.y;
+        sharedVariables.outputs.acceleration[2] = accelG.z;
         gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
-        sharedVariables.gyroValues[0] = gyroDPS.x;
-        sharedVariables.gyroValues[1] = gyroDPS.y;
-        sharedVariables.gyroValues[2] = gyroDPS.z;
+        sharedVariables.outputs.gyroValues[0] = gyroDPS.x;
+        sharedVariables.outputs.gyroValues[1] = gyroDPS.y;
+        sharedVariables.outputs.gyroValues[2] = gyroDPS.z;
 
       
 #ifdef PRINT_DURARIONS
@@ -138,7 +138,7 @@ void magReadAdjustValues() {
 }
 void compassSetup() {//setup only possible if mpu9250 is allready initizalized, otherwise the i2c aux bypass isn't set, see datasheet for reference
    
-  if(sharedVariables.MPU9250Working!=true) 
+  if(sharedVariables.outputs.MPU9250Working!=true) 
   {
     printf("can't setup compass because the mpu9250 is not working");
     return;
@@ -156,21 +156,21 @@ float adjustMagValue(int16_t value, uint8_t adjust) {
 }
 void mpu9250ReadCompass()
 {
-  if(sharedVariables.MPU9250Working!=true) return;
+  if(sharedVariables.outputs.MPU9250Working!=true) return;
   uint32_t startTime=esp_timer_get_time();
 
   uint8_t magBuf[7];
   i2c0.readBytes(AK8963_ADDRESS, AK8963_RA_HXL, 7, magBuf);
-  sharedVariables.magnetometerValues[0] = adjustMagValue(magGet(magBuf[1], magBuf[0]), magXAdjust);
-  sharedVariables.magnetometerValues[1] = adjustMagValue(magGet(magBuf[3], magBuf[2]), magYAdjust);
-  sharedVariables.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
-  sharedVariables.compassAngle = atan2(sharedVariables.magnetometerValues[0], sharedVariables.magnetometerValues[1])* 180 / 3.14159;
+  sharedVariables.outputs.magnetometerValues[0] = adjustMagValue(magGet(magBuf[1], magBuf[0]), magXAdjust);
+  sharedVariables.outputs.magnetometerValues[1] = adjustMagValue(magGet(magBuf[3], magBuf[2]), magYAdjust);
+  sharedVariables.outputs.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
+  sharedVariables.outputs.compassAngle = atan2(sharedVariables.outputs.magnetometerValues[0], sharedVariables.outputs.magnetometerValues[1])* 180 / 3.14159;
 
 #ifdef PRINT_DURARIONS
   printf("- compassTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
-  //printf("mag: [%+6.2f %+6.2f %+6.2f ] (G) \t", sharedVariables.magnetometerValues[0],sharedVariables.magnetometerValues[1],sharedVariables.magnetometerValues[2]);
+  //printf("mag: [%+6.2f %+6.2f %+6.2f ] (G) \t", sharedVariables.outputs.magnetometerValues[0],sharedVariables.outputs.magnetometerValues[1],sharedVariables.outputs.magnetometerValues[2]);
 #ifdef PRINT_COMPASS
-  printf("%f\n",  sharedVariables.compassAngle);
+  printf("%f\n",  sharedVariables.outputs.compassAngle);
 #endif
 }

@@ -20,7 +20,7 @@
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
 
-
+#include "sharedVariables.h"
 /* The examples use simple WiFi configuration that you can set via
    'make menuconfig'.
    If you'd rather not, just change the below entries to strings with
@@ -41,10 +41,12 @@ const int IPV4_GOTIP_BIT = BIT0;
 const int IPV6_GOTIP_BIT = BIT1;
 
 
-char rx_buffer[1460];
 char addr_str[128];
 int addr_family;
 int ip_protocol;
+
+extern SharedVariables sharedVariables;
+
 static esp_err_t event_handler(void *ctx, system_event_t *event)
 {
     switch (event->event_id) {
@@ -170,21 +172,27 @@ static uint8_t setupUDP()
 }
 struct sockaddr_in si_other;
 int slen = sizeof(si_other) , len;
-int readUDP(uint8_t* dataBuffer)
-{
-  
 
-  if ((len = recvfrom(udp_server, dataBuffer, 1460, MSG_DONTWAIT, (struct sockaddr *) &si_other, (socklen_t *)&slen)) == -1){
+#define rx_buffer_len 512
+uint8_t rx_buffer[512];
+
+int readUDP()
+{
+  if ((len = recvfrom(udp_server, rx_buffer, rx_buffer_len, MSG_DONTWAIT, (struct sockaddr *) &si_other, (socklen_t *)&slen)) == -1){
     if(errno == EWOULDBLOCK){
       return -1;
     }
     return 0;
   }
-  return len;
+  memcpy((void*)&sharedVariables.inputs, rx_buffer, sizeof(sharedVariables.inputs));
+  printf("%d\n",sharedVariables.inputs.servoPosition);
+  printf("%d\n",sharedVariables.inputs.servoPosition);
+
+  return 1;
 }
-uint8_t incomingPacket[1460];
-uint8_t tx_buffer[1460];
-int tx_buffer_len = 1460;
+int tx_buffer_len = sizeof(sharedVariables.outputs);
+uint8_t tx_buffer[sizeof(sharedVariables.outputs)];
+
 int sendUDP()
 {
     if(si_other.sin_addr.s_addr == 0)
@@ -196,7 +204,7 @@ int sendUDP()
     recipient.sin_addr.s_addr = si_other.sin_addr.s_addr;
     recipient.sin_family = AF_INET;
     recipient.sin_port = htons(PORT);
-    int sent = sendto(udp_server, tx_buffer, tx_buffer_len, MSG_DONTWAIT, (struct sockaddr*) &recipient, sizeof(recipient));
+    int sent = sendto(udp_server, reinterpret_cast<char*>(&sharedVariables.outputs), tx_buffer_len, MSG_DONTWAIT, (struct sockaddr*) &recipient, sizeof(recipient));
     if(sent < 0){
         printf("could not send data\n");
         return 0;
@@ -205,10 +213,10 @@ int sendUDP()
 }
 void wifiLoop()
 {
-        int len  = readUDP(incomingPacket);
+        int len  = readUDP();
         if(len > 0)
         {
-            printf("+");
+            printf("+\n");
         }
         if(sendUDP())
         {
@@ -218,10 +226,10 @@ void wifiLoop()
 
 void wifiSetup()
 {
-
     ESP_ERROR_CHECK( nvs_flash_init() );
     initialise_wifi();
     wait_for_ip();
+    //txBuffer = (uint8_t)malloc(sizeof(sharedVariables.outputs));
     setupUDP();
 }
 

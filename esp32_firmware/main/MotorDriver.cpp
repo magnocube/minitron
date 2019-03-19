@@ -147,10 +147,10 @@ void MotorDriver::loop(){
 
 }
 	void MotorDriver::setMotorDriverEnabled(bool b){
-        sharedVariables->motorsEnabled = b;
+        sharedVariables->outputs.motorsEnabled = b;
         
         //enable signal on IO
-        if(sharedVariables->motorsEnabled){
+        if(sharedVariables->outputs.motorsEnabled){
             gpio_set_level(MOTOR_ENABLE_PIN, 0);
         }else{
             gpio_set_level(MOTOR_ENABLE_PIN, 1);
@@ -158,7 +158,7 @@ void MotorDriver::loop(){
         
     }
 	bool MotorDriver::isMotorDriverEnabled(){
-        return sharedVariables->motorsEnabled;
+        return sharedVariables->outputs.motorsEnabled;
     }
 	uint16_t MotorDriver::getMotor1TargetSpeed(){
         return motor1TargetSpeed;
