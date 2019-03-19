@@ -39,11 +39,11 @@ void core0Task( void * pvParameters ){
 }
 void core1Task( void * pvParameters ){
 
-    //wifiSetup();
+    wifiSetup();
     vTaskDelay(500/portTICK_PERIOD_MS);
     while(true)
     {
-        //wifiLoop();
+        wifiLoop();
         programLoop();
         
         vTaskDelay(10/portTICK_PERIOD_MS);
