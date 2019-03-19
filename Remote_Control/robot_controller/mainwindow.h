@@ -28,6 +28,9 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *e) override;
 
+private slots:
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     UDP_Connection *robotConnection;

@@ -27,17 +27,62 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <widget class="QPushButton" name="button_switch_position">
-              <property name="text">
-               <string>Switch Position</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="button_enable_manual_comtrol">
-              <property name="text">
-               <string>Enable Manual Mode</string>
-              </property>
+             <widget class="QComboBox" name="comboBox">
+              <item>
+               <property name="text">
+                <string>Manual Wifi</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Manual IR</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Manual Balance Mode</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Off</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Automatic Object Search</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Automatic Dyson Mode</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Automatic Battle Mode</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Automatic Headless Mode</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Automatic Epileptic Mode</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Automatic Balance Object Search</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Automatic Balance Dyson Mode</string>
+               </property>
+              </item>
              </widget>
             </item>
            </layout>

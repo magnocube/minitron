@@ -15,15 +15,7 @@
             
         // Configure UART parameters
         ESP_ERROR_CHECK(uart_param_config(uart_num, &uart_config));
-        // uart_set_baudrate(uart_num,9600);
-        // uart_set_word_length(uart_num,UART_DATA_8_BITS);
-        // uart_set_parity(uart_num,UART_PARITY_DISABLE);
-        // uart_set_stop_bits(uart_num,UART_STOP_BITS_1);
-        // uart_set_hw_flow_ctrl(uart_num,UART_HW_FLOWCTRL_CTS_RTS);
-        // uart_set_mode(uart_num,UART_MODE_UART);
-
-
-
+        
         // Set UART pins(TX: IO16 (UART2 default), RX: IO17 (UART2 default), RTS: IO18, CTS: IO19)
         ESP_ERROR_CHECK(uart_set_pin(uart_num, 17, 16, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 
