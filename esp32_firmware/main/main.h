@@ -11,15 +11,15 @@
 #include "SerialConnection.h"
 #include "MotorDriver.h"
 #include "esp_log.h"
-#include "TOFSensor.h"
 #include "wifiConnection.c"
 #include "powerManagement.h"
 
 SerialConnection * Camera;
 IrDecoder * irDecoder;
 MotorDriver * MotorController;
-TOFSensor * tofSensor;
 SharedVariables sharedVariables;
 
+#include "TOFSensor.h"
+TOFSensor * tofSensor;
 #include "mpu9250.cpp"
 #include "program.h"

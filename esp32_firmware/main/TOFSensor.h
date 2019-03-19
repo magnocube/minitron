@@ -6,13 +6,14 @@
 #include "I2Cbus.hpp"
 #include "driver/gpio.h"
 #include "driver/i2c.h"
-
+#include "sharedVariables.h"
 #include "pins.h"
 #include "settings.h"
 
 #include "VL53L0X.h"
 
 #define I2C_PORT I2C_NUM_0
+extern SharedVariables sharedVariables;
 
 class TOFSensor{
 private:
