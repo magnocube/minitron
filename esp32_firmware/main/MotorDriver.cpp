@@ -148,7 +148,7 @@ void MotorDriver::loop(){
 }
 	void MotorDriver::setMotorDriverEnabled(bool b){
         sharedVariables->motorsEnabled = b;
-        sharedVariables->motorsEnabled = b;
+        
         //enable signal on IO
         if(sharedVariables->motorsEnabled){
             gpio_set_level(MOTOR_ENABLE_PIN, 0);

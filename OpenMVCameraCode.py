@@ -59,6 +59,7 @@ while(True):
                   quote = "X:" + str(blob.cx()/resX*100) + "Y:" + str(blob.cy()/resY*100) + "\n"
                   print(quote)
                   uart.write(quote)
+                  pass
 
 
 
