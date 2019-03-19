@@ -38,7 +38,9 @@ void dysonMode()
 
 void AutomaticObjectSearch()
 {   
-    
+    MotorController->setTargetSpeed(5000, 5000);
+    //read camera data and estract the coordinates (x and y go form 0 to 100)
+    #define DEBUG_OBJECT_SEARCH
 
 }
 void programLoop(){

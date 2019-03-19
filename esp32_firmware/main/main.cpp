@@ -21,13 +21,12 @@ void core0Task( void * pvParameters ){
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
-        tofSensor->measure();
+        
 
        // irDecoder->read();//takes 0.005ms
-        if(loopCounter%100 == 0)
+        if(loopCounter%10 == 0)
         {
-            //irDecoder->send();//takes 0.03ms
-
+            tofSensor->measure();
         }
         irDecoder->runProximity();//takes 0.90ms
 
@@ -40,7 +39,7 @@ void core0Task( void * pvParameters ){
 void core1Task( void * pvParameters ){
 
     //wifiSetup();
-    vTaskDelay(500/portTICK_PERIOD_MS);
+    //vTaskDelay(500/portTICK_PERIOD_MS);
     while(true)
     {
         //wifiLoop();
@@ -61,7 +60,7 @@ extern "C" void app_main()
     
     Camera = new SerialConnection();
     Camera->setup();
-    Camera->setCameraAngle(10);
+    Camera->setCameraAngle(170);
     xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 

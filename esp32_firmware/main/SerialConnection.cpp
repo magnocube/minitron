@@ -2,7 +2,7 @@
 
     #include "SerialConnection.h"
     void SerialConnection::setup(){
-       
+       UartIncomingData = (uint8_t*)malloc(256);
         uart_config_t uart_config = {
             .baud_rate = 115200,
             .data_bits = UART_DATA_8_BITS,
