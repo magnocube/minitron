@@ -1,9 +1,13 @@
 #pragma once
 
-static char* cameraData;
+static uint8_t* cameraData;
 extern SharedVariables sharedVariables;
 extern MotorDriver * MotorController;
+extern SerialConnection * Camera;
 #define DYSON_PROXIMITY_TARGET 150
+
+uint64_t ObjectSearchLastTimeImage;
+
 
 void dysonMode()
 {   
@@ -31,14 +35,27 @@ void dysonMode()
     printf("%d,%d,1000\n",sharedVariables.proximityLeft, sharedVariables.proximityRight);
 
 }
+
+void AutomaticObjectSearch()
+{   
+    
+
+}
 void programLoop(){
+    if(Camera->dataAnvailable()){
+        cameraData = Camera->ReadData();
+        ObjectSearchLastTimeImage = esp_timer_get_time();
+    }
+
     if(sharedVariables.mode == controlModes::AUTOMATIC_DYSON_MODE)
     {
         dysonMode();
-    } 
+    } else if(sharedVariables.mode == controlModes::AUTOMATIC_OBJECT_SEARCH){
+        AutomaticObjectSearch();
+    }
 
     if(Camera->dataAnvailable()){
-          cameraData = Camera->ReadData(); // will also sand a confirmation
+         cameraData = Camera->ReadData(); // will also sand a confirmation
     }
 
 }

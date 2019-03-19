@@ -85,7 +85,7 @@ typedef struct{
     bool on = true;
 
     //modes
-    controlModes mode=controlModes::AUTOMATIC_DYSON_MODE;
+    controlModes mode=controlModes::AUTOMATIC_OBJECT_SEARCH;
 
 
 } SharedVariables;
