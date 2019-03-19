@@ -1,5 +1,25 @@
 #pragma once
 
+enum class controlModes{
+    MANUAL_WIFI = 0,
+    MANUAL_IR = 1,
+    OFF = 2,
+    AUTOMATIC_OBJECT_SEARCH = 3,
+    AUTOMATIC_DYSON_MODE = 4,
+    AUTOMATIC_BATTLE_MODE = 5,
+    AUTOMATIC_HEADLESS_MODE = 6,
+    AUTOMATIC_EPILEPTIC_MODE = 7,
+    AUTOMATIC_BALANCE_OBJECT_SEARCH = 8,
+    AUTOMAITC_BALANCE_DYSON_MODE = 9,
+    MANUAL_WIFI_BALANCE = 10
+
+};
+enum class objects
+{
+    OBJECT_YELLOW_BALL,
+    OBJECT_RED_BALL,
+    OBJECT_BLUE_BALL
+};
 typedef struct{  
 	//mpu9250
     float acceleration[3];//x,y,z
@@ -32,7 +52,7 @@ typedef struct{
     bool proximityWorking = true;
 
     //motorcontroller
-    bool enabled = true;
+    bool motorsEnabled = false;
     uint32_t steppers1Acceleration;
     uint32_t steppers2Acceleration;
     int16_t steppers1Speed;
@@ -65,9 +85,7 @@ typedef struct{
     bool on = true;
 
     //modes
-    int mode=0;//todo define modes
+    controlModes mode=controlModes::AUTOMATIC_DYSON_MODE;
 
 
 } SharedVariables;
-
-static SharedVariables sharedVariables; //instanciated_struct_of_very_important_variables   --> isoviv

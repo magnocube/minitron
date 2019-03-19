@@ -29,7 +29,8 @@
 #include "pins.h"
 #include "settings.h"
 #include "sharedVariables.h"
-static const char* TAG = "mpu9250";
+
+extern SharedVariables sharedVariables;
 
 static constexpr uint32_t CLOCK_SPEED = 400000;  // range from 100 KHz ~ 400Hz
 
@@ -52,7 +53,7 @@ void mpu9250Setup (){
     // Great! Let's verify the communication
     // (this also check if the connected MPU supports the implementation of chip selected in the component menu)
     int counter=0;
-    while (esp_err_t err = MPU.testConnection()) {
+    while (MPU.testConnection()) {
         printf( "Failed to connect to the MPU, error");
         vTaskDelay(100 / portTICK_PERIOD_MS);
         counter++;

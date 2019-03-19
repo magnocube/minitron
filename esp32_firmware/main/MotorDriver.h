@@ -10,6 +10,7 @@
 #include "pins.h"
 #include "driver/gpio.h"
 #include "driver/ledc.h"
+#include "sharedVariables.h"
 
 #define FORWARD_MOTOR_1 0
 #define BACKWARD_MOTOR_1 1
@@ -22,6 +23,11 @@
 class MotorDriver
 {	
 public:	
+    SharedVariables* sharedVariables;
+	MotorDriver(SharedVariables& _sharedVariables)
+	{
+		sharedVariables = &_sharedVariables;
+	}
 	void setup();	
 	void setAcceleration(int a, int a2);
 	void setTargetSpeed(int32_t motor1, int32_t motor2);
@@ -40,7 +46,6 @@ public:
 	//void moveBackToStart();
 
 private:
-	bool motorsEnabled;
 	ledc_timer_config_t ledc_timer_motor_1;
 	ledc_timer_config_t ledc_timer_motor_2;
 

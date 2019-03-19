@@ -7,4 +7,4 @@
 //#define PRINT_PROXIMITY_ALL
 //#define PRINT_TOF_SENSOR
 //#define PRINT_MOTION_VISUAL
-#define PRINT_VOLTAGE
+//#define PRINT_VOLTAGE

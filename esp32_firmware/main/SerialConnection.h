@@ -30,7 +30,7 @@ public:
 	int getCameraAngle();
 private:
     int serialIdex;
-	const uart_port_t uart_num = UART_NUM_2;
+	const uart_port_t uart_num = UART_NUM_0;
 	
 	int servoCameraPin = 5;
 	int pos = 0;    
