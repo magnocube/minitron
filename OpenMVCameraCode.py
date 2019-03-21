@@ -7,7 +7,7 @@ threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
 # The below thresholds track in general red/green/blue things. You may wish to tune them...
-thresholds = [(36, 88, 37, 127, -17, 27), # generic_red_thresholds
+thresholds = [(52, 80, 30, 127, 3, 62), # generic_red_thresholds
               (30, 100, -64, -8, -32, 32), # generic_green_thresholds
               (0, 30, 0, 64, -128, 0),      #generic_blue_thresholds
               (63, 100, -128, 127, 20, 127)] # generic_Yellow_thresholds
@@ -24,8 +24,8 @@ sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QVGA)
 #sensor.set_framesize(sensor.QVGA)
 sensor.skip_frames(time = 2000)
-sensor.set_auto_gain(False) # must be turned off for color tracking
-sensor.set_auto_whitebal(False) # must be turned off for color tracking
+sensor.set_auto_gain(True) # must be turned off for color tracking
+sensor.set_auto_whitebal(True) # must be turned off for color tracking
 clock = time.clock()
 
 
@@ -56,10 +56,10 @@ while(True):
                   img.draw_rectangle(blob.rect())
                   img.draw_cross(blob.cx(), blob.cy())
                   age = 10
-                  quote = "X:" + str(blob.cx()/resX*100) + "Y:" + str(blob.cy()/resY*100) + "\n"
+                  quote = "X:" + str(round(blob.cx()/resX*100)) + "Y:" + str(round(blob.cy()/resY*100)) + "\n"
                   print(quote)
                   uart.write(quote)
-                  pass
+                  break
 
 
 
