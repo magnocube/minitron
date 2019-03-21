@@ -40,7 +40,7 @@ void core1Task( void * pvParameters ){
         wifiLoop();
         programLoop();
         
-        vTaskDelay(10/portTICK_PERIOD_MS);
+        vTaskDelay(50/portTICK_PERIOD_MS);
         // Camera->setCameraAngle(170);
         // vTaskDelay(800/portTICK_PERIOD_MS);
     }
