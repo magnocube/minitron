@@ -35,7 +35,8 @@ HEADERS += \
     udp_connection.h \
     graphicspeedsensor.h \
     graphicstofsensor.h \
-    graphicproxysensor.h
+    graphicproxysensor.h \
+    sharedstructs.h
 
 FORMS += \
         mainwindow.ui

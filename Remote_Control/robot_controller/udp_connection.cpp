@@ -11,21 +11,14 @@ UDP_Connection::UDP_Connection(QString ip)
     // bool QAbstractSocket::bind(const QHostAddress & address,
     //     quint16 port = 0, BindMode mode = DefaultForPlatform)
     socket->bind(QHostAddress::Any, 4210);
-
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
-void UDP_Connection::send(QString data)
+void UDP_Connection::send()
 {
-    QByteArray Data;
-    Data.append(data);
-
-    // Sends the datagram datagram
-    // to the host address and at port.
-    // qint64 QUdpSocket::writeDatagram(const QByteArray & datagram,
-    //                      const QHostAddress & host, quint16 port)
-    socket->writeDatagram(Data, QHostAddress(ipAdress), 4210);
+    socket->writeDatagram(reinterpret_cast<char*>(&sharedVariables.inputs), sizeof(sharedVariables.inputs) ,QHostAddress(ipAdress), 4210);
 }
+
 void UDP_Connection::readyRead()
 {
     // when data comes in
@@ -45,5 +38,8 @@ void UDP_Connection::readyRead()
 
     qDebug() << "Message from: " << sender.toString();
     qDebug() << "Message port: " << senderPort;
-    //qDebug() << "Message: " << buffer;
+
+    memcpy((void*)&sharedVariables.outputs, buffer, sizeof(sharedVariables.outputs));
+    qDebug() << "battery: " << sharedVariables.outputs.voltage;
+
 }

@@ -1,22 +1,22 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QTimer>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    robotConnection = new UDP_Connection("192.168.137.101");
-    robotConnection->send("lol+lol=hihi");
+    robotConnection = new UDP_Connection("192.168.137.217");
 
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), robotConnection, SLOT(send()));
+    timer->start(100);
 
     scene = new QGraphicsScene(this);
-
     setupUI();
     ui->graphicsView->setScene(scene);
-
-
-
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -68,10 +68,6 @@ void MainWindow::setupUI()
     scene->addItem(TOFSensor);
     scene->addItem(proxySensorLeft);
     scene->addItem(proxySensorRight);
-
-
-
-
 }
 
 MainWindow::~MainWindow()

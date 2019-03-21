@@ -3,19 +3,22 @@
 
 #include <QObject>
 #include <QUdpSocket>
+#include "sharedstructs.h"
 
 class UDP_Connection : public QObject
 {
     Q_OBJECT
 public:
     explicit UDP_Connection(QString ip = "0.0.0.0");
-    void send(QString data);
+
+
+    SharedVariables sharedVariables;
 
 signals:
 
 public slots:
     void readyRead();
-
+    void send();
 private:
     QUdpSocket * socket;
     QString ipAdress;
