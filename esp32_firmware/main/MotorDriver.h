@@ -53,12 +53,9 @@ private:
 
     float motor1Speed;				//current motorspeed
     float motor2Speed;				//current motorspeed
+
 	float motor1OldSpeed;
 	float motor2OldSpeed;
-	int32_t motor1TargetSpeed = 0;			//target speed of motor 1
-    int32_t motor2TargetSpeed = 0;			//target speed of motor 2
-	uint32_t acceleration_motor1; 				//acceleration of current speed to target speed in steps/s^1
-	uint32_t acceleration_motor2; 				//acceleration of current speed to target speed in steps/s^2
 	uint64_t lastTimeSincePreviousLoop; //used for calculating the delta-T for the acceleration
 
 };

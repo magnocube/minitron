@@ -28,10 +28,10 @@ void checkBattery()
 #endif
     if(sharedVariables.outputs.voltage < 10.50)
     {   
-        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT");
-        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT");
-        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT");
-        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT");
+        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
+        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
+        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
+        printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
             esp_deep_sleep(1000000000000000000);
             esp_bt_controller_disable();
             esp_wifi_stop();

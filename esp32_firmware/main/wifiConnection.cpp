@@ -188,8 +188,6 @@ int readUDP()
      return 0;
     }
   memcpy((void*)&sharedVariables.inputs, rx_buffer, sizeof(sharedVariables.inputs));
-  printf(" %d\n",len);
-  printf("%d\n",sharedVariables.inputs.servoPosition);
   udpReceived = true;
   return 1;
 }
@@ -198,7 +196,6 @@ uint8_t tx_buffer[sizeof(sharedVariables.outputs)];
 
 int sendUDP()
 {
-    return 0;
     if(si_other.sin_addr.s_addr == 0)
     {
         printf("missing ip\n");

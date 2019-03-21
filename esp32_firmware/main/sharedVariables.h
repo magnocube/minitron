@@ -24,11 +24,10 @@ struct Steppers
 {
     //motorcontroller
     bool motorsEnabled = false;
-    uint32_t steppers1Acceleration;
-    uint32_t steppers2Acceleration;
-    int16_t steppers1Speed;
-    int16_t steppers2Speed;
-    uint16_t stepperMaxSpeed;
+    int32_t motor1TargetSpeed = 0;			//target speed of motor 1
+    int32_t motor2TargetSpeed = 0;			//target speed of motor 2
+	uint32_t acceleration_motor1 = 1000; 				//acceleration of current speed to target speed in steps/s^1
+	uint32_t acceleration_motor2 = 1000; 				//acceleration of current speed to target speed in steps/s^2
 };
 typedef struct{  
     
