@@ -38,11 +38,26 @@ void core1Task( void * pvParameters ){
     while(true)
     {
         wifiLoop();
-        programLoop();
-        
+        if(udpReceived ==  true)
+        {
+            udpReceived = false;
+            printf("received\n");
+            if(sharedVariables->inputs->mode = controlModes::MANUAL_WIFI)
+            {
+                printf("manual wifi\n");
+                motorController->steppers = &sharedVariables->inputs.steppers;
+            }
+            else
+            {
+                motorController->steppers = &sharedVariables->outputs.steppers;
+            }
+            
+        }
         vTaskDelay(50/portTICK_PERIOD_MS);
         // Camera->setCameraAngle(170);
         // vTaskDelay(800/portTICK_PERIOD_MS);
+        programLoop();
+
     }
 
 }

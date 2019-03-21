@@ -24,9 +24,11 @@ class MotorDriver
 {	
 public:	
     SharedVariables* sharedVariables;
+	Steppers* steppers;
 	MotorDriver(SharedVariables& _sharedVariables)
 	{
 		sharedVariables = &_sharedVariables;
+		steppers = &sharedVariables->outputs.steppers;
 	}
 	void setup();	
 	void setAcceleration(int a, int a2);

@@ -20,16 +20,21 @@ enum class objects
     OBJECT_RED_BALL,
     OBJECT_BLUE_BALL
 };
+struct Steppers
+{
+    //motorcontroller
+    bool motorsEnabled = false;
+    uint32_t steppers1Acceleration;
+    uint32_t steppers2Acceleration;
+    int16_t steppers1Speed;
+    int16_t steppers2Speed;
+    uint16_t stepperMaxSpeed;
+};
 typedef struct{  
+    
     struct Inputs
     {
-        //motorcontroller
-        bool motorsEnabled = false;
-        uint32_t steppers1Acceleration = 0;
-        uint32_t steppers2Acceleration = 0;
-        int16_t steppers1Speed = 0;
-        int16_t steppers2Speed = 0;
-        uint16_t stepperMaxSpeed = 0;
+        Steppers steppers;
         //todo add manual control and location
 
         //balancing
@@ -74,13 +79,7 @@ typedef struct{
         bool proximityErrorOccured = false;
         bool proximityWorking = true;
 
-        //motorcontroller
-        bool motorsEnabled = false;
-        uint32_t steppers1Acceleration;
-        uint32_t steppers2Acceleration;
-        int16_t steppers1Speed;
-        int16_t steppers2Speed;
-        uint16_t stepperMaxSpeed;
+        Steppers steppers;
 
         //camera
         uint8_t cameraFrameRate;
@@ -101,5 +100,6 @@ typedef struct{
         bool on = true;
 
     }outputs;
+   
 
 } SharedVariables;

@@ -176,7 +176,7 @@ static uint8_t setupUDP()
 
 #define rx_buffer_len 512
 uint8_t rx_buffer[512];
-
+bool udpReceived = false;
 int readUDP()
 {
 
@@ -190,7 +190,7 @@ int readUDP()
   memcpy((void*)&sharedVariables.inputs, rx_buffer, sizeof(sharedVariables.inputs));
   printf(" %d\n",len);
   printf("%d\n",sharedVariables.inputs.servoPosition);
-
+  udpReceived = true;
   return 1;
 }
 int tx_buffer_len = sizeof(sharedVariables.outputs);
