@@ -12,7 +12,6 @@
 #include "SerialConnection.h"
 #include "MotorDriver.h"
 #include "esp_log.h"
-#include "wifiConnection.c"
 #include "powerManagement.h"
 
 SerialConnection * Camera;
@@ -21,6 +20,8 @@ MotorDriver * MotorController;
 SharedVariables sharedVariables;
 
 #include "TOFSensor.h"
+
 TOFSensor * tofSensor;
 #include "mpu9250.cpp"
+#include "wifiConnection.cpp"
 #include "program.h"

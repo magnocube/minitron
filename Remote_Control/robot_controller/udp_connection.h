@@ -8,7 +8,7 @@ class UDP_Connection : public QObject
 {
     Q_OBJECT
 public:
-    explicit UDP_Connection(QObject *parent = nullptr);
+    explicit UDP_Connection(QString ip = "0.0.0.0");
     void send(QString data);
 
 signals:
@@ -18,6 +18,8 @@ public slots:
 
 private:
     QUdpSocket * socket;
+    QString ipAdress;
+
 };
 
 #endif // UDP_CONNECTION_H
