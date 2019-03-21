@@ -26,7 +26,7 @@ void checkBattery()
 #ifdef PRINT_VOLTAGE
     printf("%f, %d\n",sharedVariables.outputs.voltage, batteryValue);
 #endif
-    if(sharedVariables.voltage < 10.50)
+    if(sharedVariables.outputs.voltage < 10.50)
     {   
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT");
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT");

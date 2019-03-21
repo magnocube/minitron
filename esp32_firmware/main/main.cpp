@@ -28,21 +28,21 @@ void core0Task( void * pvParameters ){
         }
         irDecoder->runProximity();//takes 0.90ms
 
-        //checkBattery();
+        checkBattery();
         loopCounter++;
         while(esp_timer_get_time() - lastTime < 5000);
-        lastTime = esp_timer_get_time();    }
+        lastTime = esp_timer_get_time();    
+    }
 }
 void core1Task( void * pvParameters ){
-    wifiSetup();
+    //wifiSetup();
     while(true)
     {
         wifiLoop();
         programLoop();
         
-        vTaskDelay(50/portTICK_PERIOD_MS);
-        // Camera->setCameraAngle(170);
-        // vTaskDelay(800/portTICK_PERIOD_MS);
+        vTaskDelay(10/portTICK_PERIOD_MS);
+       
     }
 
 }

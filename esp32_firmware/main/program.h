@@ -6,19 +6,16 @@ extern MotorDriver * MotorController;
 extern SerialConnection * Camera;
 #define DYSON_PROXIMITY_TARGET 150
 
-uint64_t ObjectSearchLastTimeImage = 0;
+
+uint64_t lastUpdateXAndYCoordinates = 0;
+int x = 50; //default x value of target... update with method calculateXandY()
+int y = 50; //default y value of target... update with method calculateXandY()
 
 //will attempt to aim the servo with the camera to the target  (basics will work... but a lot of work has to be done)
-void automaticServoAim(){
-    if((esp_timer_get_time() - ObjectSearchLastTimeImage < 100000) && (ObjectSearchLastTimeImage > 0)){ // max 100 ms since last time target seen    // just for the servo
+void calculateXandY(){
+    //uint32_t deltaT = esp_timer_get_time() - ObjectSearchLastTimeImage;  //in microseconds
 
-        //uint32_t deltaT = esp_timer_get_time() - ObjectSearchLastTimeImage;  //in microseconds
-
-        #ifdef DEBUG_SERVO_AUTO_ADJUST
-            printf("cameraData (X and Y):   ");
-            printf((char*)cameraData);
-            printf("\n");
-        #endif
+   
         char * X_Index;
         X_Index = strstr ((char*)cameraData,"X:");
         char * Y_Index;
@@ -40,20 +37,15 @@ void automaticServoAim(){
         strncpy(XValueString, X_Index+2, Y_Index-X_Index-2);
         strncpy(YValueString, Y_Index+2, End_Index-Y_Index-2);
 
-        int x,y;
+        //x and y are global variables declared at the top of this file
         x = atoi(XValueString);
         y = atoi(YValueString);
+        lastUpdateXAndYCoordinates = esp_timer_get_time();
       
-        #ifdef DEBUG_SERVO_AUTO_ADJUST  
-        printf("-----------------\n");
-        printf(XValueString);
-        printf("\n");
-        printf(YValueString);
-        printf("\n");
-        printf("in integers: %d   %d \n ",x,y);
-        printf("-----------------\n");
-        #endif
 
+}
+void automaticServoAim(){
+    if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 100000) && (lastUpdateXAndYCoordinates > 0)){ // max 500 ms since last time target seen    // just for the servo
 
         //adjusting the servo camera
         //camera servo is at zero (normal position) at 170 degrees. target position of X variable is 50
@@ -64,20 +56,16 @@ void automaticServoAim(){
             Camera->setCameraAngle(ca-1);
         }
 
-
-
-
-
     }
 }
 void dysonMode()
 {   
     int speed = 6000;
-    int steering = (DYSON_PROXIMITY_TARGET - sharedVariables.proximityLeft);
+    int steering = (DYSON_PROXIMITY_TARGET - sharedVariables.outputs.proximityLeft);
     if(steering>0)
     {
         steering *=2;
-        if(sharedVariables.proximityLeft<80)
+        if(sharedVariables.outputs.proximityLeft<80)
         {
             MotorController->setAcceleration(30000,30000);
             speed = 4000;
@@ -87,35 +75,55 @@ void dysonMode()
     }else
     {
         MotorController->setAcceleration(10000,10000);
-        steering *= 3 + sharedVariables.proximityLeft/100;
+        steering *= 3 + sharedVariables.outputs.proximityLeft/100;
     }
     
     int leftSpeed = speed + steering;
     int rightSpeed = speed - steering;
     MotorController->setTargetSpeed(leftSpeed, rightSpeed);
-    printf("%d,%d,1000\n",sharedVariables.proximityLeft, sharedVariables.proximityRight);
+    printf("%d,%d,1000\n",sharedVariables.outputs.proximityLeft, sharedVariables.outputs.proximityRight);
 
 }
 
 void AutomaticObjectSearch()
 {   
-    MotorController->setAcceleration(15000,15000);
-    MotorController->setTargetSpeed(40000, 40000);
+    MotorController->setAcceleration(10000,10000);
+    
     
     //read camera data and estract the coordinates (x and y go form 0 to 100)
-    //automaticServoAim();
+    automaticServoAim();
+    int speed = 7000;
+    int m1Speed = speed;
+    int m2Speed = speed;
+    if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 200000) && (lastUpdateXAndYCoordinates > 0)){
+        m1Speed += (50-y) * 100;
+        m2Speed -= (50-y)  * 100;
+
+    } else{
+        if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 2000000) && (lastUpdateXAndYCoordinates > 0)){
+            m1Speed = 0;
+            m2Speed = 0;
+        }
+        else
+        {
+           m1Speed = 2000;
+           m2Speed = -2000;
+        }
+        
+    }
+    MotorController->setTargetSpeed(m1Speed, m2Speed);
 
 }
 void programLoop(){
     if(Camera->dataAnvailable()){
         cameraData = Camera->ReadData(); //also sends a confirmation which toggles the red led
-        ObjectSearchLastTimeImage = esp_timer_get_time();
+        calculateXandY();
     }
 
-    if(sharedVariables.mode == controlModes::AUTOMATIC_DYSON_MODE)
+    if(sharedVariables.inputs.mode == controlModes::AUTOMATIC_DYSON_MODE)
     {
         dysonMode();
-    } else if(sharedVariables.mode == controlModes::AUTOMATIC_OBJECT_SEARCH){
+    } else if(sharedVariables.inputs.mode == controlModes::AUTOMATIC_OBJECT_SEARCH){
         AutomaticObjectSearch();
     }
 

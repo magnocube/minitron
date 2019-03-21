@@ -19,7 +19,7 @@
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
-#include "FastWiFiUdp.h"
+
 
 #include "sharedVariables.h"
 /* The examples use simple WiFi configuration that you can set via
@@ -217,7 +217,7 @@ int sendUDP()
     return 1;
 }
 */
-FastWiFiUDP Udp;
+//FastWiFiUDP Udp;
 uint8_t incomingPacket[1460];
 void wifiLoop()
 {
@@ -230,10 +230,10 @@ void wifiLoop()
         {
             printf("-\n");
         }*/
-        int packetSize = Udp.myRead(incomingPacket);
-          if (packetSize>0){
-              printf("received udp\n");
-          }
+        // int packetSize = Udp.myRead(incomingPacket);
+        //   if (packetSize>0){
+        //       printf("received udp\n");
+        //   }
 }
 
 void wifiSetup()
@@ -242,10 +242,10 @@ void wifiSetup()
     initialise_wifi();
     wait_for_ip();
     //setupUDP();
-    if(!Udp.begin(4210))
-    {
-      printf("error starting udp\n");
-    }
+    //if(!Udp.begin(4210))
+   // {
+    //  printf("error starting udp\n");
+    //}
 
 }
 
