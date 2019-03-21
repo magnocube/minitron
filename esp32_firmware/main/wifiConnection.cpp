@@ -19,7 +19,6 @@
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
-#include "FastWiFiUdp.h"
 
 #include "sharedVariables.h"
 /* The examples use simple WiFi configuration that you can set via
@@ -134,7 +133,7 @@ static void wait_for_ip()
     ESP_LOGI(WIFI_TAG, "Connected to AP");
     printf("got ip\n");
 }
-/*int udp_server;
+int udp_server;
 static uint8_t setupUDP()
 {
         printf("setup udp \n");
@@ -151,7 +150,7 @@ static uint8_t setupUDP()
             return 0;
         }
 
-        int yes = 1;
+       int yes = 1;
         if (setsockopt(udp_server,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(yes)) < 0) {
             printf("could not set socket option\n");
             //stop();
@@ -168,27 +167,27 @@ static uint8_t setupUDP()
             //stop();
             return 0;
         }
-        //fcntl(udp_server, F_SETFL, O_NONBLOCK);
+        fcntl(udp_server, F_SETFL, O_NONBLOCK);
         return 1;
 }
 
+    struct sockaddr_in si_other;
+    int slen = sizeof(si_other);
 
 #define rx_buffer_len 512
 uint8_t rx_buffer[512];
 
 int readUDP()
 {
-    struct sockaddr_in si_other;
-    int slen = sizeof(si_other);
-    int len=-1;
-  if ((len = recvfrom(udp_server, rx_buffer, rx_buffer_len, 0, (struct sockaddr *) &si_other, (socklen_t *)&slen)) == -1){
+
+    int len=0;
+  if ((len = recvfrom(udp_server, rx_buffer, rx_buffer_len, MSG_DONTWAIT, (struct sockaddr *) &si_other, (socklen_t *)&slen)) == -1){
      if(errno == EWOULDBLOCK){
        return -1;
      }   
      return 0;
-   }
+    }
   memcpy((void*)&sharedVariables.inputs, rx_buffer, sizeof(sharedVariables.inputs));
-  printf("   errno:%d,\n", errno);
   printf(" %d\n",len);
   printf("%d\n",sharedVariables.inputs.servoPosition);
 
@@ -216,12 +215,9 @@ int sendUDP()
     }
     return 1;
 }
-*/
-FastWiFiUDP Udp;
-uint8_t incomingPacket[1460];
 void wifiLoop()
 {
-        /*int len  = readUDP();
+        int len  = readUDP();
         if(len > 0)
         {
             printf("+\n");
@@ -229,11 +225,7 @@ void wifiLoop()
         if(sendUDP())
         {
             printf("-\n");
-        }*/
-        int packetSize = Udp.myRead(incomingPacket);
-          if (packetSize>0){
-              printf("received udp\n");
-          }
+        }
 }
 
 void wifiSetup()
@@ -241,12 +233,7 @@ void wifiSetup()
     ESP_ERROR_CHECK( nvs_flash_init() );
     initialise_wifi();
     wait_for_ip();
-    //setupUDP();
-    if(!Udp.begin(4210))
-    {
-      printf("error starting udp\n");
-    }
-
+    setupUDP();
 }
 
 

@@ -1,0 +1,4 @@
+#ifndef SHAREDSTRUCTS_H
+#define SHAREDSTRUCTS_H
+
+#endif // SHAREDSTRUCTS_H
