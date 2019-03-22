@@ -19,8 +19,8 @@ public:
 
 private:
     double voltage;
-
-
+    qint64 lastUpdate=0;
+    double oldVoltage;
 };
 
 #endif // GRAPHICBATTERY_H

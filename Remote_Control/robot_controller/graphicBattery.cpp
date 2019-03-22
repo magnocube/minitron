@@ -1,5 +1,7 @@
 #include "GraphicBattery.h"
 
+#include <QDateTime>
+
 GraphicBattery::GraphicBattery()
 {
 
@@ -24,7 +26,19 @@ void GraphicBattery::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     f.setPointSize(50);
     painter->setFont(f);
-    painter->drawText(0,80,QString::number(round(voltage*10)/10));
+
+    QString voltageText;
+    if(QDateTime::currentMSecsSinceEpoch() - lastUpdate > 500)
+    {
+        lastUpdate = QDateTime::currentMSecsSinceEpoch();
+        voltageText = QString().sprintf("%3.1f",voltage);
+        oldVoltage = voltage;
+    }
+    else {
+        voltageText = QString().sprintf("%3.1f",oldVoltage);
+    }
+
+    painter->drawText(0,80, voltageText);
 
 
 

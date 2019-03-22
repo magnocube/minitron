@@ -34,7 +34,6 @@ void core0Task( void * pvParameters ){
         lastTime = esp_timer_get_time();    }
 }
 
-
 void core1Task( void * pvParameters ){
     wifiSetup();
     while(true)
@@ -43,10 +42,9 @@ void core1Task( void * pvParameters ){
         if(udpReceived ==  true)
         {
             udpReceived = false;
-            printf("received\n");
             if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
             {
-                printf("manual wifi\n");
+                printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
                 MotorController->steppers = &sharedVariables.inputs.steppers;
             }
             else
@@ -54,7 +52,14 @@ void core1Task( void * pvParameters ){
                 MotorController->steppers = &sharedVariables.outputs.steppers;
             }
         }
-        vTaskDelay(50/portTICK_PERIOD_MS);
+        if(disconnected)
+        {
+            printf("disconnected\n");
+            MotorController->steppers = &sharedVariables.outputs.steppers;
+            sharedVariables.inputs.mode = controlModes::OFF;
+        }
+        
+        vTaskDelay(10/portTICK_PERIOD_MS);
         programLoop();
 
     }

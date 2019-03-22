@@ -45,7 +45,8 @@ const int IPV6_GOTIP_BIT = BIT1;
 char addr_str[128];
 int addr_family;
 int ip_protocol;
-
+bool connected = false;
+bool disconnected = false;
 extern SharedVariables sharedVariables;
 
 static esp_err_t event_handler(void *ctx, system_event_t *event)
@@ -60,8 +61,8 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         tcpip_adapter_create_ip6_linklocal(TCPIP_ADAPTER_IF_STA);
         break;
     case SYSTEM_EVENT_STA_GOT_IP:
-        xEventGroupSetBits(wifi_event_group, IPV4_GOTIP_BIT);
         printf("SYSTEM_EVENT_STA_GOT_IP\n");
+        connected = true;
         break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
         /* This is a workaround as ESP32 WiFi libs don't currently auto-reassociate. */
@@ -71,7 +72,6 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         break;
     case SYSTEM_EVENT_AP_STA_GOT_IP6:
     {
-        xEventGroupSetBits(wifi_event_group, IPV6_GOTIP_BIT);
         printf("SYSTEM_EVENT_STA_GOT_IP6\n");
 
         char *ip6 = ip6addr_ntoa(&event->event_info.got_ip6.ip6_info.ip);
@@ -125,16 +125,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         ESP_ERROR_CHECK( esp_wifi_start() );
     }
 
-static void wait_for_ip()
-{
-    printf("wait for ip\n");
-    uint32_t bits = IPV4_GOTIP_BIT | IPV6_GOTIP_BIT ;
 
-    ESP_LOGI(WIFI_TAG, "Waiting for AP connection...");
-    xEventGroupWaitBits(wifi_event_group, bits, false, true, portMAX_DELAY);
-    ESP_LOGI(WIFI_TAG, "Connected to AP");
-    printf("got ip\n");
-}
 int udp_server;
 static uint8_t setupUDP()
 {
@@ -174,8 +165,8 @@ static uint8_t setupUDP()
     struct sockaddr_in si_other;
     int slen = sizeof(si_other);
 
-#define rx_buffer_len 512
-uint8_t rx_buffer[512];
+#define rx_buffer_len sizeof(sharedVariables.inputs)
+uint8_t rx_buffer[sizeof(sharedVariables.inputs)];
 bool udpReceived = false;
 int readUDP()
 {
@@ -214,27 +205,40 @@ int sendUDP()
     }
     return 1;
 }
+
+uint32_t lastTimeSended = 0;
+uint32_t lastTimeReceived = 0;
 void wifiLoop()
 {
-        int len  = readUDP();
-        if(len > 0)
-        {
-            #ifdef PRINT_WIFI
-                printf("udp message received succesfully\n");
-            #endif
-        }
+    if(!connected) return;
+    if(esp_timer_get_time() - lastTimeSended > 100000)
+    {
+        lastTimeSended = esp_timer_get_time();
         if(sendUDP())
         {
             #ifdef PRINT_WIFI
                 printf("udp message sended succesfully\n");
             #endif
         }
+    }
+    int len  = readUDP();
+    if(len > 0)
+    {
+        lastTimeReceived  = esp_timer_get_time();
+        disconnected = false;
+        #ifdef PRINT_WIFI
+            printf("udp message received succesfully\n");
+        #endif
+    }
+    if(esp_timer_get_time() - lastTimeReceived > 300000)
+    {
+        disconnected = true;
+    }
 }
 
 void wifiSetup()
 {
     ESP_ERROR_CHECK( nvs_flash_init() );
     initialise_wifi();
-    wait_for_ip();
     setupUDP();
 }
