@@ -53,7 +53,6 @@ void core1Task( void * pvParameters ){
             {
                 MotorController->steppers = &sharedVariables.outputs.steppers;
             }
-            
         }
         vTaskDelay(50/portTICK_PERIOD_MS);
         programLoop();
