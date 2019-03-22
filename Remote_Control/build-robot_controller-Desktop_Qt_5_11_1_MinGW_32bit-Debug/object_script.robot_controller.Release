@@ -1,0 +1,12 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\udp_connection.o
+./release\graphicspeedsensor.o
+./release\graphicstofsensor.o
+./release\graphicproxysensor.o
+./release\graphicBattery.o
+./release\qrc_recources.o
+./release\moc_mainwindow.o
+./release\moc_udp_connection.o
+);

@@ -1,0 +1,12 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\udp_connection.o
+./debug\graphicspeedsensor.o
+./debug\graphicstofsensor.o
+./debug\graphicproxysensor.o
+./debug\graphicBattery.o
+./debug\qrc_recources.o
+./debug\moc_mainwindow.o
+./debug\moc_udp_connection.o
+);
