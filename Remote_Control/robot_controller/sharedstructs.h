@@ -24,11 +24,12 @@ enum class objects
 struct Steppers
 {
     //motorcontroller
+    bool instantreaction = false; //if true,, motor will ignore acceleration and set speed instantly to targetSpeed
     bool motorsEnabled = false;
     int32_t motor1TargetSpeed = 0;			//target speed of motor 1
     int32_t motor2TargetSpeed = 0;			//target speed of motor 2
-    uint32_t acceleration_motor1 = 1000; 				//acceleration of current speed to target speed in steps/s^1
-    uint32_t acceleration_motor2 = 1000; 				//acceleration of current speed to target speed in steps/s^2
+    uint32_t acceleration_motor1 = 10000; 				//acceleration of current speed to target speed in steps/s^1
+    uint32_t acceleration_motor2 = 10000; 				//acceleration of current speed to target speed in steps/s^2
 };
 typedef struct{
 

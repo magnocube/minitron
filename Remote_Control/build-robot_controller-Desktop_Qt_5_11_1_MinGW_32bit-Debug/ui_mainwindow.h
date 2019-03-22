@@ -17,6 +17,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -34,11 +35,14 @@ public:
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout_2;
     QComboBox *comboBox;
+    QPushButton *buttonBrakeMode;
     QGridLayout *gridLayout;
-    QSlider *verticalSlider_2;
-    QSlider *verticalSlider;
+    QSlider *CornerSlider;
     QLabel *label;
     QLabel *label_3;
+    QSlider *topSpeedSlider;
+    QLabel *TopSpeedSlider;
+    QSlider *accelerationSlider;
     QLabel *cameraLabel;
     QLabel *label_status_bar;
 
@@ -86,23 +90,25 @@ public:
 
         verticalLayout_2->addWidget(comboBox);
 
+        buttonBrakeMode = new QPushButton(centralWidget);
+        buttonBrakeMode->setObjectName(QStringLiteral("buttonBrakeMode"));
+
+        verticalLayout_2->addWidget(buttonBrakeMode);
+
 
         horizontalLayout->addLayout(verticalLayout_2);
 
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        verticalSlider_2 = new QSlider(centralWidget);
-        verticalSlider_2->setObjectName(QStringLiteral("verticalSlider_2"));
-        verticalSlider_2->setOrientation(Qt::Vertical);
+        CornerSlider = new QSlider(centralWidget);
+        CornerSlider->setObjectName(QStringLiteral("CornerSlider"));
+        CornerSlider->setMinimum(10);
+        CornerSlider->setMaximum(10000);
+        CornerSlider->setValue(2000);
+        CornerSlider->setOrientation(Qt::Vertical);
 
-        gridLayout->addWidget(verticalSlider_2, 0, 0, 1, 1);
-
-        verticalSlider = new QSlider(centralWidget);
-        verticalSlider->setObjectName(QStringLiteral("verticalSlider"));
-        verticalSlider->setOrientation(Qt::Vertical);
-
-        gridLayout->addWidget(verticalSlider, 0, 1, 1, 1);
+        gridLayout->addWidget(CornerSlider, 0, 2, 1, 1);
 
         label = new QLabel(centralWidget);
         label->setObjectName(QStringLiteral("label"));
@@ -112,7 +118,30 @@ public:
         label_3 = new QLabel(centralWidget);
         label_3->setObjectName(QStringLiteral("label_3"));
 
-        gridLayout->addWidget(label_3, 1, 1, 1, 1);
+        gridLayout->addWidget(label_3, 1, 2, 1, 1);
+
+        topSpeedSlider = new QSlider(centralWidget);
+        topSpeedSlider->setObjectName(QStringLiteral("topSpeedSlider"));
+        topSpeedSlider->setMinimum(100);
+        topSpeedSlider->setMaximum(60000);
+        topSpeedSlider->setValue(3000);
+        topSpeedSlider->setOrientation(Qt::Vertical);
+
+        gridLayout->addWidget(topSpeedSlider, 0, 1, 1, 1);
+
+        TopSpeedSlider = new QLabel(centralWidget);
+        TopSpeedSlider->setObjectName(QStringLiteral("TopSpeedSlider"));
+
+        gridLayout->addWidget(TopSpeedSlider, 1, 1, 1, 1);
+
+        accelerationSlider = new QSlider(centralWidget);
+        accelerationSlider->setObjectName(QStringLiteral("accelerationSlider"));
+        accelerationSlider->setMinimum(1000);
+        accelerationSlider->setMaximum(60000);
+        accelerationSlider->setValue(10000);
+        accelerationSlider->setOrientation(Qt::Vertical);
+
+        gridLayout->addWidget(accelerationSlider, 0, 0, 1, 1);
 
 
         horizontalLayout->addLayout(gridLayout);
@@ -163,8 +192,10 @@ public:
         comboBox->setItemText(9, QApplication::translate("MainWindow", "Automatic Balance Object Search", nullptr));
         comboBox->setItemText(10, QApplication::translate("MainWindow", "Automatic Balance Dyson Mode", nullptr));
 
+        buttonBrakeMode->setText(QApplication::translate("MainWindow", "BrakeMode: Normal", nullptr));
         label->setText(QApplication::translate("MainWindow", "acceleration", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "corner sensitivity", nullptr));
+        TopSpeedSlider->setText(QApplication::translate("MainWindow", "topSpeed", nullptr));
         cameraLabel->setText(QApplication::translate("MainWindow", "imageLabel", nullptr));
         label_status_bar->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
     } // retranslateUi

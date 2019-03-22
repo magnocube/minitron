@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QKeyEvent>
 
 
 #include <graphicspeedsensor.h>
@@ -28,10 +29,15 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *e) override;
+    void keyPressEvent(QKeyEvent *ev) override;
+    void keyReleaseEvent(QKeyEvent *ev) override;
 
 private slots:
     void on_comboBox_currentIndexChanged(const QString &arg1);
     void udpHasAUpdate();
+    void SendUdpToRobot();
+    void on_buttonBrakeMode_clicked();
+
 private:
     Ui::MainWindow *ui;
     UDP_Connection *robotConnection;
@@ -44,6 +50,16 @@ private:
     graphicProxySensor * proxySensorLeft;
     graphicProxySensor * proxySensorRight;
     GraphicBattery * battery;
+
+    struct ConntrolData{
+        int Motor1OldSpeed = 0;
+        int Motor2OldSpeed = 0;
+        bool WPressed = false;
+        bool SPressed = false;
+        bool APressed = false;
+        bool DPressed = false;
+        int timeSinceLastUpdate; //probably not needed
+    } controlData;
 
 
 

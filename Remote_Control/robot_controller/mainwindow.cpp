@@ -8,11 +8,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    robotConnection = new UDP_Connection("192.168.137.148");
+    robotConnection = new UDP_Connection("192.168.137.104");
 
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), robotConnection, SLOT(send()));
-    timer->start(100);
+    connect(timer, SIGNAL(timeout()), this, SLOT(SendUdpToRobot()));
+    timer->start(25);
 
     connect(robotConnection,SIGNAL(udpUpdate()),this,SLOT(udpHasAUpdate()));
 
@@ -88,6 +88,27 @@ MainWindow::~MainWindow()
 void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
 {
     qDebug() << "mode changed " << arg1;
+    if(arg1 == "Manual IR"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::MANUAL_IR;
+    } else if(arg1 == "Manual Wifi"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::MANUAL_WIFI;
+    } else if(arg1 == "Manual Balance Mode"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::MANUAL_WIFI_BALANCE;
+    } else if(arg1 == "Off"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::OFF;
+    } else if(arg1 == "Automatic Object Search"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
+    } else if(arg1 == "Automatic Dyson Mode"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_DYSON_MODE;
+    } else if(arg1 == "Automatic Battle Mode"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_BATTLE_MODE;
+    } else if(arg1 == "Automatic Headless Mode"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_HEADLESS_MODE;
+    } else if(arg1 == "Automatic Epileptic Mode"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_EPILEPTIC_MODE;
+    } else if(arg1 == "Automatic Balance Object Search"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_BALANCE_OBJECT_SEARCH;
+    }
 }
 
 
@@ -95,10 +116,19 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
 void MainWindow::udpHasAUpdate()
 {
     qDebug()<< "updating main" << endl;
-    speedMotor1->setSpeed(robotConnection->sharedVariables.outputs.steppers.motor1TargetSpeed/100);
-    speedMotor2->setSpeed(robotConnection->sharedVariables.outputs.steppers.motor2TargetSpeed/100);
-    speedMotor1->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration_motor1);
-    speedMotor2->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration_motor2);
+
+    if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI){
+        speedMotor1->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed/100);
+        speedMotor2->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed/100);
+        speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor1);
+        speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor2);
+    }else{
+        speedMotor1->setSpeed(robotConnection->sharedVariables.outputs.steppers.motor1TargetSpeed/100);
+        speedMotor2->setSpeed(robotConnection->sharedVariables.outputs.steppers.motor2TargetSpeed/100);
+        speedMotor1->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration_motor1);
+        speedMotor2->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration_motor2);
+    }
+
     TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
     battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
     proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft/100);
@@ -106,4 +136,98 @@ void MainWindow::udpHasAUpdate()
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
     update();
+}
+
+void MainWindow::SendUdpToRobot()
+{
+
+    int maxSpeed = ui->topSpeedSlider->value();
+    int steeringSensitivity = ui->CornerSlider->value();
+    int deltaWheels = 2 * steeringSensitivity;
+    int motor1Speed = 0;
+    int motor2Speed = 0;
+
+
+    if(controlData.WPressed){
+        motor1Speed += maxSpeed;
+        motor2Speed += maxSpeed;
+    }
+    if(controlData.APressed){
+       motor1Speed -= steeringSensitivity;
+       motor2Speed += steeringSensitivity;
+    }
+    if(controlData.DPressed){
+        motor1Speed += steeringSensitivity;
+        motor2Speed -= steeringSensitivity;
+    }
+    if(controlData.SPressed){
+        motor1Speed -= maxSpeed;
+        motor2Speed -= maxSpeed;
+    }
+//    qDebug() << "motor" <<robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed<< " "<<robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed;
+
+    if(ui->buttonBrakeMode->text() == "BrakeMode: Fast"){
+        if(qFabs(motor1Speed) < qFabs(controlData.Motor1OldSpeed)){
+            robotConnection->sharedVariables.inputs.steppers.acceleration_motor1 = 600000;
+        } else{
+            robotConnection->sharedVariables.inputs.steppers.acceleration_motor1 = ui->accelerationSlider->value();
+        }
+        if(qFabs(motor2Speed) < qFabs(controlData.Motor2OldSpeed)){
+            robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = 600000;
+        } else{
+            robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
+        }
+        //robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
+    }else{
+        robotConnection->sharedVariables.inputs.steppers.acceleration_motor1 = ui->accelerationSlider->value();
+        robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
+    }
+    robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed = motor1Speed;
+    robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed = motor2Speed;
+
+
+
+
+    qDebug() << "sending" << endl;
+    robotConnection->send();
+    controlData.Motor1OldSpeed = motor1Speed;
+    controlData.Motor2OldSpeed = motor2Speed;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *ev)
+{
+    qDebug()  << "key pressed:   " << ev->text() << endl;
+    if(ev->key() == Qt::Key_W){
+        controlData.WPressed = true;
+    } else if(ev->key() == Qt::Key_S){
+        controlData.SPressed = true;
+    } else if(ev->key() == Qt::Key_A){
+        controlData.APressed = true;
+    } else if(ev->key() == Qt::Key_D){
+        controlData.DPressed = true;
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *ev)
+{
+    qDebug()  << "key releassed: " << ev->text() << endl;
+    if(ev->key() == Qt::Key_W){
+        controlData.WPressed = false;
+
+    } else if(ev->key() == Qt::Key_S){
+        controlData.SPressed = false;
+    } else if(ev->key() == Qt::Key_A){
+        controlData.APressed = false;
+    } else if(ev->key() == Qt::Key_D){
+        controlData.DPressed = false;
+    }
+}
+
+void MainWindow::on_buttonBrakeMode_clicked()
+{
+    if(ui->buttonBrakeMode->text() == "BrakeMode: Normal"){
+        ui->buttonBrakeMode->setText("BrakeMode: Fast");
+    } else {
+        ui->buttonBrakeMode->setText("BrakeMode: Normal");
+    }
 }
