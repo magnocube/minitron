@@ -23,6 +23,7 @@ enum class objects
 struct Steppers
 {
     //motorcontroller
+    bool instantreaction = false; //if true,, motor will ignore acceleration and set speed instantly to targetSpeed
     bool motorsEnabled = false;
     int32_t motor1TargetSpeed = 0;			//target speed of motor 1
     int32_t motor2TargetSpeed = 0;			//target speed of motor 2

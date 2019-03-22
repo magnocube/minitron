@@ -44,19 +44,46 @@ void calculateXandY(){
       
 
 }
+float cameraAngle = 170;
+float desiredCameraAngle = 170;
 void automaticServoAim(){
-    if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 100000) && (lastUpdateXAndYCoordinates > 0)){ // max 500 ms since last time target seen    // just for the servo
+    if(esp_timer_get_time() - lastUpdateXAndYCoordinates < 300000){ // max 500 ms since last time target seen    // just for the servo
 
         //adjusting the servo camera
         //camera servo is at zero (normal position) at 170 degrees. target position of X variable is 50
-        int ca = Camera->getCameraAngle();
-        if(x < 50 && ca <170){
-            Camera->setCameraAngle(ca+1);
-        } else if(x>50 && ca > 50){
-            Camera->setCameraAngle(ca-1);
+        if(x < 50){
+            desiredCameraAngle += 1+(50-x)/50;
         }
-
+        else if(x > 50){
+            desiredCameraAngle -= 1+(x-50)/50;
+        }
+        printf(" %f, %f, %d\n", cameraAngle, desiredCameraAngle,x);
     }
+    else if(esp_timer_get_time() - lastUpdateXAndYCoordinates < 5000000)
+    {
+        desiredCameraAngle = 170;
+    }
+    
+    
+    cameraAngle += 0.2 * (desiredCameraAngle - cameraAngle);
+    if(cameraAngle > 170)
+    {
+        cameraAngle = 170;
+    }
+    else if(cameraAngle < 50)
+    {
+        cameraAngle = 50;
+    }
+    if(desiredCameraAngle > 170)
+    {
+        desiredCameraAngle = 170;
+    }
+    else if(desiredCameraAngle < 50)
+    {
+        desiredCameraAngle = 50;
+    }
+    Camera->setCameraAngle((int)desiredCameraAngle);
+    
 }
 void dysonMode()
 {   
@@ -136,7 +163,15 @@ void programLoop(){
     } else if(sharedVariables.inputs.mode == controlModes::AUTOMATIC_OBJECT_SEARCH){
         AutomaticObjectSearch();
     }
+    else if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
+    {
 
+    }
+    else
+    {
+        MotorController->setTargetSpeed(0,0);
+    }
+    
     if(Camera->dataAnvailable()){
          cameraData = Camera->ReadData(); // will also sand a confirmation
     }

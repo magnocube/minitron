@@ -90,13 +90,18 @@ void MotorDriver::setTargetSpeed(int32_t motor1, int32_t motor2){
 
 }
 void MotorDriver::setSpeed(uint16_t motor1, uint16_t motor2){
+    if(motor1==0)
+    {
+        motor1=10;
+    }
+    if(motor2==0)
+    {
+        motor2=10;
+    }
     ledc_timer_motor_1.freq_hz = motor1;
-    ledc_timer_motor_2.freq_hz = motor2;
-    
     ledc_timer_config(&ledc_timer_motor_1);
+    ledc_timer_motor_2.freq_hz = motor2;
     ledc_timer_config(&ledc_timer_motor_2);
-    
-
 }
 void MotorDriver::loop(){
     uint64_t currentTime = esp_timer_get_time();
@@ -140,7 +145,6 @@ void MotorDriver::loop(){
         gpio_set_level(MOTOR_2_DIRECTION_PIN, FORWARD_MOTOR_2);
     }
     
-
     setSpeed(abs((int)motor1Speed),abs((int)motor2Speed));
 
     motor1OldSpeed = motor1Speed;

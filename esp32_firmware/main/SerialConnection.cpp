@@ -72,8 +72,8 @@
         ESP_ERROR_CHECK(uart_get_buffered_data_len(uart_num, (size_t*)&length));
         length = uart_read_bytes(uart_num, UartIncomingData, length, 100);
 
-        printf("received uart data\n");
-        printf((char*)UartIncomingData);
+        //printf("received uart data\n");
+        //printf("incoming data: %s - ",(char*)UartIncomingData);
         
         char* test_str = "confirmed.\n";
         uart_write_bytes(uart_num, (const char*)test_str, strlen(test_str));
