@@ -32,11 +32,14 @@ struct Steppers
 };
 typedef struct{
 
-    struct Inputs
+    struct Inputs//esp32 in / gui out
     {
         Steppers steppers;
         //todo add manual control and location
 
+        uint16_t programSpeed = 0;
+        uint16_t programAggression = 0;
+        uint16_t programSpecificTuning = 0;
         //balancing
         uint8_t PID_p = 0;
         uint8_t PID_i = 0;
@@ -48,7 +51,7 @@ typedef struct{
         //modes
         controlModes mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
     }inputs;
-    struct Outputs
+    struct Outputs // esp32 out / gui in
     {
         //mpu9250
         float acceleration[3];//x,y,z
