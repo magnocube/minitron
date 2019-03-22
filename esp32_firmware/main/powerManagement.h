@@ -13,33 +13,38 @@
 #include "esp_bt.h"
 #include "esp_wifi.h"
 
+extern MotorDriver* MotorController;
 extern SharedVariables sharedVariables;
-
-void checkBattery()
+int calculateVoltage()
 {
     int batteryValue = adc1_get_raw(BATTERY_VOLTAGE_PIN);
     const int maxValue = 4096;
     const float r1 = 7500;
     const float r2 = 1000;
     const float vref = 3.6;
-    sharedVariables.outputs.voltage = ((r1+r2)/r2)*((float)batteryValue/maxValue)*vref;
+    return ((r1+r2)/r2)*((float)batteryValue/maxValue)*vref;
+}
+void checkBattery()
+{
+    sharedVariables.outputs.voltage  += 0.1*(calculateVoltage() - sharedVariables.outputs.voltage); // smooth it a bit, the input drops sometimes
 #ifdef PRINT_VOLTAGE
-    printf("%f, %d\n",sharedVariables.outputs.voltage, batteryValue);
+    printf("%f\n",sharedVariables.outputs.voltage);
 #endif
-    if(sharedVariables.outputs.voltage < 10.50)
+    if(sharedVariables.outputs.voltage < 10.20)
     {   
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
-            esp_deep_sleep(1000000000000000000);
-            esp_bt_controller_disable();
-            esp_wifi_stop();
-
+        //the battery is emty and will damage when discharged more, turn everything in off or in low power mode
+        esp_wifi_stop();
+        MotorController->setMotorDriverEnabled(false);
+        esp_deep_sleep(1000000000000000000);
     }
 }
 void batteryCheckerSetup()
 {
     adc1_config_channel_atten(BATTERY_VOLTAGE_PIN, ADC_ATTEN_DB_11);
+    sharedVariables.outputs.voltage = calculateVoltage();
     checkBattery();
 }

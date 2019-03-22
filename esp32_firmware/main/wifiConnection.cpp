@@ -20,6 +20,7 @@
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
 
+#include "settings.h"
 #include "sharedVariables.h"
 /* The examples use simple WiFi configuration that you can set via
    'make menuconfig'.
@@ -108,6 +109,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
             wifi_config.sta.ssid[i] = (uint8_t)EXAMPLE_WIFI_SSID[i];
             wifi_config.sta.password[i] = (uint8_t)EXAMPLE_WIFI_PASS[i];
         }
+        //set the \0 terminator
         wifi_config.sta.ssid[8] = 0;
         wifi_config.sta.password[8] = 0;
         wifi_config.sta.bssid_set = 0;
@@ -153,7 +155,6 @@ static uint8_t setupUDP()
        int yes = 1;
         if (setsockopt(udp_server,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(yes)) < 0) {
             printf("could not set socket option\n");
-            //stop();
             return 0;
         }
 
@@ -164,7 +165,6 @@ static uint8_t setupUDP()
         addr.sin_addr.s_addr = INADDR_ANY;
         if(bind(udp_server , (struct sockaddr*)&addr, sizeof(addr)) == -1){
             printf("could not bind socket\n");
-            //stop();
             return 0;
         }
         fcntl(udp_server, F_SETFL, O_NONBLOCK);
@@ -187,6 +187,7 @@ int readUDP()
      }   
      return 0;
     }
+    //receive serialized sharedvariables struct
   memcpy((void*)&sharedVariables.inputs, rx_buffer, sizeof(sharedVariables.inputs));
   udpReceived = true;
   return 1;
@@ -205,6 +206,7 @@ int sendUDP()
     recipient.sin_addr.s_addr = si_other.sin_addr.s_addr;
     recipient.sin_family = AF_INET;
     recipient.sin_port = htons(PORT);
+    //send serialized sharedvariables struct
     int sent = sendto(udp_server, reinterpret_cast<char*>(&sharedVariables.outputs), tx_buffer_len, MSG_DONTWAIT, (struct sockaddr*) &recipient, sizeof(recipient));
     if(sent < 0){
         printf("could not send data\n");
@@ -217,11 +219,15 @@ void wifiLoop()
         int len  = readUDP();
         if(len > 0)
         {
-            printf("+\n");
+            #ifdef PRINT_WIFI
+                printf("udp message received succesfully\n");
+            #endif
         }
         if(sendUDP())
         {
-            printf("-\n");
+            #ifdef PRINT_WIFI
+                printf("udp message sended succesfully\n");
+            #endif
         }
 }
 

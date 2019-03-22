@@ -36,6 +36,9 @@ typedef struct{
         Steppers steppers;
         //todo add manual control and location
 
+        uint16_t programSpeed = 0;
+        uint16_t programAggression = 0;
+        uint16_t programSpecificTuning = 0;
         //balancing
         uint8_t PID_p = 0;
         uint8_t PID_i = 0;

@@ -12,13 +12,13 @@
 #include "SerialConnection.h"
 #include "MotorDriver.h"
 #include "esp_log.h"
-#include "powerManagement.h"
 
 SerialConnection * Camera;
 IrDecoder * irDecoder;
 MotorDriver * MotorController;
 SharedVariables sharedVariables;
 
+#include "powerManagement.h"
 #include "TOFSensor.h"
 
 TOFSensor * tofSensor;

@@ -135,6 +135,7 @@ void IrDecoder::runProximity()
 	calculateProximity(&right);
 
 	//save it in shared variables
+	//the range is between 0 to 1000
 	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - 400)/3;
 	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
 	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);
