@@ -5,3 +5,6 @@ esp32_firmware/sdkconfig.old
 .vscode
 esp32_firmware/.vscode
 Remote_Control/build-robot_controller-Desktop_Qt_5_12_1_MinGW_64_bit-Debug/debug/robot_controller.exe
+Remote_Control/robot_controller/robot_controller.pro.user.b382111.20
+Remote_Control/robot_controller/robot_controller.pro.user
+
