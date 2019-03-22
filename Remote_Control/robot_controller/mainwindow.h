@@ -12,6 +12,7 @@
 #include <graphicspeedsensor.h>
 #include <graphicstofsensor.h>
 #include <graphicproxysensor.h>
+#include <graphicBattery.h>
 
 namespace Ui {
 class MainWindow;
@@ -30,7 +31,7 @@ protected:
 
 private slots:
     void on_comboBox_currentIndexChanged(const QString &arg1);
-
+    void udpHasAUpdate();
 private:
     Ui::MainWindow *ui;
     UDP_Connection *robotConnection;
@@ -42,6 +43,7 @@ private:
     graphicsTOFSensor * TOFSensor;
     graphicProxySensor * proxySensorLeft;
     graphicProxySensor * proxySensorRight;
+    GraphicBattery * battery;
 
 
 

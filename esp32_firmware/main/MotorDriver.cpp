@@ -92,6 +92,7 @@ void MotorDriver::setTargetSpeed(int32_t motor1, int32_t motor2){
 void MotorDriver::setSpeed(uint16_t motor1, uint16_t motor2){
     ledc_timer_motor_1.freq_hz = motor1;
     ledc_timer_motor_2.freq_hz = motor2;
+    
     ledc_timer_config(&ledc_timer_motor_1);
     ledc_timer_config(&ledc_timer_motor_2);
     

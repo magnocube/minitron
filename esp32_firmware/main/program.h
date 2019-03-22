@@ -6,7 +6,7 @@ extern MotorDriver * MotorController;
 extern SerialConnection * Camera;
 #define DYSON_PROXIMITY_TARGET 150
 
-
+bool isSearching = false;
 uint64_t lastUpdateXAndYCoordinates = 0;
 int x = 50; //default x value of target... update with method calculateXandY()
 int y = 50; //default y value of target... update with method calculateXandY()
@@ -96,8 +96,16 @@ void AutomaticObjectSearch()
     int m1Speed = speed;
     int m2Speed = speed;
     if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 200000) && (lastUpdateXAndYCoordinates > 0)){
+        if(isSearching == true){
+            MotorController->setSpeed(100,100);
+            MotorController->steppers->motor1TargetSpeed = 100;
+            MotorController->steppers->motor2TargetSpeed = 100;
+            vTaskDelay(200/portTICK_PERIOD_MS);
+        }
+        isSearching = false;
         m1Speed += (50-y) * 100;
         m2Speed -= (50-y)  * 100;
+        
 
     } else{
         if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 2000000) && (lastUpdateXAndYCoordinates > 0)){
@@ -106,8 +114,10 @@ void AutomaticObjectSearch()
         }
         else
         {
+            isSearching = true;
            m1Speed = 2000;
            m2Speed = -2000;
+           
         }
         
     }

@@ -22,6 +22,8 @@ public slots:
 private:
     QUdpSocket * socket;
     QString ipAdress;
+signals:
+    void udpUpdate();
 
 };
 

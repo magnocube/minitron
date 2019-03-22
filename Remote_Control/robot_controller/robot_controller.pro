@@ -28,7 +28,8 @@ SOURCES += \
     udp_connection.cpp \
     graphicspeedsensor.cpp \
     graphicstofsensor.cpp \
-    graphicproxysensor.cpp
+    graphicproxysensor.cpp \
+    graphicBattery.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -36,7 +37,8 @@ HEADERS += \
     graphicspeedsensor.h \
     graphicstofsensor.h \
     graphicproxysensor.h \
-    sharedstructs.h
+    sharedstructs.h \
+    graphicBattery.h
 
 FORMS += \
         mainwindow.ui
