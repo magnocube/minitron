@@ -131,6 +131,10 @@ void MainWindow::udpHasAUpdate()
         speedMotor2->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration);
     }
 
+    ui->progressBarCameraAngle->setValue(robotConnection->sharedVariables.outputs.servoPosition);
+    ui->label_status_bar->setText(QString::number(robotConnection->sharedVariables.outputs.servoPosition));
+    ui->ProgressbarIRLeft->setValue(robotConnection->sharedVariables.outputs.lightLeft);
+    ui->ProgressbarIRRight->setValue(robotConnection->sharedVariables.outputs.lightRight);
     TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
     battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
     proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft/100);
