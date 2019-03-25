@@ -11,6 +11,9 @@ void TOFSensor::measure()
 	if(sharedVariables.outputs.TOFSensorWorking == false)return;
 		uint32_t startTime = esp_timer_get_time();
 		bool res = vl->readContinous(&sharedVariables.outputs.TOFSensorDistanceMM);
+		if(!res){
+			sharedVariables.outputs.TOFSensorDistanceMM = 999;
+		}
 
 #ifdef PRINT_TOF_SENSOR
 		if (res){

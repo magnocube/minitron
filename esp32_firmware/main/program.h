@@ -6,7 +6,7 @@ extern MotorDriver * MotorController;
 extern SerialConnection * Camera;
 #define DYSON_PROXIMITY_TARGET 150
 
-bool isSearching = false;
+
 uint64_t lastUpdateXAndYCoordinates = 0;
 int x = 50; //default x value of target... update with method calculateXandY()
 int y = 50; //default y value of target... update with method calculateXandY()
@@ -59,7 +59,7 @@ void automaticServoAim(){
         }
         printf(" %f, %f, %d\n", cameraAngle, desiredCameraAngle,x);
     }
-    else if(esp_timer_get_time() - lastUpdateXAndYCoordinates < 5000000)
+    else if(esp_timer_get_time() - lastUpdateXAndYCoordinates > 2000000)
     {
         desiredCameraAngle = 170;
     }
@@ -108,47 +108,108 @@ void dysonMode()
     int leftSpeed = speed + steering;
     int rightSpeed = speed - steering;
     MotorController->setTargetSpeed(leftSpeed, rightSpeed);
-    printf("%d,%d,1000\n",sharedVariables.outputs.proximityLeft, sharedVariables.outputs.proximityRight);
+    //printf("%d,%d,1000\n",sharedVariables.outputs.proximityLeft, sharedVariables.outputs.proximityRight);
 
 }
 
+struct searchHelperStruct{
+    bool isSearching = false;
+    int lastXLocation = 50; // for determining the search direction
+};
+searchHelperStruct SHS;
 void AutomaticObjectSearch()
 {   
+    //this method will contain blocking functions
     MotorController->setAcceleration(10000,10000);
     
     
-    //read camera data and estract the coordinates (x and y go form 0 to 100)
+    //adjust servo to camrea object direction
     automaticServoAim();
+
+
+    //folllow a target
     int speed = 7000;
     int m1Speed = speed;
     int m2Speed = speed;
+    //when it finds a target within 200 ms,,, drive towards it
     if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 200000) && (lastUpdateXAndYCoordinates > 0)){
-        if(isSearching == true){
-            MotorController->setSpeed(100,100);
-            MotorController->steppers->motor1TargetSpeed = 100;
-            MotorController->steppers->motor2TargetSpeed = 100;
-            vTaskDelay(200/portTICK_PERIOD_MS);
+        #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+        printf("1");  // target found in 200ms
+        #endif
+        if(SHS.isSearching == true){
+            #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+            printf("2"); // it was searching before... come to a inmediate stop
+            #endif
+            SHS.isSearching = false;
+            //brake and stop
+            m1Speed = 0;
+            m2Speed = 0;
+            MotorController->setAcceleration(1000000,1000000); // will go back to default value on next loop
+        } else{
+            #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+            printf("3"); //was not searching... is following target now
+            #endif
+            m1Speed += (50-y) * 100;
+            m2Speed -= (50-y)  * 100;
         }
-        isSearching = false;
-        m1Speed += (50-y) * 100;
-        m2Speed -= (50-y)  * 100;
+        
+        
+
+        //if very close to the target.... stop
+        if(sharedVariables.outputs.TOFSensorDistanceMM < 100){  //within 10cm of target
+        #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+        printf("4"); //stop... proxy in front
+        #endif
+            m1Speed = 0;
+            m2Speed = 0;
+            MotorController->setAcceleration(1000000,1000000); // will go back to default value on next loop
+        } 
         
 
     } else{
-        if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 2000000) && (lastUpdateXAndYCoordinates > 0)){
+        #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+        printf("5"); // target not found (in last 200ms)
+        #endif
+        // when the target is not found in the last 200 ms,, stop (for max 0.5 second)
+        if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 500000) && (lastUpdateXAndYCoordinates > 0)){
+            #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+            printf("6"); // not moving because target is not found... might beccome visible soon
+            #endif
             m1Speed = 0;
             m2Speed = 0;
+            MotorController->setAcceleration(1000000,1000000); // will go back to default value on next loop
         }
-        else
-        {
-            isSearching = true;
-           m1Speed = 2000;
-           m2Speed = -2000;
+        else if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 6000000) && (lastUpdateXAndYCoordinates > 0))
+        {   
+            #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+            printf("7");  // 0.5 seconds no target... just start searching
+            #endif
+       
+            SHS.isSearching = true;
+
+            
+            if(SHS.lastXLocation > 50){
+                m1Speed = 2000;
+                m2Speed = -2000;
+            }else{
+                m1Speed = -2000;
+                m2Speed = 2000;
+            }
+            
+
            
-        }
+        } else { // 6 seconds... just start driving now
+            m1Speed = 2000;
+            m2Speed = 2000;
+        }        
+        
         
     }
     MotorController->setTargetSpeed(m1Speed, m2Speed);
+    SHS.lastXLocation = x;
+    #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+        printf("\n");
+        #endif
 
 }
 void programLoop(){

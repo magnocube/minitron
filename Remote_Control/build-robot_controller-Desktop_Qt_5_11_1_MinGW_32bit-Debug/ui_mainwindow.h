@@ -104,7 +104,7 @@ public:
         CornerSlider = new QSlider(centralWidget);
         CornerSlider->setObjectName(QStringLiteral("CornerSlider"));
         CornerSlider->setMinimum(10);
-        CornerSlider->setMaximum(10000);
+        CornerSlider->setMaximum(30000);
         CornerSlider->setValue(2000);
         CornerSlider->setOrientation(Qt::Vertical);
 
@@ -123,7 +123,7 @@ public:
         topSpeedSlider = new QSlider(centralWidget);
         topSpeedSlider->setObjectName(QStringLiteral("topSpeedSlider"));
         topSpeedSlider->setMinimum(100);
-        topSpeedSlider->setMaximum(60000);
+        topSpeedSlider->setMaximum(150000);
         topSpeedSlider->setValue(3000);
         topSpeedSlider->setOrientation(Qt::Vertical);
 

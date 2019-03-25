@@ -7,7 +7,7 @@ threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
 # The below thresholds track in general red/green/blue things. You may wish to tune them...
-thresholds = [(52, 80, 30, 127, 3, 62), # generic_red_thresholds
+thresholds = [(35, 76, 30, 100, 3, 63), # generic_red_thresholds
               (30, 100, -64, -8, -32, 32), # generic_green_thresholds
               (0, 30, 0, 64, -128, 0),      #generic_blue_thresholds
               (63, 100, -128, 127, 20, 127)] # generic_Yellow_thresholds
@@ -48,7 +48,7 @@ while(True):
     if(uart.any()):
         data  = uart.readline()
         print(data)
-        red_led.toggle()
+        green_led.toggle()
 
     for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=30, area_threshold=30, merge=True):
           if blob.w() <= (blob.h() * 1.2):
