@@ -7,6 +7,7 @@ void MotorDriver::setup(){
     motor2Speed = 0;
     motor1OldSpeed = 0;
     motor2OldSpeed = 0;
+    steppers->acceleration = 15000;
     steppers->acceleration_motor1 = 15000;
     steppers->acceleration_motor2 = 15000;
     
@@ -36,7 +37,6 @@ void MotorDriver::setup(){
     gpio_set_level(MOTOR_1_DIRECTION_PIN, FORWARD_MOTOR_1);
     gpio_set_level(MOTOR_2_DIRECTION_PIN, FORWARD_MOTOR_2);
    
-    
 
      printf("setup led drivers\n");
 
@@ -94,16 +94,25 @@ void MotorDriver::setTargetSpeed(int32_t motor1, int32_t motor2){
 }
 void MotorDriver::calculateInduvidualAcceleration()
 {
-    if(steppers->motor1TargetSpeed > steppers->motor2TargetSpeed)
+    double delta1 = abs(steppers->motor1TargetSpeed - motor1Speed);
+    double delta2 = abs(steppers->motor2TargetSpeed - motor2Speed);
+
+    if(delta1 > delta2)
     {
         steppers->acceleration_motor1  = steppers->acceleration;
-        steppers->acceleration_motor2  = steppers->acceleration * (steppers->motor2TargetSpeed / steppers->motor1TargetSpeed);
+        steppers->acceleration_motor2  = steppers->acceleration * (delta2 / delta1);
     }
-    else if(steppers->motor1TargetSpeed < steppers->motor2TargetSpeed)
+    else if(delta1 < delta2)
     {
         steppers->acceleration_motor2  = steppers->acceleration;
-        steppers->acceleration_motor1  = steppers->acceleration * (steppers->motor1TargetSpeed / steppers->motor2TargetSpeed);
+        steppers->acceleration_motor1  = steppers->acceleration * (delta1 / delta2);
     }
+    else
+    {
+        steppers->acceleration_motor1  = steppers->acceleration;
+        steppers->acceleration_motor2  = steppers->acceleration;
+    }
+    
 }
 void MotorDriver::setSpeed(int32_t motor1, int32_t motor2){
     if(motor1==0)

@@ -94,14 +94,14 @@ void dysonMode()
         steering *=2;
         if(sharedVariables.outputs.proximityLeft<80)
         {
-            MotorController->setAcceleration(30000,30000);
+            MotorController->setAcceleration(30000);
             speed = 4000;
             steering = 3500;
         }
 
     }else
     {
-        MotorController->setAcceleration(10000,10000);
+        MotorController->setAcceleration(10000);
         steering *= 3 + sharedVariables.outputs.proximityLeft/100;
     }
     
@@ -115,12 +115,11 @@ void dysonMode()
 struct searchHelperStruct{
     bool isSearching = false;
     int lastXLocation = 50; // for determining the search direction
-};
-searchHelperStruct SHS;
+}SHS;
 void AutomaticObjectSearch()
 {   
     //this method will contain blocking functions
-    MotorController->setAcceleration(10000,10000);
+    MotorController->setAcceleration(10000);
     
     
     //adjust servo to camrea object direction
@@ -144,7 +143,7 @@ void AutomaticObjectSearch()
             //brake and stop
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(1000000,1000000); // will go back to default value on next loop
+            MotorController->setAcceleration(1000000); // will go back to default value on next loop
         } else{
             #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
             printf("3"); //was not searching... is following target now
@@ -162,7 +161,7 @@ void AutomaticObjectSearch()
         #endif
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(1000000,1000000); // will go back to default value on next loop
+            MotorController->setAcceleration(1000000); // will go back to default value on next loop
         } 
         
 
@@ -177,7 +176,7 @@ void AutomaticObjectSearch()
             #endif
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(1000000,1000000); // will go back to default value on next loop
+            MotorController->setAcceleration(1000000); // will go back to default value on next loop
         }
         else if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 6000000) && (lastUpdateXAndYCoordinates > 0))
         {   

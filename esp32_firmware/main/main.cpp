@@ -44,8 +44,10 @@ void core1Task( void * pvParameters ){
             udpReceived = false;
             if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
             {
-                printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
                 MotorController->steppers = &sharedVariables.inputs.steppers;
+                MotorController->calculateInduvidualAcceleration();
+                printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
+
             }
             else
             {
