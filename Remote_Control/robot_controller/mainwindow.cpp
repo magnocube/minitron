@@ -8,7 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    robotConnection = new UDP_Connection("192.168.137.209");
+
+    robotConnection = new UDP_Connection("192.168.137.194");
+
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(SendUdpToRobot()));
@@ -120,13 +122,13 @@ void MainWindow::udpHasAUpdate()
     if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI){
         speedMotor1->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed);
         speedMotor2->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed);
-        speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor1);
-        speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor2);
+        speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
+        speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
     }else{
         speedMotor1->setSpeed(robotConnection->sharedVariables.outputs.steppers.motor1TargetSpeed/100);
         speedMotor2->setSpeed(robotConnection->sharedVariables.outputs.steppers.motor2TargetSpeed/100);
-        speedMotor1->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration_motor1);
-        speedMotor2->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration_motor2);
+        speedMotor1->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration);
+        speedMotor2->setAcceleration(robotConnection->sharedVariables.outputs.steppers.acceleration);
     }
 
     TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
@@ -168,19 +170,19 @@ void MainWindow::SendUdpToRobot()
 
     if(ui->buttonBrakeMode->text() == "BrakeMode: Fast"){
         if(qFabs(motor1Speed) < qFabs(controlData.Motor1OldSpeed)){
-            robotConnection->sharedVariables.inputs.steppers.acceleration_motor1 = 600000;
+            robotConnection->sharedVariables.inputs.steppers.acceleration = 600000;
         } else{
             robotConnection->sharedVariables.inputs.steppers.acceleration_motor1 = ui->accelerationSlider->value();
         }
         if(qFabs(motor2Speed) < qFabs(controlData.Motor2OldSpeed)){
-            robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = 600000;
+            robotConnection->sharedVariables.inputs.steppers.acceleration = 600000;
         } else{
             robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
         }
         //robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
     }else{
-        robotConnection->sharedVariables.inputs.steppers.acceleration_motor1 = ui->accelerationSlider->value();
-        robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
+        robotConnection->sharedVariables.inputs.steppers.acceleration = ui->accelerationSlider->value();
+        robotConnection->sharedVariables.inputs.steppers.acceleration = ui->accelerationSlider->value();
     }
     robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed = motor1Speed;
     robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed = motor2Speed;
@@ -189,8 +191,8 @@ void MainWindow::SendUdpToRobot()
     if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI){
         speedMotor1->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed);
         speedMotor2->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed);
-        speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor1);
-        speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor2);
+        speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
+        speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
     }
 
     qDebug() << "sending" << endl;

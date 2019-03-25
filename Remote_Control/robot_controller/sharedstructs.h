@@ -28,8 +28,9 @@ struct Steppers
     bool motorsEnabled = false;
     int32_t motor1TargetSpeed = 0;			//target speed of motor 1
     int32_t motor2TargetSpeed = 0;			//target speed of motor 2
-    uint32_t acceleration_motor1 = 10000; 				//acceleration of current speed to target speed in steps/s^1
-    uint32_t acceleration_motor2 = 10000; 				//acceleration of current speed to target speed in steps/s^2
+    uint32_t acceleration_motor1 = 1000; 				//acceleration of current speed to target speed in steps/s^1
+    uint32_t acceleration_motor2 = 1000; 				//acceleration of current speed to target speed in steps/s^2
+    uint32_t acceleration = 1000;
 };
 typedef struct{
 
@@ -50,7 +51,7 @@ typedef struct{
         uint8_t servoPosition = 80; //in degrees
 
         //modes
-        controlModes mode = controlModes::MANUAL_WIFI;
+        controlModes mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
     }inputs;
     struct Outputs // esp32 out / gui in
     {

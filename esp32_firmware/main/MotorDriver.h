@@ -32,6 +32,8 @@ public:
 	}
 	void setup();	
 	void setAcceleration(uint32_t a, uint32_t a2);
+	void setAcceleration(uint32_t aceleration);
+	void calculateInduvidualAcceleration();
 	void setTargetSpeed(int32_t motor1, int32_t motor2);
 	void loop();
 	void setSpeed(int32_t motor1, int32_t motor2);

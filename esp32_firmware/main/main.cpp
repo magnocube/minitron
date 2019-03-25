@@ -30,7 +30,7 @@ void core0Task( void * pvParameters ){
 
         checkBattery();
         loopCounter++;
-        while(esp_timer_get_time() - lastTime < 5000);
+        while(esp_timer_get_time() - lastTime < 2000);
         lastTime = esp_timer_get_time();    }
 }
 
@@ -56,7 +56,10 @@ void core1Task( void * pvParameters ){
         {
             printf("disconnected\n");
             MotorController->steppers = &sharedVariables.outputs.steppers;
-            sharedVariables.inputs.mode = controlModes::OFF;
+            if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
+            {
+                sharedVariables.inputs.mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
+            }
         }
         
         vTaskDelay(10/portTICK_PERIOD_MS);
