@@ -136,15 +136,17 @@ void IrDecoder::runProximity()
 
 	//save it in shared variables
 	//the range is between 0 to 1000
-	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - 300)/3;
+    #define LEFT_DARK_CURRENT 190
+	#define RIGHT_DARK_CURRENT 180
+	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - LEFT_DARK_CURRENT)/3;
 	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
 	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);
-    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-300)/3;
+    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-RIGHT_DARK_CURRENT)/3;
 	sharedVariables->outputs.proximityRight = std::max(0, sharedVariables->outputs.proximityRight);
 	sharedVariables->outputs.proximityRight = std::min(sharedVariables->outputs.proximityRight, 1000);
 
-    sharedVariables->outputs.lightLeft = left.lowBufferSort[1];
-    sharedVariables->outputs.lightRight = right.lowBufferSort[1];
+    sharedVariables->outputs.lightLeft = left.lowBufferSort[1]/4;
+    sharedVariables->outputs.lightRight = right.lowBufferSort[1]/4;
 
 #ifdef PRINT_PROXIMITY
 	printf("%d\n", sharedVariables->outputs.proximityLeft);
@@ -153,25 +155,11 @@ void IrDecoder::runProximity()
 	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 #ifdef PRINT_PROXIMITY_ALL
-	printf("%d, %d, %d\n",left.lowBufferSort[1], left.highBufferSort[1] - left.lowBufferSort[1], sharedVariables->outputs.proximityLeft);
+
+	printf("%d, %d, 1200\n",right.highBufferSort[1], right.highBufferSort[1] - right.lowBufferSort[1]);
 #endif
 }
-int IrDecoder::calculatePhotodiode(int value)
-{
-	int Vs = 3300; //3.3v
-	int Vout = Vs - ((value / 4096.0) * Vs); //mV on photodiode
-	int r1 = 9200; //ohm
 
-	//vout = (Vs * r2) / (r1 + r2)
-	//r2 = (Vout * r1) / (Vs - Vout)
-	if(Vs - Vout == 0) return 0;
-	int r2 = (Vout * r1) / (Vs - Vout);
-	// r = u * i
-	// i = u / r
-	int I = Vs / (r1 + r2) * 10000;
-	return I;
-	
-}
 void IrDecoder::filterProximity(ProximitySensor* obj)//this method takes the best measurement out of the buffer as a kind of medium filter
 {
 	//copy the buffer into a sorted buffer

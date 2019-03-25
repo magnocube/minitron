@@ -30,7 +30,7 @@ void core0Task( void * pvParameters ){
 
         checkBattery();
         loopCounter++;
-        while(esp_timer_get_time() - lastTime < 2000);
+        while(esp_timer_get_time() - lastTime < 20000);
         lastTime = esp_timer_get_time();    }
 }
 
@@ -81,13 +81,13 @@ extern "C" void app_main()
     Camera->setup();
     Camera->setCameraAngle(170);
     xTaskCreatePinnedToCore(core0Task, "core0Task", 
-                    100000,      // Stack size in words 
+                    10000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
                     0); //core 0       
     xTaskCreatePinnedToCore(core1Task, "core1Task", 
-                    100000,      // Stack size in words 
+                    10000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
