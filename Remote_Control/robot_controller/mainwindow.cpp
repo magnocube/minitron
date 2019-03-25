@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.194");
+    robotConnection = new UDP_Connection("192.168.137.8");
 
 
     QTimer *timer = new QTimer(this);
@@ -172,12 +172,12 @@ void MainWindow::SendUdpToRobot()
         if(qFabs(motor1Speed) < qFabs(controlData.Motor1OldSpeed)){
             robotConnection->sharedVariables.inputs.steppers.acceleration = 600000;
         } else{
-            robotConnection->sharedVariables.inputs.steppers.acceleration_motor1 = ui->accelerationSlider->value();
+            robotConnection->sharedVariables.inputs.steppers.acceleration = ui->accelerationSlider->value();
         }
         if(qFabs(motor2Speed) < qFabs(controlData.Motor2OldSpeed)){
             robotConnection->sharedVariables.inputs.steppers.acceleration = 600000;
         } else{
-            robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
+            robotConnection->sharedVariables.inputs.steppers.acceleration = ui->accelerationSlider->value();
         }
         //robotConnection->sharedVariables.inputs.steppers.acceleration_motor2 = ui->accelerationSlider->value();
     }else{
