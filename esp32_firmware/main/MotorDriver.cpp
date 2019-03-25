@@ -78,7 +78,7 @@ void MotorDriver::setup(){
 
 }
 
-void MotorDriver::setAcceleration(int a, int a2){
+void MotorDriver::setAcceleration(uint32_t a, uint32_t a2){
     steppers->acceleration_motor1 = a;
     steppers->acceleration_motor2 = a2;
 }
@@ -89,7 +89,7 @@ void MotorDriver::setTargetSpeed(int32_t motor1, int32_t motor2){
     steppers->motor2TargetSpeed = motor2;
 
 }
-void MotorDriver::setSpeed(uint16_t motor1, uint16_t motor2){
+void MotorDriver::setSpeed(int32_t motor1, int32_t motor2){
     if(motor1==0)
     {
         motor1=10;
@@ -108,44 +108,44 @@ void MotorDriver::loop(){
     uint32_t deltaT = currentTime - lastTimeSincePreviousLoop;  //if this requires a 64 bit variable there is something good wrong..  (manual driving might cause errors... )
     lastTimeSincePreviousLoop = currentTime;
 
-    float maxSpeedToAddMotor1= steppers->acceleration_motor1 * deltaT / 1000000;   //acceleration is in seconds, deltaT is in microSeconds.
-    float maxSpeedToAddMotor2= steppers->acceleration_motor2 * deltaT / 1000000;   //acceleration is in seconds, deltaT is in microSeconds.
+    double maxSpeedToAddMotor1= steppers->acceleration_motor1 * deltaT / 1000000;   //acceleration is in seconds, deltaT is in microSeconds.
+    double maxSpeedToAddMotor2= steppers->acceleration_motor2 * deltaT / 1000000;   //acceleration is in seconds, deltaT is in microSeconds.
    
 
 
     if(abs(steppers->motor1TargetSpeed - motor1Speed) > maxSpeedToAddMotor1){  //possible to add full acceleration
         if(steppers->motor1TargetSpeed > motor1Speed){ //accelerating
-            motor1Speed = motor1Speed + maxSpeedToAddMotor1;
+            motor1Speed += maxSpeedToAddMotor1;
         } else{                              //decelerating
-            motor1Speed = motor1Speed - maxSpeedToAddMotor1;
+            motor1Speed -= maxSpeedToAddMotor1;
         }        
     } else {
-        motor1Speed = steppers->motor1TargetSpeed;        
+        motor1Speed = steppers->motor1TargetSpeed;
     }
 
     if(abs(steppers->motor2TargetSpeed - motor2Speed) > maxSpeedToAddMotor2){  //possible to add full acceleration
         if(steppers->motor2TargetSpeed > motor2Speed){ //accelerating
-            motor2Speed = motor2Speed + maxSpeedToAddMotor2;
+            motor2Speed += maxSpeedToAddMotor2;
         } else{                              //decelerating
-            motor2Speed = motor2Speed - maxSpeedToAddMotor2;
+            motor2Speed -= maxSpeedToAddMotor2;
         }        
     } else {
         motor2Speed = steppers->motor2TargetSpeed;        
     }
 
-    if(motor1Speed < 0 && motor1OldSpeed >=0){
+    if((motor1Speed < 0) && (motor1OldSpeed >=0)){
         gpio_set_level(MOTOR_1_DIRECTION_PIN, BACKWARD_MOTOR_1);
-    } else if(motor1Speed > 0 && motor1OldSpeed <=0){
+    } else if((motor1Speed > 0 )&& (motor1OldSpeed <=0)){
         gpio_set_level(MOTOR_1_DIRECTION_PIN, FORWARD_MOTOR_1);
     }
 
-    if(motor2Speed < 0 && motor2OldSpeed >=0){
+    if((motor2Speed < 0) && (motor2OldSpeed >=0)){
         gpio_set_level(MOTOR_2_DIRECTION_PIN, BACKWARD_MOTOR_2);
-    } else if(motor2Speed > 0 && motor2OldSpeed <=0){
+    } else if((motor2Speed > 0) && (motor2OldSpeed <=0)){
         gpio_set_level(MOTOR_2_DIRECTION_PIN, FORWARD_MOTOR_2);
     }
     
-    setSpeed(abs((int)motor1Speed),abs((int)motor2Speed));
+    setSpeed(abs((int32_t)motor1Speed),abs((int32_t)motor2Speed));
 
     motor1OldSpeed = motor1Speed;
     motor2OldSpeed = motor2Speed;
@@ -165,15 +165,15 @@ void MotorDriver::loop(){
 	bool MotorDriver::isMotorDriverEnabled(){
         return steppers->motorsEnabled;
     }
-	uint16_t MotorDriver::getMotor1TargetSpeed(){
+	int32_t MotorDriver::getMotor1TargetSpeed(){
         return steppers->motor1TargetSpeed;
     }
-	uint16_t MotorDriver::getMotor2TargetSpeed(){
+	int32_t MotorDriver::getMotor2TargetSpeed(){
         return steppers->motor2TargetSpeed;
     }
-	uint16_t MotorDriver::getMotor1Speed(){
+	int32_t MotorDriver::getMotor1Speed(){
         return motor1Speed;
     }
-	uint16_t MotorDriver::getMotor2Speed(){
+	int32_t MotorDriver::getMotor2Speed(){
         return motor2Speed;
     }

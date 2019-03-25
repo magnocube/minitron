@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    robotConnection = new UDP_Connection("192.168.137.104");
+    robotConnection = new UDP_Connection("192.168.137.228");
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(SendUdpToRobot()));
@@ -47,8 +47,8 @@ void MainWindow::setupUI()
 
     speedMotor1 = new GraphicSpeedSensor();
     speedMotor2 = new GraphicSpeedSensor();
-    speedMotor1->setPos(1000,700);
-    speedMotor2->setPos(-150,700);
+    speedMotor1->setPos(-150,700);
+    speedMotor2->setPos(1000,700);
     speedMotor1->setAcceleration(0);
     speedMotor2->setAcceleration(0);
     speedMotor1->setSpeed(1);
@@ -118,8 +118,8 @@ void MainWindow::udpHasAUpdate()
     qDebug()<< "updating main" << endl;
 
     if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI){
-        speedMotor1->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed/100);
-        speedMotor2->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed/100);
+        speedMotor1->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed);
+        speedMotor2->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed);
         speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor1);
         speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor2);
     }else{
@@ -141,11 +141,11 @@ void MainWindow::udpHasAUpdate()
 void MainWindow::SendUdpToRobot()
 {
 
-    int maxSpeed = ui->topSpeedSlider->value();
-    int steeringSensitivity = ui->CornerSlider->value();
-    int deltaWheels = 2 * steeringSensitivity;
-    int motor1Speed = 0;
-    int motor2Speed = 0;
+    int32_t maxSpeed = ui->topSpeedSlider->value();
+    int32_t steeringSensitivity = ui->CornerSlider->value();
+    int32_t deltaWheels = 2 * steeringSensitivity;
+    int32_t motor1Speed = 0;
+    int32_t motor2Speed = 0;
 
 
     if(controlData.WPressed){
@@ -153,12 +153,12 @@ void MainWindow::SendUdpToRobot()
         motor2Speed += maxSpeed;
     }
     if(controlData.APressed){
-       motor1Speed -= steeringSensitivity;
-       motor2Speed += steeringSensitivity;
+       motor1Speed += steeringSensitivity;
+       motor2Speed -= steeringSensitivity;
     }
     if(controlData.DPressed){
-        motor1Speed += steeringSensitivity;
-        motor2Speed -= steeringSensitivity;
+        motor1Speed -= steeringSensitivity;
+        motor2Speed += steeringSensitivity;
     }
     if(controlData.SPressed){
         motor1Speed -= maxSpeed;
@@ -186,10 +186,18 @@ void MainWindow::SendUdpToRobot()
     robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed = motor2Speed;
 
 
-
+    if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI){
+        speedMotor1->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed);
+        speedMotor2->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed);
+        speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor1);
+        speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration_motor2);
+    }
 
     qDebug() << "sending" << endl;
     robotConnection->send();
+    update();
+
+
     controlData.Motor1OldSpeed = motor1Speed;
     controlData.Motor2OldSpeed = motor2Speed;
 }

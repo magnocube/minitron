@@ -26,11 +26,11 @@ int calculateVoltage()
 }
 void checkBattery()
 {
-    sharedVariables.outputs.voltage  += 0.1*(calculateVoltage() - sharedVariables.outputs.voltage); // smooth it a bit, the input drops sometimes
+    sharedVariables.outputs.voltage  += 0.01*(calculateVoltage() - sharedVariables.outputs.voltage); // smooth it a bit, the input drops sometimes
 #ifdef PRINT_VOLTAGE
     printf("%f\n",sharedVariables.outputs.voltage);
 #endif
-    if(sharedVariables.outputs.voltage < 10.20)
+    if(sharedVariables.outputs.voltage < 10)
     {   
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");

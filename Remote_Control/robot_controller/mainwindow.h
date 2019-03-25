@@ -52,13 +52,13 @@ private:
     GraphicBattery * battery;
 
     struct ConntrolData{
-        int Motor1OldSpeed = 0;
-        int Motor2OldSpeed = 0;
+        int32_t Motor1OldSpeed = 0;
+        int32_t Motor2OldSpeed = 0;
         bool WPressed = false;
         bool SPressed = false;
         bool APressed = false;
         bool DPressed = false;
-        int timeSinceLastUpdate; //probably not needed
+        uint32_t timeSinceLastUpdate; //probably not needed
     } controlData;
 
 

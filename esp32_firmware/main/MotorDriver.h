@@ -12,10 +12,10 @@
 #include "driver/ledc.h"
 #include "sharedVariables.h"
 
-#define FORWARD_MOTOR_1 0
-#define BACKWARD_MOTOR_1 1
-#define FORWARD_MOTOR_2 1
-#define BACKWARD_MOTOR_2 0
+#define FORWARD_MOTOR_1 1
+#define BACKWARD_MOTOR_1 0
+#define FORWARD_MOTOR_2 0
+#define BACKWARD_MOTOR_2 1
 
 
 
@@ -31,17 +31,17 @@ public:
 		steppers = &sharedVariables->outputs.steppers;
 	}
 	void setup();	
-	void setAcceleration(int a, int a2);
+	void setAcceleration(uint32_t a, uint32_t a2);
 	void setTargetSpeed(int32_t motor1, int32_t motor2);
 	void loop();
-	void setSpeed(uint16_t motor1, uint16_t motor2);
+	void setSpeed(int32_t motor1, int32_t motor2);
 	void setMotorDriverEnabled(bool b);
 
 	bool isMotorDriverEnabled();
-	uint16_t getMotor1TargetSpeed();
-	uint16_t getMotor2TargetSpeed();
-	uint16_t getMotor1Speed();
-	uint16_t getMotor2Speed();
+	int32_t getMotor1TargetSpeed();
+	int32_t getMotor2TargetSpeed();
+	int32_t getMotor1Speed();
+	int32_t getMotor2Speed();
 
 	//todo:
 	//void moveToXY();
@@ -51,11 +51,11 @@ private:
 	ledc_timer_config_t ledc_timer_motor_1;
 	ledc_timer_config_t ledc_timer_motor_2;
 
-    float motor1Speed;				//current motorspeed
-    float motor2Speed;				//current motorspeed
+    double motor1Speed;				//current motorspeed
+    double motor2Speed;				//current motorspeed
 
-	float motor1OldSpeed;
-	float motor2OldSpeed;
+	double motor1OldSpeed;
+	double motor2OldSpeed;
 	uint64_t lastTimeSincePreviousLoop; //used for calculating the delta-T for the acceleration
 
 };
