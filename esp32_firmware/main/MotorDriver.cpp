@@ -82,12 +82,28 @@ void MotorDriver::setAcceleration(uint32_t a, uint32_t a2){
     steppers->acceleration_motor1 = a;
     steppers->acceleration_motor2 = a2;
 }
-
+void MotorDriver::setAcceleration(uint32_t acceleration){
+    steppers->acceleration = acceleration;
+    calculateInduvidualAcceleration();
+}
 
 void MotorDriver::setTargetSpeed(int32_t motor1, int32_t motor2){
     steppers->motor1TargetSpeed = motor1;
     steppers->motor2TargetSpeed = motor2;
-
+    calculateInduvidualAcceleration();
+}
+void MotorDriver::calculateInduvidualAcceleration()
+{
+    if(steppers->motor1TargetSpeed > steppers->motor2TargetSpeed)
+    {
+        steppers->acceleration_motor1  = steppers->acceleration;
+        steppers->acceleration_motor2  = steppers->acceleration * (steppers->motor2TargetSpeed / steppers->motor1TargetSpeed);
+    }
+    else if(steppers->motor1TargetSpeed < steppers->motor2TargetSpeed)
+    {
+        steppers->acceleration_motor2  = steppers->acceleration;
+        steppers->acceleration_motor1  = steppers->acceleration * (steppers->motor1TargetSpeed / steppers->motor2TargetSpeed);
+    }
 }
 void MotorDriver::setSpeed(int32_t motor1, int32_t motor2){
     if(motor1==0)
