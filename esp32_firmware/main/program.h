@@ -202,6 +202,8 @@ void AutomaticObjectSearch()
             m1Speed = 2000;
             m2Speed = 2000;
         }        
+        
+        
     }
     MotorController->setTargetSpeed(m1Speed, m2Speed);
     SHS.lastXLocation = x;

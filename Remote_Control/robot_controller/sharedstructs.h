@@ -51,7 +51,7 @@ typedef struct{
         uint8_t servoPosition = 80; //in degrees
 
         //modes
-        controlModes mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
+        controlModes mode = controlModes::OFF;
 
         //ir send
         uint8_t irFlowNumber = 0;
