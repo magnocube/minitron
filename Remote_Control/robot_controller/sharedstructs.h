@@ -52,6 +52,11 @@ typedef struct{
 
         //modes
         controlModes mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
+
+        //ir send
+        uint8_t irFlowNumber = 0;
+        uint8_t irAddress=0;
+        uint8_t irCommand=0;
     }inputs;
     struct Outputs // esp32 out / gui in
     {
@@ -70,6 +75,9 @@ typedef struct{
         bool TOFSensorWorking = true;
         //ir receiver
         //todo add last command
+        uint8_t irFlowNumber = 0;
+        uint8_t irLastAddress=0;
+        uint8_t irLastCommand=0;
         bool IRReceiverErrorOccured = false;
         bool IRReceiverWorking = true;
 
@@ -103,6 +111,8 @@ typedef struct{
         //battery
         float voltage=0;
         bool on = true;
+
+
 
     }outputs;
 
