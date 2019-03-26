@@ -12,13 +12,13 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QDial>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSlider>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -37,12 +37,15 @@ public:
     QComboBox *comboBox;
     QPushButton *buttonBrakeMode;
     QGridLayout *gridLayout;
-    QSlider *CornerSlider;
+    QDial *CornerSlider;
+    QLabel *TopSpeedSlider;
+    QDial *accelerationSlider;
     QLabel *label;
     QLabel *label_3;
-    QSlider *topSpeedSlider;
-    QLabel *TopSpeedSlider;
-    QSlider *accelerationSlider;
+    QDial *topSpeedSlider;
+    QLabel *label_2;
+    QLabel *label_4;
+    QLabel *label_5;
     QLabel *cameraLabel;
     QLabel *label_status_bar;
 
@@ -101,47 +104,61 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        CornerSlider = new QSlider(centralWidget);
+        CornerSlider = new QDial(centralWidget);
         CornerSlider->setObjectName(QStringLiteral("CornerSlider"));
-        CornerSlider->setMinimum(10);
         CornerSlider->setMaximum(30000);
-        CornerSlider->setValue(2000);
-        CornerSlider->setOrientation(Qt::Vertical);
+        CornerSlider->setSingleStep(300);
+        CornerSlider->setPageStep(300);
 
         gridLayout->addWidget(CornerSlider, 0, 2, 1, 1);
-
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
-
-        gridLayout->addWidget(label, 1, 0, 1, 1);
-
-        label_3 = new QLabel(centralWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        gridLayout->addWidget(label_3, 1, 2, 1, 1);
-
-        topSpeedSlider = new QSlider(centralWidget);
-        topSpeedSlider->setObjectName(QStringLiteral("topSpeedSlider"));
-        topSpeedSlider->setMinimum(100);
-        topSpeedSlider->setMaximum(150000);
-        topSpeedSlider->setValue(3000);
-        topSpeedSlider->setOrientation(Qt::Vertical);
-
-        gridLayout->addWidget(topSpeedSlider, 0, 1, 1, 1);
 
         TopSpeedSlider = new QLabel(centralWidget);
         TopSpeedSlider->setObjectName(QStringLiteral("TopSpeedSlider"));
 
-        gridLayout->addWidget(TopSpeedSlider, 1, 1, 1, 1);
+        gridLayout->addWidget(TopSpeedSlider, 2, 1, 1, 1);
 
-        accelerationSlider = new QSlider(centralWidget);
+        accelerationSlider = new QDial(centralWidget);
         accelerationSlider->setObjectName(QStringLiteral("accelerationSlider"));
         accelerationSlider->setMinimum(1000);
-        accelerationSlider->setMaximum(60000);
-        accelerationSlider->setValue(10000);
-        accelerationSlider->setOrientation(Qt::Vertical);
+        accelerationSlider->setMaximum(10000);
+        accelerationSlider->setSingleStep(100);
+        accelerationSlider->setPageStep(100);
 
         gridLayout->addWidget(accelerationSlider, 0, 0, 1, 1);
+
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+
+        gridLayout->addWidget(label, 2, 0, 1, 1);
+
+        label_3 = new QLabel(centralWidget);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        gridLayout->addWidget(label_3, 2, 2, 1, 1);
+
+        topSpeedSlider = new QDial(centralWidget);
+        topSpeedSlider->setObjectName(QStringLiteral("topSpeedSlider"));
+        topSpeedSlider->setMinimum(100);
+        topSpeedSlider->setMaximum(150000);
+        topSpeedSlider->setSingleStep(1500);
+        topSpeedSlider->setPageStep(1500);
+
+        gridLayout->addWidget(topSpeedSlider, 0, 1, 1, 1);
+
+        label_2 = new QLabel(centralWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        gridLayout->addWidget(label_2, 1, 0, 1, 1);
+
+        label_4 = new QLabel(centralWidget);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        gridLayout->addWidget(label_4, 1, 1, 1, 1);
+
+        label_5 = new QLabel(centralWidget);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        gridLayout->addWidget(label_5, 1, 2, 1, 1);
 
 
         horizontalLayout->addLayout(gridLayout);
@@ -173,6 +190,9 @@ public:
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
+        QObject::connect(accelerationSlider, SIGNAL(valueChanged(int)), label_2, SLOT(setNum(int)));
+        QObject::connect(topSpeedSlider, SIGNAL(valueChanged(int)), label_4, SLOT(setNum(int)));
+        QObject::connect(CornerSlider, SIGNAL(valueChanged(int)), label_5, SLOT(setNum(int)));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -193,9 +213,12 @@ public:
         comboBox->setItemText(10, QApplication::translate("MainWindow", "Automatic Balance Dyson Mode", nullptr));
 
         buttonBrakeMode->setText(QApplication::translate("MainWindow", "BrakeMode: Normal", nullptr));
+        TopSpeedSlider->setText(QApplication::translate("MainWindow", "topSpeed", nullptr));
         label->setText(QApplication::translate("MainWindow", "acceleration", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "corner sensitivity", nullptr));
-        TopSpeedSlider->setText(QApplication::translate("MainWindow", "topSpeed", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "0", nullptr));
+        label_4->setText(QApplication::translate("MainWindow", "0", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "0", nullptr));
         cameraLabel->setText(QApplication::translate("MainWindow", "imageLabel", nullptr));
         label_status_bar->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
     } // retranslateUi

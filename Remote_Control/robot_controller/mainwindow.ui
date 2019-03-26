@@ -23,6 +23,23 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
+         <widget class="QProgressBar" name="progressBar">
+          <property name="value">
+           <number>24</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_3"/>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_2">
+          <property name="value">
+           <number>24</number>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -97,52 +114,19 @@
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <item row="0" column="2">
-             <widget class="QSlider" name="CornerSlider">
-              <property name="minimum">
-               <number>10</number>
-              </property>
+             <widget class="QDial" name="CornerSlider">
               <property name="maximum">
                <number>30000</number>
               </property>
-              <property name="value">
-               <number>2000</number>
+              <property name="singleStep">
+               <number>300</number>
               </property>
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>acceleration</string>
+              <property name="pageStep">
+               <number>300</number>
               </property>
              </widget>
             </item>
-            <item row="1" column="2">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>corner sensitivity</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QSlider" name="topSpeedSlider">
-              <property name="minimum">
-               <number>100</number>
-              </property>
-              <property name="maximum">
-               <number>150000</number>
-              </property>
-              <property name="value">
-               <number>3000</number>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
+            <item row="2" column="1">
              <widget class="QLabel" name="TopSpeedSlider">
               <property name="text">
                <string>topSpeed</string>
@@ -150,18 +134,69 @@
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QSlider" name="accelerationSlider">
+             <widget class="QDial" name="accelerationSlider">
               <property name="minimum">
                <number>1000</number>
               </property>
               <property name="maximum">
-               <number>60000</number>
-              </property>
-              <property name="value">
                <number>10000</number>
               </property>
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+              <property name="singleStep">
+               <number>100</number>
+              </property>
+              <property name="pageStep">
+               <number>100</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>acceleration</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>corner sensitivity</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDial" name="topSpeedSlider">
+              <property name="minimum">
+               <number>100</number>
+              </property>
+              <property name="maximum">
+               <number>150000</number>
+              </property>
+              <property name="singleStep">
+               <number>1500</number>
+              </property>
+              <property name="pageStep">
+               <number>1500</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>0</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>0</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>0</string>
               </property>
              </widget>
             </item>
@@ -198,5 +233,54 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>accelerationSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>label_2</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1012</x>
+     <y>80</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1002</x>
+     <y>129</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>topSpeedSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>label_4</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1114</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1119</x>
+     <y>125</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CornerSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>label_5</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1218</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1222</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
