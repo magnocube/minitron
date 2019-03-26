@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2106</width>
-    <height>1006</height>
+    <width>928</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -307,14 +307,7 @@ QMenu::separator {
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="3">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>IR Sensor Right Background Light</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
+          <item row="2" column="1">
            <widget class="QProgressBar" name="ProgressbarIRLeft">
             <property name="maximum">
              <number>1000</number>
@@ -324,15 +317,56 @@ QMenu::separator {
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
+          <item row="2" column="3">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>IR Sensor Right Background Light</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>IR Sensor Left Background Light</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="2" column="2">
            <widget class="QProgressBar" name="ProgressbarIRRight">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>IR Proximity Left</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>IR Proximity Right</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QProgressBar" name="progressBarProxyLeft">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QProgressBar" name="progressBarProxyRight">
             <property name="maximum">
              <number>1000</number>
             </property>
@@ -413,6 +447,13 @@ QMenu::separator {
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="text">
+               <string>Speed preset: None</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
@@ -455,7 +496,7 @@ QMenu::separator {
                <number>1000</number>
               </property>
               <property name="maximum">
-               <number>10000</number>
+               <number>50000</number>
               </property>
               <property name="singleStep">
                <number>100</number>

@@ -38,6 +38,8 @@ private slots:
     void SendUdpToRobot();
     void on_buttonBrakeMode_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     UDP_Connection *robotConnection;

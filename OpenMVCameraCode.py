@@ -3,12 +3,12 @@ import sensor, image, time, pyb
 from pyb import UART
 
 
-threshold_index = 0 # 0 for red, 1 for green, 2 for blue
+threshold_index = 1 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
 # The below thresholds track in general red/green/blue things. You may wish to tune them...
-thresholds = [(42, 73, 30, 77, 3, 56), # generic_red_thresholds
-              (30, 100, -64, -8, -32, 32), # generic_green_thresholds
+thresholds = [(44, 78, 35, 89, -25, 39), # generic_red_thresholds
+              (25, 89, -128, -31, -44, 39), # generic_green_thresholds
               (0, 30, 0, 64, -128, 0),      #generic_blue_thresholds
               (63, 100, -128, 127, 20, 127)] # generic_Yellow_thresholds
 
@@ -21,11 +21,11 @@ uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
 
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
-sensor.set_framesize(sensor.QVGA)
+sensor.set_framesize(sensor.CIF)
 #sensor.set_framesize(sensor.QVGA)
 sensor.skip_frames(time = 2000)
 sensor.set_auto_gain(False) # must be turned off for color tracking
-sensor.set_auto_whitebal(True) # must be turned off for color tracking
+sensor.set_auto_whitebal(False) # must be turned off for color tracking
 clock = time.clock()
 
 
@@ -48,11 +48,11 @@ while(True):
     if(uart.any()):
         data  = uart.readline()
         print(data)
-        green_led.toggle()
+        red_led.toggle()
 
-    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=30, area_threshold=30, merge=True):
-          if blob.w() <= (blob.h() * 1.2):
-              if blob.w() >= (blob.h() * 0.8):
+    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=50, area_threshold=50, merge=True):
+          if blob.w() <= (blob.h() * 1.5):
+              if blob.w() >= (blob.h() * 0.5):
                   img.draw_rectangle(blob.rect())
                   img.draw_cross(blob.cx(), blob.cy())
                   age = 10

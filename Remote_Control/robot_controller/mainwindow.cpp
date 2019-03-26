@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.192");
+    robotConnection = new UDP_Connection("192.168.137.156");
 
 
     QTimer *timer = new QTimer(this);
@@ -139,6 +139,8 @@ void MainWindow::udpHasAUpdate()
     int rightLight = robotConnection->sharedVariables.outputs.lightRight;
     rightLight = rightLight * (2 - 0.001 * rightLight);
     ui->ProgressbarIRRight->setValue(rightLight);
+    ui->progressBarProxyLeft->setValue(robotConnection->sharedVariables.outputs.proximityLeft);
+    ui->progressBarProxyRight->setValue(robotConnection->sharedVariables.outputs.proximityRight);
     if(robotConnection->sharedVariables.outputs.TOFSensorWorking)
     {
         TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
@@ -254,4 +256,17 @@ void MainWindow::on_buttonBrakeMode_clicked()
     } else {
         ui->buttonBrakeMode->setText("BrakeMode: Normal");
     }
+}
+
+void MainWindow::on_pushButton_clicked() // speed preset button
+{
+
+      if(ui->pushButton->text() == "Speed preset: None"){
+          ui->pushButton->setText("Speed preset: Slow");
+      } else if(ui->pushButton->text() == "Speed preset: Fast"){
+          ui->pushButton->setText("Speed preset: Slow");
+      } else if(ui->pushButton->text() == "Speed preset: Slow"){
+          ui->pushButton->setText("Speed preset: Fast");
+      }
+
 }

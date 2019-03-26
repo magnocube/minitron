@@ -105,8 +105,6 @@ Makefile: ../robot_controller/robot_controller.pro C:/Qt/5.11.1/mingw53_32/mkspe
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_bluetooth.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_bluetooth_private.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_bootstrap_private.pri \
-		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_charts.pri \
-		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_charts_private.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_concurrent.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_concurrent_private.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_core.pri \
@@ -130,8 +128,6 @@ Makefile: ../robot_controller/robot_controller.pro C:/Qt/5.11.1/mingw53_32/mkspe
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_help_private.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_location.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_location_private.pri \
-		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_mqtt.pri \
-		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_mqtt_private.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_multimedia.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_multimedia_private.pri \
 		C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_multimediawidgets.pri \
@@ -278,8 +274,6 @@ C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_axserver_private.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_bluetooth.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_bluetooth_private.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_bootstrap_private.pri:
-C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_charts.pri:
-C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_charts_private.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_concurrent.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_concurrent_private.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_core.pri:
@@ -303,8 +297,6 @@ C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_help.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_help_private.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_location.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_location_private.pri:
-C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_mqtt.pri:
-C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_mqtt_private.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_multimedia.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_multimedia_private.pri:
 C:/Qt/5.11.1/mingw53_32/mkspecs/modules/qt_lib_multimediawidgets.pri:
