@@ -43,7 +43,9 @@ void IrDecoder::setupReceiver()
 }
 void IrDecoder::read()
 {
+#ifdef PRINT_DURARIONS
 	uint32_t startTime = esp_timer_get_time();
+#endif
 	size_t rx_size = 0;
 	//try to receive data from ringbuffer.
 	//RMT driver will push all the data it receives to its ringbuffer.
@@ -51,12 +53,12 @@ void IrDecoder::read()
 	rmt_item32_t* item = (rmt_item32_t*) xRingbufferReceiveFromISR(rxRingBuffer, &rx_size);
 	if(item) {
 		received = true;
-		// printf("received %zu\n", rx_size);
-		// for(int i=0;i<rx_size;i++)
-		// {
-		// 	printf("(%d, %d , %d, %d) ", item[i].duration0, item[i].level0, item[i].duration1, item[i].level1);
-		// }
-		// printf("\n");
+		//  printf("received %zu\n", rx_size);
+		//  for(int i=0;i<rx_size;i++)
+		//  {
+		//  	printf("(%d, %d , %d, %d) ", item[i].duration0, item[i].level0, item[i].duration1, item[i].level1);
+		//  }
+		//  printf("\n");
 		vRingbufferReturnItem(rxRingBuffer, (void*) item);
 	}
 #ifdef PRINT_DURARIONS
@@ -66,7 +68,9 @@ void IrDecoder::read()
 }
 void IrDecoder::send()
 {
+#ifdef PRINT_DURARIONS
 	uint32_t startTime=esp_timer_get_time();
+#endif
 	ESP_ERROR_CHECK(rmt_driver_install(irSenderConfig.channel, 0, 0));
 
 	size_t size = sizeof(rmt_item32_t)*10;
@@ -102,7 +106,9 @@ void IrDecoder::setupProximity()
 void IrDecoder::runProximity()
 {
 	if(esp_timer_get_time() < timeUntilLedAvailable) return;
+#ifdef PRINT_DURARIONS
 	uint32_t startTime = esp_timer_get_time();
+#endif
 
 	//read without led
 	int lowLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
@@ -138,15 +144,15 @@ void IrDecoder::runProximity()
 	//the range is between 0 to 1000
     #define LEFT_DARK_CURRENT 190
 	#define RIGHT_DARK_CURRENT 180
-	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - LEFT_DARK_CURRENT)/3;
+	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - LEFT_DARK_CURRENT);
 	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
 	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);
-    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-RIGHT_DARK_CURRENT)/3;
+    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-RIGHT_DARK_CURRENT);
 	sharedVariables->outputs.proximityRight = std::max(0, sharedVariables->outputs.proximityRight);
 	sharedVariables->outputs.proximityRight = std::min(sharedVariables->outputs.proximityRight, 1000);
 
-    sharedVariables->outputs.lightLeft = left.lowBufferSort[1]/4;
-    sharedVariables->outputs.lightRight = right.lowBufferSort[1]/4;
+    sharedVariables->outputs.lightLeft = left.lowBufferSort[1];
+    sharedVariables->outputs.lightRight = right.lowBufferSort[1];
 
 #ifdef PRINT_PROXIMITY
 	printf("%d\n", sharedVariables->outputs.proximityLeft);

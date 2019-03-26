@@ -69,29 +69,30 @@ void mpu9250Setup (){
     // Initialize
     ESP_ERROR_CHECK(MPU.initialize());  // initialize the chip and set initial configurations
     // Setup with your configurations
-    // ESP_ERROR_CHECK(MPU.setSampleRate(50));  // set sample rate to 50 Hz
-    // ESP_ERROR_CHECK(MPU.setGyroFullScale(mpud::GYRO_FS_500DPS));
-    // ESP_ERROR_CHECK(MPU.setAccelFullScale(mpud::ACCEL_FS_4G));
+     ESP_ERROR_CHECK(MPU.setSampleRate(1000));  // set sample rate to 50 Hz
+     ESP_ERROR_CHECK(MPU.setGyroFullScale(mpud::GYRO_FS_500DPS));
+     ESP_ERROR_CHECK(MPU.setAccelFullScale(mpud::ACCEL_FS_4G));
 
     MPU.setAuxI2CBypass(true);
     
 }
 void mpu9250ReadMotion()
 {
-        if(sharedVariables.outputs.MPU9250Working!=true) return;
-
-        uint32_t startTime=esp_timer_get_time();
-        // Read
-        MPU.motion(&accelRaw, &gyroRaw);  // fetch raw data from the registers
-        // Convert
-        accelG = mpud::accelGravity(accelRaw, mpud::ACCEL_FS_4G);
-        sharedVariables.outputs.acceleration[0] = accelG.x;
-        sharedVariables.outputs.acceleration[1] = accelG.y;
-        sharedVariables.outputs.acceleration[2] = accelG.z;
-        gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
-        sharedVariables.outputs.gyroValues[0] = gyroDPS.x;
-        sharedVariables.outputs.gyroValues[1] = gyroDPS.y;
-        sharedVariables.outputs.gyroValues[2] = gyroDPS.z;
+      if(sharedVariables.outputs.MPU9250Working!=true) return;
+#ifdef PRINT_DURARIONS
+      uint32_t startTime=esp_timer_get_time();
+#endif
+      // Read
+      MPU.motion(&accelRaw, &gyroRaw);  // fetch raw data from the registers
+      // Convert
+      accelG = mpud::accelGravity(accelRaw, mpud::ACCEL_FS_4G);
+      sharedVariables.outputs.acceleration[0] = accelG.x;
+      sharedVariables.outputs.acceleration[1] = accelG.y;
+      sharedVariables.outputs.acceleration[2] = accelG.z;
+      gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
+      sharedVariables.outputs.gyroValues[0] = gyroDPS.x;
+      sharedVariables.outputs.gyroValues[1] = gyroDPS.y;
+      sharedVariables.outputs.gyroValues[2] = gyroDPS.z;
 
       
 #ifdef PRINT_DURARIONS
@@ -157,7 +158,9 @@ float adjustMagValue(int16_t value, uint8_t adjust) {
 void mpu9250ReadCompass()
 {
   if(sharedVariables.outputs.MPU9250Working!=true) return;
+#ifdef PRINT_DURARIONS
   uint32_t startTime=esp_timer_get_time();
+#endif
 
   uint8_t magBuf[7];
   i2c0.readBytes(AK8963_ADDRESS, AK8963_RA_HXL, 7, magBuf);

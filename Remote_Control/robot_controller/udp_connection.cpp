@@ -41,7 +41,7 @@ void UDP_Connection::readyRead()
 
     memcpy((void*)&sharedVariables.outputs, buffer, sizeof(sharedVariables.outputs));
     qDebug() << "battery: " << sharedVariables.outputs.voltage;
-
+    qDebug() << "light: " << sharedVariables.outputs.lightLeft;
     emit udpUpdate();  // will send a signal to the main
 
 }
