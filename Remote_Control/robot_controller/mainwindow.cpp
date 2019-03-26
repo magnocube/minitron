@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.8");
+
+    robotConnection = new UDP_Connection("192.168.137.68");
 
 
     QTimer *timer = new QTimer(this);
@@ -137,8 +138,21 @@ void MainWindow::udpHasAUpdate()
     ui->ProgressbarIRRight->setValue(robotConnection->sharedVariables.outputs.lightRight);
     TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
     battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
-    proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft/100);
-    proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight/100);
+
+    proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft);
+    //proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
+    float accel = abs(robotConnection->sharedVariables.outputs.acceleration[0])+abs(robotConnection->sharedVariables.outputs.acceleration[1])+abs(robotConnection->sharedVariables.outputs.acceleration[2]);
+    if(accel>1.5)
+    {
+        proxySensorRight->setProxy(accel*500);
+
+    }
+    else {
+
+            proxySensorRight->setProxy(0);
+
+    }
+
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
     update();
@@ -199,7 +213,6 @@ void MainWindow::SendUdpToRobot()
         speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
     }
 
-    qDebug() << "sending" << endl;
     robotConnection->send();
     update();
 

@@ -25,13 +25,17 @@ void core0Task( void * pvParameters ){
         if(loopCounter%10 == 0)
         {
             tofSensor->measure();
+            irDecoder->send();
         }
         irDecoder->runProximity();//takes 0.90ms
 
         checkBattery();
         loopCounter++;
-        while(esp_timer_get_time() - lastTime < 2000);
-        lastTime = esp_timer_get_time();    }
+
+        while(esp_timer_get_time() - lastTime < 10000);
+        lastTime = esp_timer_get_time();    
+    }
+
 }
 
 void core1Task( void * pvParameters ){
@@ -66,7 +70,6 @@ void core1Task( void * pvParameters ){
         
         vTaskDelay(10/portTICK_PERIOD_MS);
         programLoop();
-
     }
 
 }

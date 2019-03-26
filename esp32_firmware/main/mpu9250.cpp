@@ -59,7 +59,6 @@ void mpu9250Setup (){
         counter++;
         if(counter >= TIME_OUT)
         {
-            sharedVariables.outputs.MPU9250ErrorOccured = true;
             sharedVariables.outputs.MPU9250Working = false;
             printf( "Can't connect, returning");
             return;
