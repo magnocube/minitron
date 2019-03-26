@@ -34,14 +34,19 @@ public:
     QGraphicsView *graphicsView;
     QVBoxLayout *verticalLayout_3;
     QGridLayout *gridLayout_3;
-    QLabel *label_7;
     QProgressBar *ProgressbarIRLeft;
+    QLabel *label_7;
     QLabel *label_6;
     QProgressBar *ProgressbarIRRight;
+    QLabel *label_10;
+    QLabel *label_9;
+    QProgressBar *progressBarProxyLeft;
+    QProgressBar *progressBarProxyRight;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout_2;
     QComboBox *comboBox;
     QPushButton *buttonBrakeMode;
+    QPushButton *pushButton;
     QGridLayout *gridLayout;
     QDial *CornerSlider;
     QLabel *TopSpeedSlider;
@@ -63,7 +68,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(2106, 1006);
+        MainWindow->resize(928, 569);
         MainWindow->setStyleSheet(QString::fromUtf8("/*\n"
 "	Copyright 2013 Emanuel Claesson\n"
 "\n"
@@ -370,29 +375,53 @@ public:
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setSpacing(6);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        label_7 = new QLabel(centralWidget);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
-
-        gridLayout_3->addWidget(label_7, 0, 3, 1, 1);
-
         ProgressbarIRLeft = new QProgressBar(centralWidget);
         ProgressbarIRLeft->setObjectName(QString::fromUtf8("ProgressbarIRLeft"));
         ProgressbarIRLeft->setMaximum(1000);
         ProgressbarIRLeft->setValue(24);
 
-        gridLayout_3->addWidget(ProgressbarIRLeft, 0, 1, 1, 1);
+        gridLayout_3->addWidget(ProgressbarIRLeft, 2, 1, 1, 1);
+
+        label_7 = new QLabel(centralWidget);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        gridLayout_3->addWidget(label_7, 2, 3, 1, 1);
 
         label_6 = new QLabel(centralWidget);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
-        gridLayout_3->addWidget(label_6, 0, 0, 1, 1);
+        gridLayout_3->addWidget(label_6, 2, 0, 1, 1);
 
         ProgressbarIRRight = new QProgressBar(centralWidget);
         ProgressbarIRRight->setObjectName(QString::fromUtf8("ProgressbarIRRight"));
         ProgressbarIRRight->setMaximum(1000);
         ProgressbarIRRight->setValue(24);
 
-        gridLayout_3->addWidget(ProgressbarIRRight, 0, 2, 1, 1);
+        gridLayout_3->addWidget(ProgressbarIRRight, 2, 2, 1, 1);
+
+        label_10 = new QLabel(centralWidget);
+        label_10->setObjectName(QString::fromUtf8("label_10"));
+
+        gridLayout_3->addWidget(label_10, 0, 0, 1, 1);
+
+        label_9 = new QLabel(centralWidget);
+        label_9->setObjectName(QString::fromUtf8("label_9"));
+
+        gridLayout_3->addWidget(label_9, 0, 3, 1, 1);
+
+        progressBarProxyLeft = new QProgressBar(centralWidget);
+        progressBarProxyLeft->setObjectName(QString::fromUtf8("progressBarProxyLeft"));
+        progressBarProxyLeft->setMaximum(1000);
+        progressBarProxyLeft->setValue(24);
+
+        gridLayout_3->addWidget(progressBarProxyLeft, 0, 1, 1, 1);
+
+        progressBarProxyRight = new QProgressBar(centralWidget);
+        progressBarProxyRight->setObjectName(QString::fromUtf8("progressBarProxyRight"));
+        progressBarProxyRight->setMaximum(1000);
+        progressBarProxyRight->setValue(24);
+
+        gridLayout_3->addWidget(progressBarProxyRight, 0, 2, 1, 1);
 
 
         verticalLayout_3->addLayout(gridLayout_3);
@@ -424,6 +453,11 @@ public:
 
         verticalLayout_2->addWidget(buttonBrakeMode);
 
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+
+        verticalLayout_2->addWidget(pushButton);
+
 
         horizontalLayout->addLayout(verticalLayout_2);
 
@@ -437,7 +471,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(CornerSlider->sizePolicy().hasHeightForWidth());
         CornerSlider->setSizePolicy(sizePolicy);
-        CornerSlider->setMaximum(30000);
+        CornerSlider->setMaximum(10000);
         CornerSlider->setSingleStep(300);
         CornerSlider->setPageStep(300);
 
@@ -453,7 +487,7 @@ public:
         sizePolicy.setHeightForWidth(accelerationSlider->sizePolicy().hasHeightForWidth());
         accelerationSlider->setSizePolicy(sizePolicy);
         accelerationSlider->setMinimum(1000);
-        accelerationSlider->setMaximum(10000);
+        accelerationSlider->setMaximum(50000);
         accelerationSlider->setSingleStep(100);
         accelerationSlider->setPageStep(100);
 
@@ -561,6 +595,8 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         label_7->setText(QApplication::translate("MainWindow", "IR Sensor Right Background Light", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "IR Sensor Left Background Light", nullptr));
+        label_10->setText(QApplication::translate("MainWindow", "IR Proximity Left", nullptr));
+        label_9->setText(QApplication::translate("MainWindow", "IR Proximity Right", nullptr));
         comboBox->setItemText(0, QApplication::translate("MainWindow", "Manual Wifi", nullptr));
         comboBox->setItemText(1, QApplication::translate("MainWindow", "Manual IR", nullptr));
         comboBox->setItemText(2, QApplication::translate("MainWindow", "Manual Balance Mode", nullptr));
@@ -574,6 +610,7 @@ public:
         comboBox->setItemText(10, QApplication::translate("MainWindow", "Automatic Balance Dyson Mode", nullptr));
 
         buttonBrakeMode->setText(QApplication::translate("MainWindow", "BrakeMode: Normal", nullptr));
+        pushButton->setText(QApplication::translate("MainWindow", "Speed preset: None", nullptr));
         TopSpeedSlider->setText(QApplication::translate("MainWindow", "topSpeed", nullptr));
         label->setText(QApplication::translate("MainWindow", "acceleration", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "corner sensitivity", nullptr));
