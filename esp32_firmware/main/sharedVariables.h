@@ -69,6 +69,9 @@ typedef struct{
         bool TOFSensorWorking = true;
         //ir receiver
         //todo add last command
+        uint8_t irFlowNumber = 0;
+        uint8_t irLastAddress=0;
+        uint8_t irLastCommand=0;
         bool IRReceiverErrorOccured = false;
         bool IRReceiverWorking = true;
 
@@ -102,6 +105,8 @@ typedef struct{
         //battery
         float voltage=0;
         bool on = true;
+        
+
 
     }outputs;
    

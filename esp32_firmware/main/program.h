@@ -44,7 +44,7 @@ void calculateXandY(){
       
 
 }
-float cameraAngle = 170;
+float cameraAngle=170;
 float desiredCameraAngle = 170;
 void automaticServoAim(){
     if(esp_timer_get_time() - lastUpdateXAndYCoordinates < 300000){ // max 500 ms since last time target seen    // just for the servo
@@ -82,7 +82,9 @@ void automaticServoAim(){
     {
         desiredCameraAngle = 50;
     }
-    Camera->setCameraAngle((int)desiredCameraAngle);
+    sharedVariables.outputs.servoPosition = cameraAngle;
+
+    Camera->setCameraAngle((int)sharedVariables.outputs.servoPosition);
     
 }
 void dysonMode()
@@ -122,9 +124,8 @@ void AutomaticObjectSearch()
     MotorController->setAcceleration(10000);
     
     
-    //adjust servo to camrea object direction
+    //adjust servo to camera object direction
     automaticServoAim();
-
 
     //folllow a target
     int speed = 7000;
@@ -143,13 +144,13 @@ void AutomaticObjectSearch()
             //brake and stop
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(1000000); // will go back to default value on next loop
+            MotorController->setAcceleration(2147483647); // will go back to default value on next loop
         } else{
             #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
             printf("3"); //was not searching... is following target now
             #endif
-            m1Speed += (50-y) * 100;
-            m2Speed -= (50-y)  * 100;
+            m1Speed += (50-y) * 50;
+            m2Speed -= (50-y)  * 50;
         }
         
         
@@ -161,7 +162,7 @@ void AutomaticObjectSearch()
         #endif
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(1000000); // will go back to default value on next loop
+            MotorController->setAcceleration(2147483647); // will go back to default value on next loop
         } 
         
 
@@ -187,7 +188,7 @@ void AutomaticObjectSearch()
             SHS.isSearching = true;
 
             
-            if(SHS.lastXLocation > 50){
+            if(SHS.lastXLocation < 50){
                 m1Speed = 2000;
                 m2Speed = -2000;
             }else{
@@ -223,7 +224,7 @@ void programLoop(){
     }
     else if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
     {
-
+        Camera->setCameraAngle((int)sharedVariables.inputs.servoPosition);
     }
     else
     {

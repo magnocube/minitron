@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.192");
+    robotConnection = new UDP_Connection("192.168.137.91");
 
 
     QTimer *timer = new QTimer(this);
@@ -148,7 +148,18 @@ void MainWindow::udpHasAUpdate()
     }
     battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
     proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft);
-    proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
+    //proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
+    float accel = abs(robotConnection->sharedVariables.outputs.acceleration[0])+abs(robotConnection->sharedVariables.outputs.acceleration[1])+abs(robotConnection->sharedVariables.outputs.acceleration[2]);
+    if(accel>1.5)
+    {
+        proxySensorRight->setProxy(accel*500);
+
+    }
+    else {
+
+            proxySensorRight->setProxy(0);
+
+    }
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
     update();
@@ -209,7 +220,6 @@ void MainWindow::SendUdpToRobot()
         speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
     }
 
-    qDebug() << "sending" << endl;
     robotConnection->send();
     update();
 

@@ -14,7 +14,7 @@ void core0Task( void * pvParameters ){
     tofSensor = new TOFSensor();
     tofSensor->init();
     uint32_t loopCounter=0;
-    //uint32_t lastTime = 0;
+    uint32_t lastTime = 0;
     while(true)
     {
         MotorController->loop();
@@ -25,21 +25,22 @@ void core0Task( void * pvParameters ){
         if(loopCounter%40 == 0)
         {
             tofSensor->measure();
+            //irDecoder->send();
         }
         irDecoder->runProximity();//takes 0.90ms
 
         checkBattery();
         loopCounter++;
-        //while(esp_timer_get_time() - lastTime < 20000);
-        //lastTime = esp_timer_get_time();    
+        while(esp_timer_get_time() - lastTime < 10000);
+        lastTime = esp_timer_get_time();    
     }
 }
 
 void core1Task( void * pvParameters ){
-    wifiSetup();
+    //wifiSetup();
     while(true)
     {
-        wifiLoop();
+        //wifiLoop();
         if(udpReceived ==  true)
         {
             udpReceived = false;
@@ -65,9 +66,8 @@ void core1Task( void * pvParameters ){
             }
         }
         
-        vTaskDelay(10/portTICK_PERIOD_MS);
+        vTaskDelay(20/portTICK_PERIOD_MS);
         programLoop();
-
     }
 
 }

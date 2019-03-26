@@ -26,7 +26,6 @@ class IrDecoder
 		int lowBufferSort[BUFFER_SIZE];
 		int highBufferSort[BUFFER_SIZE];
 	}left,right;
-    bool received = false;
     int receiveStrength=0;
 	uint32_t timeUntilLedAvailable = 0;//in ms
 
@@ -50,6 +49,8 @@ public:
 		setupReceiver();
 		setupProximity();
 	}
+	uint8_t translateByte(rmt_item32_t* item);
+	bool verifyReceivedData(rmt_item32_t* item);
 	void read();
 	void send();
 	void runProximity();
