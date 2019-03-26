@@ -258,11 +258,13 @@ release/moc_mainwindow.cpp: C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QMainWindo
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsscene.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsitem.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtGui/QKeyEvent \
 		../robot_controller/graphicspeedsensor.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsItem \
 		../robot_controller/graphicstofsensor.h \
 		../robot_controller/graphicproxysensor.h \
 		../robot_controller/graphicBattery.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtCore/QMath.h \
 		../robot_controller/mainwindow.h \
 		release/moc_predefs.h \
 		C:/Qt/5.11.1/mingw53_32/bin/moc.exe
@@ -492,11 +494,13 @@ release/main.o: ../robot_controller/main.cpp ../robot_controller/mainwindow.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsscene.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsitem.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtGui/QKeyEvent \
 		../robot_controller/graphicspeedsensor.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsItem \
 		../robot_controller/graphicstofsensor.h \
 		../robot_controller/graphicproxysensor.h \
 		../robot_controller/graphicBattery.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtCore/QMath.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QApplication \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qapplication.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtCore/qcoreapplication.h \
@@ -631,11 +635,13 @@ release/mainwindow.o: ../robot_controller/mainwindow.cpp ../robot_controller/mai
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsscene.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsPixmapItem \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsitem.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtGui/QKeyEvent \
 		../robot_controller/graphicspeedsensor.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsItem \
 		../robot_controller/graphicstofsensor.h \
 		../robot_controller/graphicproxysensor.h \
 		../robot_controller/graphicBattery.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtCore/QMath.h \
 		ui_mainwindow.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtCore/QVariant \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QApplication \
@@ -659,6 +665,8 @@ release/mainwindow.o: ../robot_controller/mainwindow.cpp ../robot_controller/mai
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qrubberband.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qframe.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtCore/qabstractitemmodel.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QDial \
+		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qdial.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsView \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsview.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qscrollarea.h \
@@ -671,7 +679,9 @@ release/mainwindow.o: ../robot_controller/mainwindow.cpp ../robot_controller/mai
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QHBoxLayout \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QLabel \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qlabel.h \
-		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QSlider \
+		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QPushButton \
+		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qpushbutton.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractbutton.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QVBoxLayout \
 		C:/Qt/5.11.1/mingw53_32/include/QtWidgets/QWidget \
 		C:/Qt/5.11.1/mingw53_32/include/QtCore/QTimer \
@@ -1146,7 +1156,10 @@ release/graphicBattery.o: ../robot_controller/graphicBattery.cpp ../robot_contro
 		C:/Qt/5.11.1/mingw53_32/include/QtGui/qbrush.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtGui/qfontinfo.h \
 		C:/Qt/5.11.1/mingw53_32/include/QtGui/qfont.h \
-		C:/Qt/5.11.1/mingw53_32/include/QtGui/qfontmetrics.h
+		C:/Qt/5.11.1/mingw53_32/include/QtGui/qfontmetrics.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtCore/QMath.h \
+		C:/Qt/5.11.1/mingw53_32/include/QtCore/QDateTime \
+		C:/Qt/5.11.1/mingw53_32/include/QtCore/qdatetime.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\graphicBattery.o ..\robot_controller\graphicBattery.cpp
 
 release/qrc_recources.o: release/qrc_recources.cpp 

@@ -71,7 +71,7 @@ typedef struct{
         uint16_t TOFSensorDistanceMM;
         bool TOFSensorWorking = true;
         //ir receiver
-        //todo add last command
+
         uint8_t irFlowNumber = 0;
         uint8_t irLastAddress=0;
         uint8_t irLastCommand=0;
