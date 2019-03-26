@@ -9,8 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-    robotConnection = new UDP_Connection("192.168.137.68");
+    robotConnection = new UDP_Connection("192.168.137.156");
 
 
     QTimer *timer = new QTimer(this);
@@ -134,25 +133,24 @@ void MainWindow::udpHasAUpdate()
 
     ui->progressBarCameraAngle->setValue(robotConnection->sharedVariables.outputs.servoPosition);
     ui->label_status_bar->setText(QString::number(robotConnection->sharedVariables.outputs.servoPosition));
-    ui->ProgressbarIRLeft->setValue(robotConnection->sharedVariables.outputs.lightLeft);
-    ui->ProgressbarIRRight->setValue(robotConnection->sharedVariables.outputs.lightRight);
-    TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
-    battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
-
-    proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft);
-    //proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
-    float accel = abs(robotConnection->sharedVariables.outputs.acceleration[0])+abs(robotConnection->sharedVariables.outputs.acceleration[1])+abs(robotConnection->sharedVariables.outputs.acceleration[2]);
-    if(accel>1.5)
+    int leftLight = robotConnection->sharedVariables.outputs.lightLeft;
+    leftLight = leftLight * (2 - 0.001 * leftLight);
+    ui->ProgressbarIRLeft->setValue(leftLight);
+    int rightLight = robotConnection->sharedVariables.outputs.lightRight;
+    rightLight = rightLight * (2 - 0.001 * rightLight);
+    ui->ProgressbarIRRight->setValue(rightLight);
+    ui->progressBarIRProxyLeft->setValue(robotConnection->sharedVariables.outputs.proximityLeft);
+    ui->progressBarIRProxyRight->setValue(robotConnection->sharedVariables.outputs.proximityRight);
+    if(robotConnection->sharedVariables.outputs.TOFSensorWorking)
     {
-        proxySensorRight->setProxy(accel*500);
-
+        TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
     }
     else {
-
-            proxySensorRight->setProxy(0);
-
+        TOFSensor->setDistance(-1);
     }
-
+    battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
+    proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft);
+    proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
     update();
@@ -211,8 +209,16 @@ void MainWindow::SendUdpToRobot()
         speedMotor2->setSpeed(robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed);
         speedMotor1->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
         speedMotor2->setAcceleration(robotConnection->sharedVariables.inputs.steppers.acceleration);
+        ui->progressBarCameraAngle->setValue(ui->horizontalServoSlider->value());
+        robotConnection->sharedVariables.inputs.servoPosition = ui->horizontalServoSlider->value();
     }
 
+
+    robotConnection->sharedVariables.inputs.PID_p = ui->PSlider->value();
+    robotConnection->sharedVariables.inputs.PID_i = ui->ISlider->value();
+    robotConnection->sharedVariables.inputs.PID_d = ui->DSlider->value();
+
+    qDebug() << "sending" << endl;
     robotConnection->send();
     update();
 
@@ -257,4 +263,23 @@ void MainWindow::on_buttonBrakeMode_clicked()
     } else {
         ui->buttonBrakeMode->setText("BrakeMode: Normal");
     }
+}
+
+void MainWindow::on_pushButton_clicked() // speed preset button
+{
+
+      if(ui->pushButton->text() == "Speed preset: None"){
+          ui->pushButton->setText("Speed preset: Slow");
+          ui->topSpeedSlider->setValue(3000);
+          ui->accelerationSlider->setValue(15000);
+      } else if(ui->pushButton->text() == "Speed preset: Fast"){
+          ui->pushButton->setText("Speed preset: Slow");
+          ui->topSpeedSlider->setValue(3000);
+          ui->accelerationSlider->setValue(15000);
+      } else if(ui->pushButton->text() == "Speed preset: Slow"){
+          ui->pushButton->setText("Speed preset: Fast");
+          ui->topSpeedSlider->setValue(20000);
+          ui->accelerationSlider->setValue(15000);
+      }
+
 }

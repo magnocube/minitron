@@ -307,14 +307,45 @@ QMenu::separator {
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="3">
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>IR Distance Right</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QProgressBar" name="ProgressbarIRRight">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>IR Sensor Left Background Light</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
            <widget class="QLabel" name="label_7">
             <property name="text">
              <string>IR Sensor Right Background Light</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>IR Distance Left</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
            <widget class="QProgressBar" name="ProgressbarIRLeft">
             <property name="maximum">
              <number>1000</number>
@@ -324,15 +355,18 @@ QMenu::separator {
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>IR Sensor Left Background Light</string>
+          <item row="0" column="2">
+           <widget class="QProgressBar" name="progressBarIRProxyLeft">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>24</number>
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="QProgressBar" name="ProgressbarIRRight">
+          <item row="0" column="3">
+           <widget class="QProgressBar" name="progressBarIRProxyRight">
             <property name="maximum">
              <number>1000</number>
             </property>
@@ -351,6 +385,11 @@ QMenu::separator {
              <widget class="QComboBox" name="comboBox">
               <item>
                <property name="text">
+                <string>Off</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
                 <string>Manual Wifi</string>
                </property>
               </item>
@@ -362,11 +401,6 @@ QMenu::separator {
               <item>
                <property name="text">
                 <string>Manual Balance Mode</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Off</string>
                </property>
               </item>
               <item>
@@ -404,6 +438,13 @@ QMenu::separator {
                 <string>Automatic Balance Dyson Mode</string>
                </property>
               </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="text">
+               <string>Speed preset: None</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -455,7 +496,7 @@ QMenu::separator {
                <number>1000</number>
               </property>
               <property name="maximum">
-               <number>10000</number>
+               <number>50000</number>
               </property>
               <property name="singleStep">
                <number>100</number>
@@ -528,7 +569,21 @@ QMenu::separator {
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Camera Angle</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="labelCameraAngle">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
            <widget class="QProgressBar" name="progressBarCameraAngle">
             <property name="minimum">
              <number>50</number>
@@ -542,18 +597,79 @@ QMenu::separator {
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="label_11">
             <property name="text">
-             <string>Camera Angle</string>
+             <string>Servo Slider</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QSlider" name="horizontalServoSlider">
+            <property name="minimum">
+             <number>50</number>
+            </property>
+            <property name="maximum">
+             <number>170</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>I-Value</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="labelCameraAngle">
-            <property name="text">
-             <string>0</string>
+           <widget class="QSlider" name="PSlider">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSlider" name="DSlider">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>D-Value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>P-Value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSlider" name="ISlider">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLCDNumber" name="lcdNumber"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLCDNumber" name="lcdNumber_2"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLCDNumber" name="lcdNumber_3"/>
           </item>
          </layout>
         </item>
@@ -594,12 +710,12 @@ QMenu::separator {
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1012</x>
-     <y>80</y>
+     <x>1746</x>
+     <y>153</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1002</x>
-     <y>129</y>
+     <x>1746</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>
@@ -610,12 +726,12 @@ QMenu::separator {
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1114</x>
-     <y>85</y>
+     <x>1919</x>
+     <y>158</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1119</x>
-     <y>125</y>
+     <x>1919</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>
@@ -626,12 +742,60 @@ QMenu::separator {
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1218</x>
-     <y>86</y>
+     <x>2092</x>
+     <y>159</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1222</x>
-     <y>124</y>
+     <x>2092</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1644</x>
+     <y>291</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2072</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ISlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdNumber_2</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1753</x>
+     <y>309</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2074</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdNumber_3</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1771</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2058</x>
+     <y>347</y>
     </hint>
    </hints>
   </connection>
