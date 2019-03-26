@@ -89,6 +89,9 @@ typedef struct{
         uint8_t cameraFrameRate;
         bool cameraImageAvailable = false;
         bool cameraWorking = true;
+        uint8_t objectX = 0;
+        uint8_t objectY = 0;
+        bool objectSeen = false;
 
         //servo
         uint8_t servoPosition; //in degrees

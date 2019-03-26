@@ -211,7 +211,7 @@ uint32_t lastTimeReceived = 0;
 void wifiLoop()
 {
     if(!connected) return;
-    if(esp_timer_get_time() - lastTimeSended > 100000)
+    if(esp_timer_get_time() - lastTimeSended > 50000)
     {
         lastTimeSended = esp_timer_get_time();
         if(sendUDP())

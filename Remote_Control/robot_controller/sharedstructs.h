@@ -51,7 +51,7 @@ typedef struct{
         uint8_t servoPosition = 80; //in degrees
 
         //modes
-        controlModes mode = controlModes::OFF;
+        controlModes mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
 
         //ir send
         uint8_t irFlowNumber = 0;
@@ -72,7 +72,7 @@ typedef struct{
         uint16_t TOFSensorDistanceMM;
         bool TOFSensorWorking = true;
         //ir receiver
-        //todo add last command
+
         uint8_t irFlowNumber = 0;
         uint8_t irLastAddress=0;
         uint8_t irLastCommand=0;
@@ -90,6 +90,9 @@ typedef struct{
         uint8_t cameraFrameRate;
         bool cameraImageAvailable = false;
         bool cameraWorking = true;
+        uint8_t objectX = 0;
+        uint8_t objectY = 0;
+        bool objectSeen = false;
 
         //servo
         uint8_t servoPosition; //in degrees

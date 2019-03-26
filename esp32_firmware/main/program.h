@@ -8,8 +8,9 @@ extern SerialConnection * Camera;
 
 
 uint64_t lastUpdateXAndYCoordinates = 0;
-int x = 50; //default x value of target... update with method calculateXandY()
-int y = 50; //default y value of target... update with method calculateXandY()
+
+#define x sharedVariables.outputs.objectX //default x value of target... update with method calculateXandY()
+#define y sharedVariables.outputs.objectY //default y value of target... update with method calculateXandY()
 
 //will attempt to aim the servo with the camera to the target  (basics will work... but a lot of work has to be done)
 void calculateXandY(){

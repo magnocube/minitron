@@ -29,7 +29,8 @@ SOURCES += \
     graphicspeedsensor.cpp \
     graphicstofsensor.cpp \
     graphicproxysensor.cpp \
-    graphicBattery.cpp
+    graphicBattery.cpp \
+    graphiccamera.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +39,8 @@ HEADERS += \
     graphicstofsensor.h \
     graphicproxysensor.h \
     sharedstructs.h \
-    graphicBattery.h
+    graphicBattery.h \
+    graphiccamera.h
 
 FORMS += \
         mainwindow.ui

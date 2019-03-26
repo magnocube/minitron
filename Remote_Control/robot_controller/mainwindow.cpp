@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.156");
+    robotConnection = new UDP_Connection("192.168.137.68");
 
 
     QTimer *timer = new QTimer(this);
@@ -71,12 +71,17 @@ void MainWindow::setupUI()
     battery->setPos(0,0);
     battery->setVoltage(0);
 
+    camera = new graphicCamera();
+    camera->setPos(750,-100);
+    camera->setlocation(50,50);
+
     scene->addItem(battery);
     scene->addItem(speedMotor1);
     scene->addItem(speedMotor2);
     scene->addItem(TOFSensor);
     scene->addItem(proxySensorLeft);
     scene->addItem(proxySensorRight);
+    scene->addItem(camera);
 
 
 
@@ -151,6 +156,7 @@ void MainWindow::udpHasAUpdate()
     battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
     proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft);
     proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
+    camera->setlocation(robotConnection->sharedVariables.outputs.objectX,robotConnection->sharedVariables.outputs.objectY);
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
     update();

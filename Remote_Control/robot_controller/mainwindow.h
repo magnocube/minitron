@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "graphiccamera.h"
+
 #include <QMainWindow>
 #include <udp_connection.h>
 #include <QPainter>
@@ -52,7 +54,7 @@ private:
     graphicProxySensor * proxySensorLeft;
     graphicProxySensor * proxySensorRight;
     GraphicBattery * battery;
-
+    graphicCamera * camera;
     struct ConntrolData{
         int32_t Motor1OldSpeed = 0;
         int32_t Motor2OldSpeed = 0;
