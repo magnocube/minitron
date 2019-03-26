@@ -251,9 +251,12 @@ void IrDecoder::runProximity()
 	int lowLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
 	int lowLevel2 = adc1_get_raw(IR_PHOTODIODE2_PIN);
 
+	
 	//turn led on
     gpio_set_level(IR_LED_PIN, 1);
-
+	
+	uint32_t startTime = esp_timer_get_time();
+	while(esp_timer_get_time() - startTime < 100);
 	//read with led
     int highLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
 	int highLevel2 = adc1_get_raw(IR_PHOTODIODE2_PIN);

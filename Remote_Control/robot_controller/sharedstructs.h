@@ -66,38 +66,29 @@ typedef struct{
         float magnetometerValues[3];//x,y,z
         float compassAngle;
         float MPU9250Temperature;
-        bool MPU9250ErrorOccured = false;
         bool MPU9250Working = true;
 
         //tof sensor
         uint16_t TOFSensorDistanceMM;
-        bool TOFSensorErrorOccured = false;
         bool TOFSensorWorking = true;
         //ir receiver
         //todo add last command
         uint8_t irFlowNumber = 0;
         uint8_t irLastAddress=0;
         uint8_t irLastCommand=0;
-        bool IRReceiverErrorOccured = false;
-        bool IRReceiverWorking = true;
 
-        //ir leds
-        //todo add next command
 
         //proximity sensors
         int proximityLeft;
         int proximityRight;
         int lightLeft;
         int lightRight;
-        bool proximityErrorOccured = false;
-        bool proximityWorking = true;
 
         Steppers steppers;
 
         //camera
         uint8_t cameraFrameRate;
         bool cameraImageAvailable = false;
-        bool cameraErrorOccured = false;
         bool cameraWorking = true;
 
         //servo
@@ -110,10 +101,6 @@ typedef struct{
 
         //battery
         float voltage=0;
-        bool on = true;
-
-
-
     }outputs;
 
 

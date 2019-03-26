@@ -25,7 +25,7 @@ void core0Task( void * pvParameters ){
         if(loopCounter%40 == 0)
         {
             tofSensor->measure();
-            //irDecoder->send();
+            irDecoder->send();
         }
         irDecoder->runProximity();//takes 0.90ms
 
@@ -37,10 +37,10 @@ void core0Task( void * pvParameters ){
 }
 
 void core1Task( void * pvParameters ){
-    //wifiSetup();
+    wifiSetup();
     while(true)
     {
-        //wifiLoop();
+        wifiLoop();
         if(udpReceived ==  true)
         {
             udpReceived = false;
@@ -66,7 +66,7 @@ void core1Task( void * pvParameters ){
             }
         }
         
-        vTaskDelay(20/portTICK_PERIOD_MS);
+        vTaskDelay(10/portTICK_PERIOD_MS);
         programLoop();
     }
 
