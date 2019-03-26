@@ -43,7 +43,9 @@ void IrDecoder::setupReceiver()
 }
 void IrDecoder::read()
 {
+#ifdef PRINT_DURARIONS
 	uint32_t startTime = esp_timer_get_time();
+#endif
 	size_t rx_size = 0;
 	//try to receive data from ringbuffer.
 	//RMT driver will push all the data it receives to its ringbuffer.
@@ -51,12 +53,12 @@ void IrDecoder::read()
 	rmt_item32_t* item = (rmt_item32_t*) xRingbufferReceiveFromISR(rxRingBuffer, &rx_size);
 	if(item) {
 		received = true;
-		// printf("received %zu\n", rx_size);
-		// for(int i=0;i<rx_size;i++)
-		// {
-		// 	printf("(%d, %d , %d, %d) ", item[i].duration0, item[i].level0, item[i].duration1, item[i].level1);
-		// }
-		// printf("\n");
+		//  printf("received %zu\n", rx_size);
+		//  for(int i=0;i<rx_size;i++)
+		//  {
+		//  	printf("(%d, %d , %d, %d) ", item[i].duration0, item[i].level0, item[i].duration1, item[i].level1);
+		//  }
+		//  printf("\n");
 		vRingbufferReturnItem(rxRingBuffer, (void*) item);
 	}
 #ifdef PRINT_DURARIONS
@@ -66,7 +68,9 @@ void IrDecoder::read()
 }
 void IrDecoder::send()
 {
+#ifdef PRINT_DURARIONS
 	uint32_t startTime=esp_timer_get_time();
+#endif
 	ESP_ERROR_CHECK(rmt_driver_install(irSenderConfig.channel, 0, 0));
 
 	size_t size = sizeof(rmt_item32_t)*10;
@@ -102,7 +106,9 @@ void IrDecoder::setupProximity()
 void IrDecoder::runProximity()
 {
 	if(esp_timer_get_time() < timeUntilLedAvailable) return;
+#ifdef PRINT_DURARIONS
 	uint32_t startTime = esp_timer_get_time();
+#endif
 
 	//read without led
 	int lowLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
@@ -136,10 +142,12 @@ void IrDecoder::runProximity()
 
 	//save it in shared variables
 	//the range is between 0 to 1000
-	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - 300)/3;
+    #define LEFT_DARK_CURRENT 190
+	#define RIGHT_DARK_CURRENT 180
+	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - LEFT_DARK_CURRENT);
 	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
 	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);
-    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-300)/3;
+    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-RIGHT_DARK_CURRENT);
 	sharedVariables->outputs.proximityRight = std::max(0, sharedVariables->outputs.proximityRight);
 	sharedVariables->outputs.proximityRight = std::min(sharedVariables->outputs.proximityRight, 1000);
 
@@ -153,25 +161,11 @@ void IrDecoder::runProximity()
 	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 #ifdef PRINT_PROXIMITY_ALL
-	printf("%d, %d, %d\n",left.lowBufferSort[1], left.highBufferSort[1] - left.lowBufferSort[1], sharedVariables->outputs.proximityLeft);
+
+	printf("%d, %d, 1200\n",right.highBufferSort[1], right.highBufferSort[1] - right.lowBufferSort[1]);
 #endif
 }
-int IrDecoder::calculatePhotodiode(int value)
-{
-	int Vs = 3300; //3.3v
-	int Vout = Vs - ((value / 4096.0) * Vs); //mV on photodiode
-	int r1 = 9200; //ohm
 
-	//vout = (Vs * r2) / (r1 + r2)
-	//r2 = (Vout * r1) / (Vs - Vout)
-	if(Vs - Vout == 0) return 0;
-	int r2 = (Vout * r1) / (Vs - Vout);
-	// r = u * i
-	// i = u / r
-	int I = Vs / (r1 + r2) * 10000;
-	return I;
-	
-}
 void IrDecoder::filterProximity(ProximitySensor* obj)//this method takes the best measurement out of the buffer as a kind of medium filter
 {
 	//copy the buffer into a sorted buffer

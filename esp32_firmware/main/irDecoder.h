@@ -54,6 +54,5 @@ public:
 	void send();
 	void runProximity();
 	void filterProximity(ProximitySensor* obj);
-	int calculatePhotodiode(int value);
 
 };

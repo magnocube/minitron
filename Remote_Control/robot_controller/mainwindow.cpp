@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.8");
+    robotConnection = new UDP_Connection("192.168.137.192");
 
 
     QTimer *timer = new QTimer(this);
@@ -133,12 +133,22 @@ void MainWindow::udpHasAUpdate()
 
     ui->progressBarCameraAngle->setValue(robotConnection->sharedVariables.outputs.servoPosition);
     ui->label_status_bar->setText(QString::number(robotConnection->sharedVariables.outputs.servoPosition));
-    ui->ProgressbarIRLeft->setValue(robotConnection->sharedVariables.outputs.lightLeft);
-    ui->ProgressbarIRRight->setValue(robotConnection->sharedVariables.outputs.lightRight);
-    TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
+    int leftLight = robotConnection->sharedVariables.outputs.lightLeft;
+    leftLight = leftLight * (2 - 0.001 * leftLight);
+    ui->ProgressbarIRLeft->setValue(leftLight);
+    int rightLight = robotConnection->sharedVariables.outputs.lightRight;
+    rightLight = rightLight * (2 - 0.001 * rightLight);
+    ui->ProgressbarIRRight->setValue(rightLight);
+    if(robotConnection->sharedVariables.outputs.TOFSensorWorking)
+    {
+        TOFSensor->setDistance(robotConnection->sharedVariables.outputs.TOFSensorDistanceMM);
+    }
+    else {
+        TOFSensor->setDistance(-1);
+    }
     battery->setVoltage(robotConnection->sharedVariables.outputs.voltage);
-    proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft/100);
-    proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight/100);
+    proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft);
+    proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
     update();

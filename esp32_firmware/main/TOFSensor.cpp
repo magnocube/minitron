@@ -4,6 +4,10 @@ void TOFSensor::init()
 {
 	/* initialization */
 	sharedVariables.outputs.TOFSensorWorking = vl->init();
+	if(sharedVariables.outputs.TOFSensorWorking == false)
+	{
+		printf("TOF sensor not working\n");
+	}
 	vl->startContinuous();
 }
 void TOFSensor::measure()

@@ -22,9 +22,17 @@ void graphicsTOFSensor::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->setFont(f);
 
     QString i;
-    i.append("TOF Sensor: ");
-    i.append(QString::number(distance));
-    i.append(" mm");
+    i.append("TOF Sensor: ");\
+    if(distance == -1)
+    {
+        i.append("ERROR sensor not working");
+
+    }
+    else {
+        i.append(QString::number(distance));
+        i.append(" mm");
+
+    }
     painter->drawText(2,365,i);
 
 
