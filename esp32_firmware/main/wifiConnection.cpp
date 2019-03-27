@@ -48,7 +48,7 @@ int ip_protocol;
 bool connected = false;
 bool disconnected = false;
 extern SharedVariables sharedVariables;
-
+//bool gotIp = false;
 static esp_err_t event_handler(void *ctx, system_event_t *event)
 {
     switch (event->event_id) {
@@ -63,6 +63,19 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     case SYSTEM_EVENT_STA_GOT_IP:
         printf("SYSTEM_EVENT_STA_GOT_IP\n");
         connected = true;
+        // if(!gotIp)//trick to use static ip with the windows hotspot, set static ip after getting the ip
+        // {
+        //     gotIp = true;
+        //     ESP_ERROR_CHECK(tcpip_adapter_dhcpc_stop(TCPIP_ADAPTER_IF_STA));
+        
+        //     tcpip_adapter_ip_info_t ip_info;
+        //     IP4_ADDR(&ip_info.ip,192,168,137,100);
+        //     IP4_ADDR(&ip_info.gw,192,168,137,1);
+        //     IP4_ADDR(&ip_info.netmask,255,255,255,0);
+        //     ESP_ERROR_CHECK(tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info)); //set static IP
+
+        //     tcpip_adapter_dhcpc_start(TCPIP_ADAPTER_IF_STA);
+        // }
         break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
         /* This is a workaround as ESP32 WiFi libs don't currently auto-reassociate. */
@@ -82,61 +95,44 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     }
     return ESP_OK;
 }
-    static void initialise_wifi(void)
+static void initialise_wifi(void)
+{
+    tcpip_adapter_init();
+    
+
+    wifi_event_group = xEventGroupCreate();
+    ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
+    ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
+    wifi_config_t wifi_config;
+
+    for(int i=0;i<8;i++)
     {
-        tcpip_adapter_init();
-        tcpip_adapter_dhcps_stop(TCPIP_ADAPTER_IF_AP);
-
-        tcpip_adapter_ip_info_t ip_info;
-        IP4_ADDR(&ip_info.ip,192,168,1,99);
-        IP4_ADDR(&ip_info.gw,192,168,1,1);
-        IP4_ADDR(&ip_info.netmask,255,255,255,0);
-        printf("set ip ret: %d\n", tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_AP, &ip_info)); //set static IP
-
-        tcpip_adapter_dhcps_start(TCPIP_ADAPTER_IF_AP);
-
-
-
-        wifi_event_group = xEventGroupCreate();
-        ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
-        wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-        ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
-        ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
-        wifi_config_t wifi_config;
-
-        for(int i=0;i<8;i++)
-        {
-            wifi_config.sta.ssid[i] = (uint8_t)EXAMPLE_WIFI_SSID[i];
-            wifi_config.sta.password[i] = (uint8_t)EXAMPLE_WIFI_PASS[i];
-        }
-        //set the \0 terminator
-        wifi_config.sta.ssid[8] = 0;
-        wifi_config.sta.password[8] = 0;
-        wifi_config.sta.bssid_set = 0;
-        wifi_config.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
-
-        wifi_config.sta.threshold.rssi = -127;
-        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
-        wifi_config.sta.listen_interval = 3; // this is the main setting, 3 is lowest
-
-        ESP_LOGI(WIFI_TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
-        ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
-        ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
-        ESP_ERROR_CHECK( esp_wifi_start() );
+        wifi_config.sta.ssid[i] = (uint8_t)EXAMPLE_WIFI_SSID[i];
+        wifi_config.sta.password[i] = (uint8_t)EXAMPLE_WIFI_PASS[i];
     }
+    //set the \0 terminator
+    wifi_config.sta.ssid[8] = 0;
+    wifi_config.sta.password[8] = 0;
+    wifi_config.sta.bssid_set = 0;
+    wifi_config.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
 
+    wifi_config.sta.threshold.rssi = -127;
+    wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+    wifi_config.sta.listen_interval = 3; // this is the main setting, 3 is lowest
+
+    ESP_LOGI(WIFI_TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
+    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
+    ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
+    ESP_ERROR_CHECK( esp_wifi_start() );
+}
 
 int udp_server;
 static uint8_t setupUDP()
 {
         printf("setup udp \n");
-        //stop();
 
-        //tx_buffer = new char[100];
-        // if(!tx_buffer){
-        //     printf("could not create tx buffer\n");
-        //     return 0;
-        // }
 
         if ((udp_server=socket(AF_INET, SOCK_DGRAM, 0)) == -1){
             printf("could not create socket\n");

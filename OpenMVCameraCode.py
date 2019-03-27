@@ -1,8 +1,10 @@
 
 import sensor, image, time, pyb
+from machine import WDT
 from pyb import UART
 import sys
-
+wdt = WDT(timeout=2000)  # enable it with a timeout of 2s
+wdt.feed()
 threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
@@ -25,11 +27,12 @@ sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QVGA)
 #sensor.set_framesize(sensor.QVGA)
 sensor.skip_frames(time = 2000)
+wdt.feed()
 sensor.set_auto_gain(False) # must be turned off for color tracking
 sensor.set_auto_whitebal(False) # must be turned off for color tracking
 clock = time.clock()
 
-
+wdt.feed()
 
 red_led = pyb.LED(1)
 green_led = pyb.LED(2)
@@ -37,16 +40,17 @@ blue_led = pyb.LED(3)
 ir_leds = pyb.LED(4)
 resX = sensor.width()
 resY = sensor.height()
+ir_leds.on()
 
 
 found_blobs = []
 old_blob = None
 while(True):
+    wdt.feed()
     clock.tick()                    # Update the FPS clock.
     img = sensor.snapshot()         # Take a picture and return the image.
 
     print(clock.fps())
-
     if(uart.any()):
         data  = uart.readline()
         print(data)
@@ -85,6 +89,8 @@ while(True):
         quote = "X:" + str(round(blob.cx()/resX*100)) + "Y:" + str(round(blob.cy()/resY*100)) + "\n"
         print(quote)
         uart.write(quote)
+
+
     else:
         old_blob = None
     found_blobs.clear()

@@ -40,8 +40,7 @@ void UDP_Connection::readyRead()
     qDebug() << "Message port: " << senderPort;
 
     memcpy((void*)&sharedVariables.outputs, buffer, sizeof(sharedVariables.outputs));
-    qDebug() << "battery: " << sharedVariables.outputs.voltage;
-    qDebug() << "accel: " << abs(sharedVariables.outputs.acceleration[0])+abs(sharedVariables.outputs.acceleration[1])+abs(sharedVariables.outputs.acceleration[2]);
+    qDebug() << "battery: " << sharedVariables.outputs.loopUpdateRate;
     emit udpUpdate();  // will send a signal to the main
 
 }

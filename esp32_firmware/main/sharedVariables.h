@@ -42,10 +42,15 @@ typedef struct{
         uint16_t programAggression = 0;
         uint16_t programSpecificTuning = 0;
         //balancing
-        uint8_t PID_p = 0;
-        uint8_t PID_i = 0;
-        uint8_t PID_d = 0;
-
+        uint8_t PID_p = 30;
+        uint8_t PID_i = 4;
+        uint8_t PID_d = 50;
+        uint8_t workingAngle = 30;
+        int pidMaxSpeed = 400;
+        int complementaryFilter = 950;//devided by 100
+        int loopDelay = 4000;
+        int setPoint = 0;
+        int steering = 0;
         //servo
         uint8_t servoPosition = 80; //in degrees
 
@@ -64,6 +69,7 @@ typedef struct{
         float gyroValues[3];//x,y,z
         float magnetometerValues[3];//x,y,z
         float compassAngle;
+        double roll;
         float MPU9250Temperature;
         bool MPU9250Working = true;
 
@@ -103,6 +109,7 @@ typedef struct{
 
         //battery
         float voltage=0;
+        int loopUpdateRate = 0;
     }outputs;
    
 
