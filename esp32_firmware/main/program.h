@@ -58,7 +58,6 @@ void automaticServoAim(){
         else if(x > 50){
             desiredCameraAngle -= 1+(x-50)/50;
         }
-        printf(" %f, %f, %d\n", cameraAngle, desiredCameraAngle,x);
     }
     else if(esp_timer_get_time() - lastUpdateXAndYCoordinates > 2000000)
     {
@@ -117,13 +116,12 @@ void dysonMode()
 
 struct searchHelperStruct{
     bool isSearching = false;
-    int lastXLocation = 50; // for determining the search direction
+    int lastYLocation = 50; // for determining the search direction
 }SHS;
 void AutomaticObjectSearch()
 {   
     //this method will contain blocking functions
     MotorController->setAcceleration(10000);
-    
     
     //adjust servo to camera object direction
     automaticServoAim();
@@ -154,18 +152,31 @@ void AutomaticObjectSearch()
             m2Speed -= (50-y)  * 50;
         }
         
-        
-
+        if(sharedVariables.outputs.proximityLeft > 20)
+        {  
+            m1Speed = m2Speed / ((float)sharedVariables.outputs.proximityLeft/50.0);
+        }
+        if(sharedVariables.outputs.proximityRight > 20)
+        {
+            m2Speed = m1Speed / ((float)sharedVariables.outputs.proximityRight/50.0);
+        }
+        if(sharedVariables.outputs.TOFSensorDistanceMM < 200){  //within 20cm of target, slow down
+        #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+        printf("4"); //stop... tof ir sensor in front
+        #endif
+            m1Speed /= 2;
+            m2Speed /= 2;
+        } 
         //if very close to the target.... stop
         if(sharedVariables.outputs.TOFSensorDistanceMM < 100){  //within 10cm of target
         #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
-        printf("4"); //stop... proxy in front
+        printf("4"); //stop... tof ir sensor in front
         #endif
             m1Speed = 0;
             m2Speed = 0;
             MotorController->setAcceleration(2147483647); // will go back to default value on next loop
         } 
-        
+
 
     } else{
         #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
@@ -186,10 +197,17 @@ void AutomaticObjectSearch()
             printf("7");  // 0.5 seconds no target... just start searching
             #endif
        
+            if(sharedVariables.outputs.proximityLeft > 100)
+            {  //when this happens the robot will rotate in the other direction
+                y = 51;
+            }
+            if(sharedVariables.outputs.proximityRight > 100)
+            {   //when this happens the robot will rotate in the other direction
+                y = 49;
+            }
             SHS.isSearching = true;
-
-            
-            if(SHS.lastXLocation < 50){
+            SHS.lastYLocation = y;
+            if(SHS.lastYLocation < 50){
                 m1Speed = 2000;
                 m2Speed = -2000;
             }else{
@@ -207,7 +225,7 @@ void AutomaticObjectSearch()
         
     }
     MotorController->setTargetSpeed(m1Speed, m2Speed);
-    SHS.lastXLocation = x;
+    SHS.lastYLocation = y;
     #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
         printf("\n");
         #endif

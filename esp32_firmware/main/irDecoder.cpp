@@ -113,7 +113,9 @@ uint8_t IrDecoder::translateByte(rmt_item32_t* item)
 			return 0;
 		}
 	}
+	#ifdef PRINT_IR_RECEIVE_VERBOSE
 	printf("\n");
+	#endif
 	return result;
 }
 void IrDecoder::read()
@@ -191,7 +193,6 @@ void IrDecoderWriteByte(rmt_item32_t* item, uint8_t value)
 			item[i].duration1 = 1572 * MS_TO_TICKS;
 		}
 	}
-	printf("\n");
 }
 void IrDecoder::send()
 {
@@ -254,7 +255,7 @@ void IrDecoder::runProximity()
 	
 	//turn led on
     gpio_set_level(IR_LED_PIN, 1);
-	
+
 	uint32_t startTime = esp_timer_get_time();
 	while(esp_timer_get_time() - startTime < 100);
 	//read with led
@@ -282,8 +283,8 @@ void IrDecoder::runProximity()
 
 	//save it in shared variables
 	//the range is between 0 to 1000
-    #define LEFT_DARK_CURRENT 190
-	#define RIGHT_DARK_CURRENT 180
+    #define LEFT_DARK_CURRENT 220
+	#define RIGHT_DARK_CURRENT 200
 	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - LEFT_DARK_CURRENT);
 	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
 	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);

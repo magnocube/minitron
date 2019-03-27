@@ -60,7 +60,7 @@ void core1Task( void * pvParameters ){
         }
         if(disconnected)
         {
-            printf("disconnected\n");
+            //printf("disconnected\n");
             MotorController->steppers = &sharedVariables.outputs.steppers;
             if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
             {
