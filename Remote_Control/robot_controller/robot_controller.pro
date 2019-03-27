@@ -30,7 +30,8 @@ SOURCES += \
     graphicstofsensor.cpp \
     graphicproxysensor.cpp \
     graphicBattery.cpp \
-    graphiccamera.cpp
+    graphiccamera.cpp \
+    graphiccompass.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -40,7 +41,9 @@ HEADERS += \
     graphicproxysensor.h \
     sharedstructs.h \
     graphicBattery.h \
-    graphiccamera.h
+    graphiccamera.h \
+    graphiccompasscpp \
+    graphiccompass.h
 
 FORMS += \
         mainwindow.ui
