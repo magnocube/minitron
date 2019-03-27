@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "graphiccamera.h"
+
 
 #include <QMainWindow>
 #include <udp_connection.h>
@@ -16,6 +16,8 @@
 #include <graphicstofsensor.h>
 #include <graphicproxysensor.h>
 #include <graphicBattery.h>
+#include "graphiccamera.h"
+#include "graphiccompass.h"
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +57,8 @@ private:
     graphicProxySensor * proxySensorRight;
     GraphicBattery * battery;
     graphicCamera * camera;
+    graphicCompass * compass;
+
     struct ConntrolData{
         int32_t Motor1OldSpeed = 0;
         int32_t Motor2OldSpeed = 0;

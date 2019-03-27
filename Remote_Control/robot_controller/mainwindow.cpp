@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.174");//standard static ip
+    robotConnection = new UDP_Connection("192.168.137.174");
 
 
     QTimer *timer = new QTimer(this);
@@ -75,6 +75,10 @@ void MainWindow::setupUI()
     camera->setPos(750,-100);
     camera->setlocation(50,50);
 
+    compass = new graphicCompass();
+    compass->setPos(1000,-100);
+    compass->setRotation(45);
+
     scene->addItem(battery);
     scene->addItem(speedMotor1);
     scene->addItem(speedMotor2);
@@ -82,6 +86,7 @@ void MainWindow::setupUI()
     scene->addItem(proxySensorLeft);
     scene->addItem(proxySensorRight);
     scene->addItem(camera);
+    scene->addItem(compass);
 
 
 
@@ -157,6 +162,7 @@ void MainWindow::udpHasAUpdate()
     proxySensorLeft->setProxy(robotConnection->sharedVariables.outputs.proximityLeft);
     proxySensorRight->setProxy(robotConnection->sharedVariables.outputs.proximityRight);
     camera->setlocation(robotConnection->sharedVariables.outputs.objectX,robotConnection->sharedVariables.outputs.objectY);
+    compass->setRotation(robotConnection->sharedVariables.outputs.compassAngle);
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
     update();

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/backgroundImages">
         <file>images/transpartentImagev1.png</file>
+        <file>images/transparentCompass.png</file>
     </qresource>
 </RCC>
