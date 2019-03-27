@@ -307,14 +307,58 @@ QMenu::separator {
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="2">
+           <widget class="QProgressBar" name="ProgressbarIRLeft">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>IR Sensor Right Background Light</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QProgressBar" name="progressBarIRProxyLeft">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="4">
+           <widget class="QProgressBar" name="progressBarIRProxyRight">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
            <widget class="QLabel" name="label_10">
             <property name="text">
              <string>IR Distance Right</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>IR Distance Left</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
            <widget class="QProgressBar" name="ProgressbarIRRight">
             <property name="maximum">
              <number>1000</number>
@@ -331,47 +375,17 @@ QMenu::separator {
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>IR Sensor Right Background Light</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>IR Distance Left</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QProgressBar" name="ProgressbarIRLeft">
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="value">
-             <number>24</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QProgressBar" name="progressBarIRProxyLeft">
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="value">
-             <number>24</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="3">
-           <widget class="QProgressBar" name="progressBarIRProxyRight">
-            <property name="maximum">
-             <number>1000</number>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
-            <property name="value">
-             <number>24</number>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="Line" name="line_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -455,6 +469,13 @@ QMenu::separator {
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout">
@@ -568,18 +589,25 @@ QMenu::separator {
          </layout>
         </item>
         <item>
+         <widget class="Line" name="line_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Camera Angle</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QLabel" name="labelCameraAngle">
             <property name="text">
              <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Camera Angle</string>
             </property>
            </widget>
           </item>
@@ -619,15 +647,15 @@ QMenu::separator {
          </layout>
         </item>
         <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>I-Value</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QSlider" name="PSlider">
             <property name="value">
              <number>30</number>
@@ -638,30 +666,6 @@ QMenu::separator {
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSlider" name="DSlider">
-            <property name="value">
-             <number>50</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_14">
-            <property name="text">
-             <string>D-Value</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>P-Value</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
            <widget class="QSlider" name="ISlider">
             <property name="value">
              <number>4</number>
@@ -671,14 +675,186 @@ QMenu::separator {
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="QLCDNumber" name="lcdNumber"/>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>I-Value</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLCDNumber" name="lcdNumber_2"/>
+           <widget class="QLCDNumber" name="lcdP"/>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLCDNumber" name="lcdD"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>D-Value</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QLCDNumber" name="lcdNumber_3"/>
+           <widget class="QLCDNumber" name="lcdI"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>P-Value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSlider" name="DSlider">
+            <property name="value">
+             <number>50</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="1">
+           <widget class="QSlider" name="Slider_WorkingAngle">
+            <property name="minimum">
+             <number>20</number>
+            </property>
+            <property name="maximum">
+             <number>70</number>
+            </property>
+            <property name="value">
+             <number>30</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>Working Angle</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>PID Max Speed</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Update Frequency</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QSlider" name="Slider_UdateFerquency">
+            <property name="minimum">
+             <number>1000</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+            <property name="value">
+             <number>4000</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSlider" name="Slider_ComplemetaryFilter">
+            <property name="minimum">
+             <number>900</number>
+            </property>
+            <property name="maximum">
+             <number>999</number>
+            </property>
+            <property name="value">
+             <number>950</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Default Set Point</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSlider" name="Slider_PIDMaxSpeed">
+            <property name="minimum">
+             <number>100</number>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>400</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QSlider" name="Slider_DefaultSetPoint">
+            <property name="minimum">
+             <number>-20</number>
+            </property>
+            <property name="maximum">
+             <number>20</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>Complementary Filter </string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLCDNumber" name="lcdWorkingAngle"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLCDNumber" name="lcdPIDMAXSPEED"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLCDNumber" name="lcdComFilter"/>
+          </item>
+          <item row="7" column="2">
+           <widget class="QLCDNumber" name="lcdUpdateFilter"/>
+          </item>
+          <item row="8" column="2">
+           <widget class="QLCDNumber" name="lcdDefaultSetPoint"/>
           </item>
          </layout>
         </item>
@@ -763,48 +939,128 @@ QMenu::separator {
   <connection>
    <sender>PSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber</receiver>
+   <receiver>lcdP</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1644</x>
-     <y>291</y>
+     <x>2023</x>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel">
-     <x>2072</x>
-     <y>286</y>
+     <x>2093</x>
+     <y>319</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>ISlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_2</receiver>
+   <receiver>lcdI</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1753</x>
-     <y>309</y>
+     <x>2023</x>
+     <y>347</y>
     </hint>
     <hint type="destinationlabel">
-     <x>2074</x>
-     <y>315</y>
+     <x>2093</x>
+     <y>348</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>DSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_3</receiver>
+   <receiver>lcdD</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1771</x>
-     <y>345</y>
+     <x>2023</x>
+     <y>376</y>
     </hint>
     <hint type="destinationlabel">
-     <x>2058</x>
-     <y>347</y>
+     <x>2093</x>
+     <y>377</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Slider_WorkingAngle</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdWorkingAngle</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1837</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2054</x>
+     <y>404</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Slider_PIDMaxSpeed</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdPIDMAXSPEED</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1920</x>
+     <y>442</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2054</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Slider_ComplemetaryFilter</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdComFilter</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1896</x>
+     <y>463</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2080</x>
+     <y>460</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Slider_UdateFerquency</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdUpdateFilter</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1918</x>
+     <y>497</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2059</x>
+     <y>493</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Slider_DefaultSetPoint</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdDefaultSetPoint</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1975</x>
+     <y>527</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2077</x>
+     <y>530</y>
     </hint>
    </hints>
   </connection>

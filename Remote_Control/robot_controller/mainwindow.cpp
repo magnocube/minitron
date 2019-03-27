@@ -89,6 +89,19 @@ void MainWindow::setupUI()
     scene->addItem(compass);
 
 
+    ui->lcdP->display(ui->PSlider->value());
+    ui->lcdI->display(ui->ISlider->value());
+    ui->lcdD->display(ui->DSlider->value());
+
+    ui->lcdWorkingAngle->display(ui->Slider_WorkingAngle->value());
+    ui->lcdPIDMAXSPEED->display(ui->Slider_PIDMaxSpeed->value());
+    ui->lcdComFilter->display(ui->Slider_ComplemetaryFilter->value());
+    ui->lcdUpdateFilter->display(ui->Slider_UdateFerquency->value());
+    ui->lcdDefaultSetPoint->display(ui->Slider_DefaultSetPoint->value());
+
+
+
+
 
 }
 
@@ -229,6 +242,13 @@ void MainWindow::SendUdpToRobot()
     robotConnection->sharedVariables.inputs.PID_p = ui->PSlider->value();
     robotConnection->sharedVariables.inputs.PID_i = ui->ISlider->value();
     robotConnection->sharedVariables.inputs.PID_d = ui->DSlider->value();
+
+    robotConnection->sharedVariables.inputs.workingAngle = ui->Slider_WorkingAngle->value();
+    robotConnection->sharedVariables.inputs.pidMaxSpeed = ui->Slider_PIDMaxSpeed->value();
+    robotConnection->sharedVariables.inputs.complementaryFilter = ui->Slider_ComplemetaryFilter->value();
+    robotConnection->sharedVariables.inputs.loopDelay = ui->Slider_UdateFerquency->value();
+    robotConnection->sharedVariables.inputs.setPoint = ui->Slider_DefaultSetPoint->value();
+
 
     qDebug() << "sending" << endl;
     robotConnection->send();
