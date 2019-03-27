@@ -596,12 +596,14 @@ public:
 
         PSlider = new QSlider(centralWidget);
         PSlider->setObjectName(QString::fromUtf8("PSlider"));
+        PSlider->setValue(30);
         PSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_2->addWidget(PSlider, 0, 1, 1, 1);
 
         DSlider = new QSlider(centralWidget);
         DSlider->setObjectName(QString::fromUtf8("DSlider"));
+        DSlider->setValue(50);
         DSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_2->addWidget(DSlider, 2, 1, 1, 1);
@@ -618,6 +620,7 @@ public:
 
         ISlider = new QSlider(centralWidget);
         ISlider->setObjectName(QString::fromUtf8("ISlider"));
+        ISlider->setValue(4);
         ISlider->setOrientation(Qt::Horizontal);
 
         gridLayout_2->addWidget(ISlider, 1, 1, 1, 1);

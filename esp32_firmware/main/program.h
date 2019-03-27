@@ -6,7 +6,7 @@ extern MotorDriver * MotorController;
 extern SerialConnection * Camera;
 #define DYSON_PROXIMITY_TARGET 150
 
-
+controlModes oldMode = controlModes::OFF;
 uint64_t lastUpdateXAndYCoordinates = 0;
 
 #define x sharedVariables.outputs.objectX //default x value of target... update with method calculateXandY()
@@ -252,6 +252,14 @@ void programLoop(){
         MotorController->setTargetSpeed(0,0);
     }
     
+    if(oldMode != sharedVariables.inputs.mode)
+    {
+        if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI_BALANCE)
+        {
+            MotorController->setAcceleration(10000000);
+        }
+    }
+    oldMode = sharedVariables.inputs.mode;
     if(Camera->dataAnvailable()){
          cameraData = Camera->ReadData(); // will also sand a confirmation
     }

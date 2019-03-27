@@ -41,7 +41,6 @@ mpud::float_axes_t accelG;   // accel axes in (g) gravity format
 mpud::float_axes_t gyroDPS;  // gyro    axes in (DPS) º/s format
 #define TIME_OUT 4
 void mpu9250Setup (){
-
     // Initialize I2C on port 0 using I2Cbus interface
     i2c0.begin(SDA_PIN, SCL_PIN, CLOCK_SPEED);
    
@@ -68,12 +67,13 @@ void mpu9250Setup (){
     // Initialize
     ESP_ERROR_CHECK(MPU.initialize());  // initialize the chip and set initial configurations
     // Setup with your configurations
+     ESP_ERROR_CHECK(MPU.setFchoice(mpud::FCHOICE_3));
+     ESP_ERROR_CHECK(MPU.setDigitalLowPassFilter(mpud::DLPF_256HZ_NOLPF));
      ESP_ERROR_CHECK(MPU.setSampleRate(1000));  // set sample rate to 50 Hz
      ESP_ERROR_CHECK(MPU.setGyroFullScale(mpud::GYRO_FS_500DPS));
      ESP_ERROR_CHECK(MPU.setAccelFullScale(mpud::ACCEL_FS_4G));
 
     MPU.setAuxI2CBypass(true);
-    
 }
 void mpu9250ReadMotion()
 {
@@ -83,15 +83,18 @@ void mpu9250ReadMotion()
 #endif
       // Read
       MPU.motion(&accelRaw, &gyroRaw);  // fetch raw data from the registers
+
       // Convert
       accelG = mpud::accelGravity(accelRaw, mpud::ACCEL_FS_4G);
+      gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
+
+      
       sharedVariables.outputs.acceleration[0] = accelG.x;
       sharedVariables.outputs.acceleration[1] = accelG.y;
       sharedVariables.outputs.acceleration[2] = accelG.z;
-      gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
-      sharedVariables.outputs.gyroValues[0] = gyroDPS.x;
-      sharedVariables.outputs.gyroValues[1] = gyroDPS.y;
-      sharedVariables.outputs.gyroValues[2] = gyroDPS.z;
+      sharedVariables.outputs.gyroValues[0] = gyroDPS.x + 8.0;//substract measure offset
+      sharedVariables.outputs.gyroValues[1] = gyroDPS.y - 1.2;//substract measure offset
+      sharedVariables.outputs.gyroValues[2] = gyroDPS.z + 0.7;
 
       
 #ifdef PRINT_DURARIONS
@@ -106,8 +109,10 @@ void mpu9250ReadMotion()
         printf("%6.2f %6.2f %6.2f ", accelG.x, accelG.y, accelG.z);
         printf("%7.2f %7.2f %7.2f\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
 #endif
-
 }
+
+
+
 
 #define MAG_MODE_POWERDOWN        0x0
 #define MAG_MODE_SINGLE           0x1

@@ -629,6 +629,9 @@ QMenu::separator {
           </item>
           <item row="0" column="1">
            <widget class="QSlider" name="PSlider">
+            <property name="value">
+             <number>30</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -636,6 +639,9 @@ QMenu::separator {
           </item>
           <item row="2" column="1">
            <widget class="QSlider" name="DSlider">
+            <property name="value">
+             <number>50</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -657,6 +663,9 @@ QMenu::separator {
           </item>
           <item row="1" column="1">
            <widget class="QSlider" name="ISlider">
+            <property name="value">
+             <number>4</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>

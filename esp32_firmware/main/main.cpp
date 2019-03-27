@@ -4,22 +4,32 @@
 
 
 void core0Task( void * pvParameters ){
-    mpu9250Setup();
-    compassSetup();
+    
     batteryCheckerSetup();
 
     irDecoder = new IrDecoder(sharedVariables);
     irDecoder->setup();
     //spiSetup();
+    mpu9250Setup();
+    compassSetup();
     tofSensor = new TOFSensor();
     tofSensor->init();
+    
     uint32_t loopCounter=0;
     uint32_t lastTime = 0;
+    imuMathSetup();
     while(true)
     {
-        MotorController->loop();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
+
+        imuCalculateAngle();
+        if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI_BALANCE)
+        {
+            balance();
+        }
+
+        MotorController->loop();
 
         irDecoder->read();//takes 0.005ms
         if(loopCounter%10 == 0)
@@ -31,8 +41,7 @@ void core0Task( void * pvParameters ){
 
         checkBattery();
         loopCounter++;
-
-        while(esp_timer_get_time() - lastTime < 10000);
+        sharedVariables.outputs.loopUpdateRate = esp_timer_get_time() - lastTime;
         lastTime = esp_timer_get_time();    
     }
 

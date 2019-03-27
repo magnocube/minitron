@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.138");//standard static ip
+    robotConnection = new UDP_Connection("192.168.137.174");//standard static ip
 
 
     QTimer *timer = new QTimer(this);

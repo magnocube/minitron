@@ -30,7 +30,7 @@ void checkBattery()
 #ifdef PRINT_VOLTAGE
     printf("%f\n",sharedVariables.outputs.voltage);
 #endif
-    if(sharedVariables.outputs.voltage < 10)
+    if((sharedVariables.outputs.voltage < 10) && (sharedVariables.outputs.voltage > 4))//check if voltage > 4 for when the battery is not connected
     {   
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
