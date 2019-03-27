@@ -49,7 +49,7 @@ typedef struct{
         uint8_t workingAngle = 30;
         int pidMaxSpeed = 400;
         int complementaryFilter = 950;//devided by 100
-        int loopDelay = 0;
+        int loopDelay = 4000;
         int setPoint = 0;
         int steering = 0;
         //servo

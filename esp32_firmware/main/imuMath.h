@@ -26,9 +26,9 @@ uint32_t lastAngleProcessingTime = 0;
 #define gyroY sharedVariables.outputs.gyroValues[1]
 #define gyroZ sharedVariables.outputs.gyroValues[2]
 #define roll sharedVariables.outputs.roll 
-#define pid_p (sharedVariables.inputs.PID_p/10.0)
-#define pid_i (sharedVariables.inputs.PID_i/10.0)
-#define pid_d (sharedVariables.inputs.PID_d/10.0)
+#define pid_p (sharedVariables.inputs.PID_p/5.0)
+#define pid_i (sharedVariables.inputs.PID_i/5.0)
+#define pid_d (sharedVariables.inputs.PID_d/5.0)
 #define workingAngle sharedVariables.inputs.workingAngle
 #define pidMaxSpeed sharedVariables.inputs.pidMaxSpeed
 void imuMathSetup()

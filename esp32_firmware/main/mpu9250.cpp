@@ -69,7 +69,7 @@ void mpu9250Setup (){
     // Setup with your configurations
      ESP_ERROR_CHECK(MPU.setFchoice(mpud::FCHOICE_3));
      ESP_ERROR_CHECK(MPU.setDigitalLowPassFilter(mpud::DLPF_256HZ_NOLPF));
-     ESP_ERROR_CHECK(MPU.setSampleRate(1000));  // set sample rate to 50 Hz
+     ESP_ERROR_CHECK(MPU.setSampleRate(1000)); 
      ESP_ERROR_CHECK(MPU.setGyroFullScale(mpud::GYRO_FS_500DPS));
      ESP_ERROR_CHECK(MPU.setAccelFullScale(mpud::ACCEL_FS_4G));
 

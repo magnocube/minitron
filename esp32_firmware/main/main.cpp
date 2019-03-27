@@ -41,8 +41,9 @@ void core0Task( void * pvParameters ){
 
         checkBattery();
         loopCounter++;
-        sharedVariables.outputs.loopUpdateRate = esp_timer_get_time() - lastTime;
-        lastTime = esp_timer_get_time();    
+        sharedVariables.outputs.loopUpdateRate = esp_timer_get_time() - lastTime;   
+        while(esp_timer_get_time() - lastTime < sharedVariables.inputs.loopDelay);
+        lastTime = esp_timer_get_time(); 
     }
 
 }
