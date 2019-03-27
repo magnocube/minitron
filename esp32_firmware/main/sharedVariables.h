@@ -45,10 +45,11 @@ typedef struct{
         uint8_t PID_p = 30;
         uint8_t PID_i = 4;
         uint8_t PID_d = 50;
-        uint8_t workingAngle = 30;
-        int pidMaxSpeed = 400;
-        int complementaryFilter = 950;//devided by 100
-        int loopDelay = 4000;
+        uint8_t workingAngle = 30;//balk 20 - 70
+        int pidMaxSpeed = 400;//balk 100 - 1000
+        int complementaryFilter = 950;//balk 900 - 999
+        int loopDelay = 4000;// balk 1000 - 10000
+        int straightUpSetpoint = 10;//balk -20 - 20
         int setPoint = 0;
         int steering = 0;
         //servo
