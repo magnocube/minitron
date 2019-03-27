@@ -171,7 +171,7 @@ void mpu9250ReadCompass()
   sharedVariables.outputs.magnetometerValues[0] = adjustMagValue(magGet(magBuf[1], magBuf[0]), magXAdjust);
   sharedVariables.outputs.magnetometerValues[1] = adjustMagValue(magGet(magBuf[3], magBuf[2]), magYAdjust);
   sharedVariables.outputs.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
-  sharedVariables.outputs.compassAngle = atan2(sharedVariables.outputs.magnetometerValues[0], sharedVariables.outputs.magnetometerValues[1])* 180 / 3.14159;
+  sharedVariables.outputs.compassAngle = atan2(sharedVariables.outputs.magnetometerValues[0], sharedVariables.outputs.magnetometerValues[1])* 57.3;
 
 #ifdef PRINT_DURARIONS
   printf("- compassTime: %llu\n",esp_timer_get_time()-startTime);
