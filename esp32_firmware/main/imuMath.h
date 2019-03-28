@@ -31,6 +31,9 @@ uint32_t lastAngleProcessingTime = 0;
 #define pid_d (sharedVariables.inputs.PID_d/5.0)
 #define workingAngle sharedVariables.inputs.workingAngle
 #define pidMaxSpeed sharedVariables.inputs.pidMaxSpeed
+#define defaultSetpoint sharedVariables.inputs.defaultSetpoint
+#define complementaryFilter sharedVariables.inputs.complementaryFilter'
+
 void imuMathSetup()
 {
     lastAngleProcessingTime = esp_timer_get_time();
@@ -44,20 +47,20 @@ void imuCalculateAngle()
    double accelRoll =  90 - atan2(accelY, accelZ) * -57.3 ;
    
    double gyroRoll = roll + (gyroX * deltaT / 1000000); // convert angle to angle/deltaT and sum it with roll
-   roll = gyroRoll * 0.95 + accelRoll * 0.05;
+   float filterValue = (float)complementaryFilter/1000.0;
+   roll = gyroRoll * filterValue + accelRoll * (1-filterValue);
    #ifdef PRINT_COMPLEMENTARY
    printf("%f, %f     %f\n", accelRoll, gyroRoll, roll);
    #endif
 }
-float self_balance_pid_setpoint=0;
-float pid_setpoint = 10;
+float pid_setpoint = 0;
 float pid_output = 0;
 float pid_error_temp = 0;
 float pid_i_mem=0;
 float pid_last_d_error=0;
 void balance()
 {
-    pid_error_temp = roll - self_balance_pid_setpoint - pid_setpoint;
+    pid_error_temp = roll - defaultSetpoint - pid_setpoint;
     if(pid_output > 10 || pid_output < -10)pid_error_temp += pid_output * 0.015 ;
 
     pid_i_mem += pid_i * pid_error_temp;                                 //Calculate the I-controller value and add it to the pid_i_mem variable
@@ -73,8 +76,8 @@ void balance()
     if(roll > workingAngle || roll < -1*workingAngle){    //If the robot tips over or the start variable is zero or the battery is empty
         pid_output = 0;                                                         //Set the PID controller output to 0 so the motors stop moving
         pid_i_mem = 0;                                                          //Reset the I-controller memory
-        self_balance_pid_setpoint = 0;                                          //Reset the self_balance_pid_setpoint variable
+        defaultSetpoint = 0;                                          //Reset the defaultSetpoint variable
     }
     MotorController->setAcceleration(100000000);
-    MotorController->setTargetSpeed(pid_output*40, pid_output*40);
+    MotorController->setTargetSpeed(pid_output*50, pid_output*50);
 }

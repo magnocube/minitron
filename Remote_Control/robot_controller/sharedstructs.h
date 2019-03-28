@@ -51,7 +51,7 @@ typedef struct{
         int pidMaxSpeed = 400;//balk 100 - 1000
         int complementaryFilter = 950;//balk 900 - 999
         int loopDelay = 4000;// balk 1000 - 10000
-        int straightUpSetpoint = 10;//balk -20 - 20
+        int defaultSetpoint = 10;//balk -20 - 20
 
         int setPoint = 0;
         int steering = 0;
