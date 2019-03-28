@@ -237,6 +237,11 @@ void programLoop(){
         calculateXandY();
     }
 
+    if(sharedVariables.inputs.mode != controlModes::AUTOMATIC_OBJECT_SEARCH)
+    {
+         Camera->setCameraAngle((int)sharedVariables.inputs.servoPosition);
+    }
+
     if(sharedVariables.inputs.mode == controlModes::AUTOMATIC_DYSON_MODE)
     {
         dysonMode();
