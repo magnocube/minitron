@@ -1,3 +1,4 @@
+
 #include <QObject>
 #pragma once
 
@@ -119,3 +120,4 @@ typedef struct{
 
 
 } SharedVariables;
+

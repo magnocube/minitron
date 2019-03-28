@@ -102,7 +102,7 @@ void mpu9250ReadMotion()
 #endif
 #ifdef PRINT_ACCEL
         // Debug
-        printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", accelG.x, accelG.y, accelG.z);
+        //printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", accelG.x, accelG.y, accelG.z);
         printf("gyro: [%+7.2f %+7.2f %+7.2f ] (º/s)\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
 #endif
 #ifdef PRINT_MOTION_VISUAL
@@ -126,6 +126,7 @@ void mpu9250ReadMotion()
 #define AK8963_RA_HXL   0x03
 #define AK8963_RA_CNTL1 0x0A
 #define AK8963_RA_ASAX 0x10
+uint32_t compassLastAngleProcessingTime=0;
 void magSetMode(uint8_t mode) {
   i2c0.writeByte(AK8963_ADDRESS, AK8963_RA_CNTL1 , mode);
   vTaskDelay(10);
@@ -159,6 +160,11 @@ int16_t magGet(uint8_t high, uint8_t low) {
 float adjustMagValue(int16_t value, uint8_t adjust) {
   return ((float) value * (((((float) adjust - 128) * 0.5) / 128) + 1));
 }
+
+
+#define complementaryFilter sharedVariables.inputs.complementaryFilter
+#define gyroZ sharedVariables.outputs.gyroValues[2]
+
 void mpu9250ReadCompass()
 {
   if(sharedVariables.outputs.MPU9250Working!=true) return;
@@ -173,10 +179,21 @@ void mpu9250ReadCompass()
   sharedVariables.outputs.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
   sharedVariables.outputs.compassAngle = atan2(sharedVariables.outputs.magnetometerValues[0], sharedVariables.outputs.magnetometerValues[1])* 57.3;
 
+   uint32_t deltaT = esp_timer_get_time() - compassLastAngleProcessingTime;
+   compassLastAngleProcessingTime = esp_timer_get_time();
+   //int accelPitch = -atan2(accelX, sqrt(accelY*accelY + accelZ*accelZ))* 57.3;
+   
+   double gyroAngle = sharedVariables.outputs.compassAngle + (gyroZ * deltaT / 1000000); // convert angle to angle/deltaT and sum it with roll
+   float filterValue = (float)complementaryFilter/1000.0;
+   sharedVariables.outputs.compassAngle = gyroAngle * filterValue + sharedVariables.outputs.compassAngle * (1-filterValue);
+   #ifdef PRINT_COMPLEMENTARY_COMPASS
+   printf("%f, %f     %f\n", gyroAngle, sharedVariables.outputs.compassAngle, gyroZ);
+   #endif
+
 #ifdef PRINT_DURARIONS
   printf("- compassTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
-  printf("%6.2f %6.2f \n", sharedVariables.outputs.magnetometerValues[0],sharedVariables.outputs.magnetometerValues[1]);
+  //printf("%6.2f %6.2f \n", sharedVariables.outputs.magnetometerValues[0],sharedVariables.outputs.magnetometerValues[1]);
 #ifdef PRINT_COMPASS
   printf("%f\n",  sharedVariables.outputs.compassAngle);
 #endif

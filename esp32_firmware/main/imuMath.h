@@ -33,11 +33,16 @@ uint32_t lastAngleProcessingTime = 0;
 #define pidMaxSpeed sharedVariables.inputs.pidMaxSpeed
 #define defaultSetpoint sharedVariables.inputs.defaultSetpoint
 #define complementaryFilter sharedVariables.inputs.complementaryFilter
+#define standStillAngle sharedVariables.inputs.standStillAngle
+#define _acceleration sharedVariables.inputs.steppers.acceleration
+
+
 
 void imuMathSetup()
 {
     lastAngleProcessingTime = esp_timer_get_time();
 }
+
 void imuCalculateAngle()
 {
 
@@ -61,23 +66,24 @@ float pid_last_d_error=0;
 void balance()
 {
     pid_error_temp = roll - defaultSetpoint - pid_setpoint;
-    if(pid_output > 10 || pid_output < -10)pid_error_temp += pid_output * 0.015 ;
+    if(pid_output > 15 || pid_output < -1 * 15)pid_error_temp += pid_output * 0.015;
 
     pid_i_mem += pid_i * pid_error_temp;                                 //Calculate the I-controller value and add it to the pid_i_mem variable
     if(pid_i_mem > pidMaxSpeed)pid_i_mem = pidMaxSpeed;                                       //Limit the I-controller to the maximum controller output
-    else if(pid_i_mem < -pidMaxSpeed)pid_i_mem = -pidMaxSpeed;
+    else if(pid_i_mem < -pidMaxSpeed)pid_i_mem = -1*pidMaxSpeed;
     //Calculate the PID output value
     pid_output = pid_p * pid_error_temp + pid_i_mem + pid_d * (pid_error_temp - pid_last_d_error);
     if(pid_output > pidMaxSpeed)pid_output = pidMaxSpeed;                                     //Limit the PI-controller to the maximum controller output
-    else if(pid_output < -pidMaxSpeed)pid_output = -pidMaxSpeed;
+    else if(pid_output < -pidMaxSpeed)pid_output = -1*pidMaxSpeed;
 
     pid_last_d_error = pid_error_temp;                                        //Store the error for the next loop
 
-    if(roll > workingAngle || roll < -1*workingAngle){    //If the robot tips over or the start variable is zero or the battery is empty
+    if(roll > workingAngle || roll < -workingAngle){    //If the robot tips over or the start variable is zero or the battery is empty
         pid_output = 0;                                                         //Set the PID controller output to 0 so the motors stop moving
         pid_i_mem = 0;                                                          //Reset the I-controller memory
         defaultSetpoint = 0;                                          //Reset the defaultSetpoint variable
     }
-    MotorController->setAcceleration(100000000);
+    MotorController->setAcceleration(_acceleration);
+
     MotorController->setTargetSpeed(pid_output*50, pid_output*50);
 }
