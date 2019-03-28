@@ -50,8 +50,8 @@ typedef struct{
         int complementaryFilter = 950;//balk 900 - 999
         int loopDelay = 4000;// balk 1000 - 10000
         int defaultSetpoint = 10;//balk -20 - 20
-        int setPoint = 0;
-        int steering = 0;
+        int setPoint = 0; // -100 - 100
+        int steering = 0; // -100 - 100
         int standStillAngle = 15;
         int accererationAngle = 50;
 

@@ -65,11 +65,15 @@ public:
     QLabel *label_5;
     QFrame *line_6;
     QGridLayout *gridLayout_4;
-    QLabel *labelCameraAngle;
     QLabel *label_8;
+    QSlider *horizontalServoSlider;
     QProgressBar *progressBarCameraAngle;
     QLabel *label_11;
-    QSlider *horizontalServoSlider;
+    QSlider *Slider_accelerationAngle;
+    QLabel *labelAccelerationAngle;
+    QLabel *label_21;
+    QLCDNumber *lcd_AccelerationAngle;
+    QLCDNumber *lcdServoAngle;
     QFrame *line;
     QGridLayout *gridLayout_2;
     QSlider *PSlider;
@@ -83,21 +87,24 @@ public:
     QSlider *DSlider;
     QFrame *line_2;
     QGridLayout *gridLayout_6;
-    QSlider *Slider_WorkingAngle;
-    QLabel *label_19;
+    QSlider *Slider_UdateFerquency;
     QLabel *label_18;
     QLabel *label_16;
-    QSlider *Slider_UdateFerquency;
     QSlider *Slider_ComplemetaryFilter;
-    QLabel *label_15;
     QSlider *Slider_PIDMaxSpeed;
     QSlider *Slider_DefaultSetPoint;
     QLabel *label_17;
-    QLCDNumber *lcdWorkingAngle;
-    QLCDNumber *lcdPIDMAXSPEED;
+    QLabel *label_15;
     QLCDNumber *lcdComFilter;
     QLCDNumber *lcdUpdateFilter;
+    QLCDNumber *lcdWorkingAngle;
+    QLCDNumber *lcdPIDMAXSPEED;
     QLCDNumber *lcdDefaultSetPoint;
+    QSlider *Slider_WorkingAngle;
+    QLabel *label_19;
+    QLCDNumber *lcdStandStill;
+    QSlider *Slider_StandStill;
+    QLabel *label_20;
     QLabel *cameraLabel;
     QLabel *label_status_bar;
 
@@ -545,7 +552,7 @@ public:
         sizePolicy.setHeightForWidth(accelerationSlider->sizePolicy().hasHeightForWidth());
         accelerationSlider->setSizePolicy(sizePolicy);
         accelerationSlider->setMinimum(1000);
-        accelerationSlider->setMaximum(50000);
+        accelerationSlider->setMaximum(100000000);
         accelerationSlider->setSingleStep(100);
         accelerationSlider->setPageStep(100);
 
@@ -603,28 +610,10 @@ public:
         gridLayout_4 = new QGridLayout();
         gridLayout_4->setSpacing(6);
         gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
-        labelCameraAngle = new QLabel(centralWidget);
-        labelCameraAngle->setObjectName(QString::fromUtf8("labelCameraAngle"));
-
-        gridLayout_4->addWidget(labelCameraAngle, 1, 1, 1, 1);
-
         label_8 = new QLabel(centralWidget);
         label_8->setObjectName(QString::fromUtf8("label_8"));
 
-        gridLayout_4->addWidget(label_8, 1, 0, 1, 1);
-
-        progressBarCameraAngle = new QProgressBar(centralWidget);
-        progressBarCameraAngle->setObjectName(QString::fromUtf8("progressBarCameraAngle"));
-        progressBarCameraAngle->setMinimum(50);
-        progressBarCameraAngle->setMaximum(170);
-        progressBarCameraAngle->setValue(100);
-
-        gridLayout_4->addWidget(progressBarCameraAngle, 1, 2, 1, 1);
-
-        label_11 = new QLabel(centralWidget);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
-
-        gridLayout_4->addWidget(label_11, 0, 0, 1, 1);
+        gridLayout_4->addWidget(label_8, 2, 0, 1, 1);
 
         horizontalServoSlider = new QSlider(centralWidget);
         horizontalServoSlider->setObjectName(QString::fromUtf8("horizontalServoSlider"));
@@ -632,7 +621,47 @@ public:
         horizontalServoSlider->setMaximum(170);
         horizontalServoSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout_4->addWidget(horizontalServoSlider, 0, 2, 1, 1);
+        gridLayout_4->addWidget(horizontalServoSlider, 1, 2, 1, 1);
+
+        progressBarCameraAngle = new QProgressBar(centralWidget);
+        progressBarCameraAngle->setObjectName(QString::fromUtf8("progressBarCameraAngle"));
+        progressBarCameraAngle->setMinimum(50);
+        progressBarCameraAngle->setMaximum(170);
+        progressBarCameraAngle->setValue(100);
+
+        gridLayout_4->addWidget(progressBarCameraAngle, 2, 2, 1, 1);
+
+        label_11 = new QLabel(centralWidget);
+        label_11->setObjectName(QString::fromUtf8("label_11"));
+
+        gridLayout_4->addWidget(label_11, 1, 0, 1, 1);
+
+        Slider_accelerationAngle = new QSlider(centralWidget);
+        Slider_accelerationAngle->setObjectName(QString::fromUtf8("Slider_accelerationAngle"));
+        Slider_accelerationAngle->setMaximum(95);
+        Slider_accelerationAngle->setOrientation(Qt::Horizontal);
+
+        gridLayout_4->addWidget(Slider_accelerationAngle, 0, 2, 1, 1);
+
+        labelAccelerationAngle = new QLabel(centralWidget);
+        labelAccelerationAngle->setObjectName(QString::fromUtf8("labelAccelerationAngle"));
+
+        gridLayout_4->addWidget(labelAccelerationAngle, 0, 1, 1, 1);
+
+        label_21 = new QLabel(centralWidget);
+        label_21->setObjectName(QString::fromUtf8("label_21"));
+
+        gridLayout_4->addWidget(label_21, 0, 0, 1, 1);
+
+        lcd_AccelerationAngle = new QLCDNumber(centralWidget);
+        lcd_AccelerationAngle->setObjectName(QString::fromUtf8("lcd_AccelerationAngle"));
+
+        gridLayout_4->addWidget(lcd_AccelerationAngle, 0, 3, 1, 1);
+
+        lcdServoAngle = new QLCDNumber(centralWidget);
+        lcdServoAngle->setObjectName(QString::fromUtf8("lcdServoAngle"));
+
+        gridLayout_4->addWidget(lcdServoAngle, 2, 3, 1, 1);
 
 
         verticalLayout_3->addLayout(gridLayout_4);
@@ -711,19 +740,14 @@ public:
         gridLayout_6 = new QGridLayout();
         gridLayout_6->setSpacing(6);
         gridLayout_6->setObjectName(QString::fromUtf8("gridLayout_6"));
-        Slider_WorkingAngle = new QSlider(centralWidget);
-        Slider_WorkingAngle->setObjectName(QString::fromUtf8("Slider_WorkingAngle"));
-        Slider_WorkingAngle->setMinimum(20);
-        Slider_WorkingAngle->setMaximum(100);
-        Slider_WorkingAngle->setValue(30);
-        Slider_WorkingAngle->setOrientation(Qt::Horizontal);
+        Slider_UdateFerquency = new QSlider(centralWidget);
+        Slider_UdateFerquency->setObjectName(QString::fromUtf8("Slider_UdateFerquency"));
+        Slider_UdateFerquency->setMinimum(1000);
+        Slider_UdateFerquency->setMaximum(10000);
+        Slider_UdateFerquency->setValue(4000);
+        Slider_UdateFerquency->setOrientation(Qt::Horizontal);
 
-        gridLayout_6->addWidget(Slider_WorkingAngle, 0, 1, 1, 1);
-
-        label_19 = new QLabel(centralWidget);
-        label_19->setObjectName(QString::fromUtf8("label_19"));
-
-        gridLayout_6->addWidget(label_19, 0, 0, 1, 1);
+        gridLayout_6->addWidget(Slider_UdateFerquency, 7, 1, 1, 1);
 
         label_18 = new QLabel(centralWidget);
         label_18->setObjectName(QString::fromUtf8("label_18"));
@@ -735,15 +759,6 @@ public:
 
         gridLayout_6->addWidget(label_16, 7, 0, 1, 1);
 
-        Slider_UdateFerquency = new QSlider(centralWidget);
-        Slider_UdateFerquency->setObjectName(QString::fromUtf8("Slider_UdateFerquency"));
-        Slider_UdateFerquency->setMinimum(1000);
-        Slider_UdateFerquency->setMaximum(10000);
-        Slider_UdateFerquency->setValue(4000);
-        Slider_UdateFerquency->setOrientation(Qt::Horizontal);
-
-        gridLayout_6->addWidget(Slider_UdateFerquency, 7, 1, 1, 1);
-
         Slider_ComplemetaryFilter = new QSlider(centralWidget);
         Slider_ComplemetaryFilter->setObjectName(QString::fromUtf8("Slider_ComplemetaryFilter"));
         Slider_ComplemetaryFilter->setMinimum(900);
@@ -752,11 +767,6 @@ public:
         Slider_ComplemetaryFilter->setOrientation(Qt::Horizontal);
 
         gridLayout_6->addWidget(Slider_ComplemetaryFilter, 2, 1, 1, 1);
-
-        label_15 = new QLabel(centralWidget);
-        label_15->setObjectName(QString::fromUtf8("label_15"));
-
-        gridLayout_6->addWidget(label_15, 8, 0, 1, 1);
 
         Slider_PIDMaxSpeed = new QSlider(centralWidget);
         Slider_PIDMaxSpeed->setObjectName(QString::fromUtf8("Slider_PIDMaxSpeed"));
@@ -781,15 +791,10 @@ public:
 
         gridLayout_6->addWidget(label_17, 2, 0, 1, 1);
 
-        lcdWorkingAngle = new QLCDNumber(centralWidget);
-        lcdWorkingAngle->setObjectName(QString::fromUtf8("lcdWorkingAngle"));
+        label_15 = new QLabel(centralWidget);
+        label_15->setObjectName(QString::fromUtf8("label_15"));
 
-        gridLayout_6->addWidget(lcdWorkingAngle, 0, 2, 1, 1);
-
-        lcdPIDMAXSPEED = new QLCDNumber(centralWidget);
-        lcdPIDMAXSPEED->setObjectName(QString::fromUtf8("lcdPIDMAXSPEED"));
-
-        gridLayout_6->addWidget(lcdPIDMAXSPEED, 1, 2, 1, 1);
+        gridLayout_6->addWidget(label_15, 8, 0, 1, 1);
 
         lcdComFilter = new QLCDNumber(centralWidget);
         lcdComFilter->setObjectName(QString::fromUtf8("lcdComFilter"));
@@ -801,10 +806,50 @@ public:
 
         gridLayout_6->addWidget(lcdUpdateFilter, 7, 2, 1, 1);
 
+        lcdWorkingAngle = new QLCDNumber(centralWidget);
+        lcdWorkingAngle->setObjectName(QString::fromUtf8("lcdWorkingAngle"));
+
+        gridLayout_6->addWidget(lcdWorkingAngle, 0, 2, 1, 1);
+
+        lcdPIDMAXSPEED = new QLCDNumber(centralWidget);
+        lcdPIDMAXSPEED->setObjectName(QString::fromUtf8("lcdPIDMAXSPEED"));
+
+        gridLayout_6->addWidget(lcdPIDMAXSPEED, 1, 2, 1, 1);
+
         lcdDefaultSetPoint = new QLCDNumber(centralWidget);
         lcdDefaultSetPoint->setObjectName(QString::fromUtf8("lcdDefaultSetPoint"));
 
         gridLayout_6->addWidget(lcdDefaultSetPoint, 8, 2, 1, 1);
+
+        Slider_WorkingAngle = new QSlider(centralWidget);
+        Slider_WorkingAngle->setObjectName(QString::fromUtf8("Slider_WorkingAngle"));
+        Slider_WorkingAngle->setMinimum(20);
+        Slider_WorkingAngle->setMaximum(100);
+        Slider_WorkingAngle->setValue(30);
+        Slider_WorkingAngle->setOrientation(Qt::Horizontal);
+
+        gridLayout_6->addWidget(Slider_WorkingAngle, 0, 1, 1, 1);
+
+        label_19 = new QLabel(centralWidget);
+        label_19->setObjectName(QString::fromUtf8("label_19"));
+
+        gridLayout_6->addWidget(label_19, 0, 0, 1, 1);
+
+        lcdStandStill = new QLCDNumber(centralWidget);
+        lcdStandStill->setObjectName(QString::fromUtf8("lcdStandStill"));
+
+        gridLayout_6->addWidget(lcdStandStill, 9, 2, 1, 1);
+
+        Slider_StandStill = new QSlider(centralWidget);
+        Slider_StandStill->setObjectName(QString::fromUtf8("Slider_StandStill"));
+        Slider_StandStill->setOrientation(Qt::Horizontal);
+
+        gridLayout_6->addWidget(Slider_StandStill, 9, 1, 1, 1);
+
+        label_20 = new QLabel(centralWidget);
+        label_20->setObjectName(QString::fromUtf8("label_20"));
+
+        gridLayout_6->addWidget(label_20, 9, 0, 1, 1);
 
 
         verticalLayout_3->addLayout(gridLayout_6);
@@ -844,6 +889,9 @@ public:
         QObject::connect(Slider_ComplemetaryFilter, SIGNAL(valueChanged(int)), lcdComFilter, SLOT(display(int)));
         QObject::connect(Slider_UdateFerquency, SIGNAL(valueChanged(int)), lcdUpdateFilter, SLOT(display(int)));
         QObject::connect(Slider_DefaultSetPoint, SIGNAL(valueChanged(int)), lcdDefaultSetPoint, SLOT(display(int)));
+        QObject::connect(Slider_StandStill, SIGNAL(valueChanged(int)), lcdStandStill, SLOT(display(int)));
+        QObject::connect(Slider_accelerationAngle, SIGNAL(valueChanged(int)), lcd_AccelerationAngle, SLOT(display(int)));
+        QObject::connect(progressBarCameraAngle, SIGNAL(valueChanged(int)), lcdServoAngle, SLOT(display(int)));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -875,17 +923,19 @@ public:
         label_2->setText(QApplication::translate("MainWindow", "0", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "0", nullptr));
         label_5->setText(QApplication::translate("MainWindow", "0", nullptr));
-        labelCameraAngle->setText(QApplication::translate("MainWindow", "0", nullptr));
         label_8->setText(QApplication::translate("MainWindow", "Camera Angle", nullptr));
         label_11->setText(QApplication::translate("MainWindow", "Servo Slider", nullptr));
+        labelAccelerationAngle->setText(QString());
+        label_21->setText(QApplication::translate("MainWindow", "Acceleration Angle", nullptr));
         label_13->setText(QApplication::translate("MainWindow", "I-Value", nullptr));
         label_14->setText(QApplication::translate("MainWindow", "D-Value", nullptr));
         label_12->setText(QApplication::translate("MainWindow", "P-Value", nullptr));
-        label_19->setText(QApplication::translate("MainWindow", "Working Angle", nullptr));
         label_18->setText(QApplication::translate("MainWindow", "PID Max Speed", nullptr));
         label_16->setText(QApplication::translate("MainWindow", "Update Frequency", nullptr));
-        label_15->setText(QApplication::translate("MainWindow", "Default Set Point", nullptr));
         label_17->setText(QApplication::translate("MainWindow", "Complementary Filter ", nullptr));
+        label_15->setText(QApplication::translate("MainWindow", "Default Set Point", nullptr));
+        label_19->setText(QApplication::translate("MainWindow", "Working Angle", nullptr));
+        label_20->setText(QApplication::translate("MainWindow", "StandStillPoint", nullptr));
         cameraLabel->setText(QApplication::translate("MainWindow", "imageLabel", nullptr));
         label_status_bar->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
     } // retranslateUi

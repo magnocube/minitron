@@ -164,7 +164,7 @@ float adjustMagValue(int16_t value, uint8_t adjust) {
 
 #define complementaryFilter sharedVariables.inputs.complementaryFilter
 #define gyroZ sharedVariables.outputs.gyroValues[2]
-
+float unfilteredCompassAngle = 0;
 void mpu9250ReadCompass()
 {
   if(sharedVariables.outputs.MPU9250Working!=true) return;
@@ -177,17 +177,19 @@ void mpu9250ReadCompass()
   sharedVariables.outputs.magnetometerValues[0] = adjustMagValue(magGet(magBuf[1], magBuf[0]), magXAdjust)+215;
   sharedVariables.outputs.magnetometerValues[1] = adjustMagValue(magGet(magBuf[3], magBuf[2]), magYAdjust)-540;
   sharedVariables.outputs.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
-  sharedVariables.outputs.compassAngle = atan2(sharedVariables.outputs.magnetometerValues[0], sharedVariables.outputs.magnetometerValues[1])* 57.3;
+  float compassAngle = atan2(sharedVariables.outputs.magnetometerValues[0], sharedVariables.outputs.magnetometerValues[1])* 57.3;
 
    uint32_t deltaT = esp_timer_get_time() - compassLastAngleProcessingTime;
    compassLastAngleProcessingTime = esp_timer_get_time();
    //int accelPitch = -atan2(accelX, sqrt(accelY*accelY + accelZ*accelZ))* 57.3;
    
-   double gyroAngle = sharedVariables.outputs.compassAngle + (gyroZ * deltaT / 1000000); // convert angle to angle/deltaT and sum it with roll
+   double gyroAngle = unfilteredCompassAngle + (gyroZ * deltaT / 1000000); // convert angle to angle/deltaT and sum it with roll
    float filterValue = (float)complementaryFilter/1000.0;
-   sharedVariables.outputs.compassAngle = gyroAngle * filterValue + sharedVariables.outputs.compassAngle * (1-filterValue);
+   unfilteredCompassAngle = gyroAngle * filterValue + compassAngle * (1-filterValue);
+
+   sharedVariables.outputs.compassAngle += 0.04 * (unfilteredCompassAngle - sharedVariables.outputs.compassAngle);
    #ifdef PRINT_COMPLEMENTARY_COMPASS
-   printf("%f, %f     %f\n", gyroAngle, sharedVariables.outputs.compassAngle, gyroZ);
+   printf("%f, %f,%f\n", sharedVariables.outputs.compassAngle, unfilteredCompassAngle, compassAngle);
    #endif
 
 #ifdef PRINT_DURARIONS
