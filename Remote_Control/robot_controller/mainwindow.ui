@@ -517,7 +517,7 @@ QMenu::separator {
                <number>1000</number>
               </property>
               <property name="maximum">
-               <number>50000</number>
+               <number>100000000</number>
               </property>
               <property name="singleStep">
                <number>100</number>

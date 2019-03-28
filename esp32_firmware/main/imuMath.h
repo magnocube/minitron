@@ -27,11 +27,15 @@ uint32_t lastAngleProcessingTime = 0;
 #define gyroZ sharedVariables.outputs.gyroValues[2]
 #define roll sharedVariables.outputs.roll 
 #define pid_p (sharedVariables.inputs.PID_p/5.0)
-#define pid_i (sharedVariables.inputs.PID_i/5.0)
+#define pid_i (sharedVariables.inputs.PID_i/10.0)
 #define pid_d (sharedVariables.inputs.PID_d/5.0)
 #define workingAngle sharedVariables.inputs.workingAngle
 #define pidMaxSpeed sharedVariables.inputs.pidMaxSpeed
 #define defaultSetpoint sharedVariables.inputs.defaultSetpoint
+#define controlSetpoint sharedVariables.inputs.setPoint / 5
+#define controlSteering sharedVariables.inputs.steering
+
+
 #define complementaryFilter sharedVariables.inputs.complementaryFilter
 #define standStillAngle sharedVariables.inputs.standStillAngle
 #define _acceleration sharedVariables.inputs.steppers.acceleration
@@ -52,21 +56,20 @@ void imuCalculateAngle()
    double accelRoll =  90 - atan2(accelY, accelZ) * -57.3 ;
    
    double gyroRoll = roll + (gyroX * deltaT / 1000000); // convert angle to angle/deltaT and sum it with roll
-   float filterValue = (float)complementaryFilter/1000.0;
+   double filterValue = (double)complementaryFilter/1000.0;
    roll = gyroRoll * filterValue + accelRoll * (1-filterValue);
    #ifdef PRINT_COMPLEMENTARY
    printf("%f, %f     %f\n", accelRoll, gyroRoll, roll);
    #endif
 }
-float pid_setpoint = 0;
-float pid_output = 0;
-float pid_error_temp = 0;
-float pid_i_mem=0;
-float pid_last_d_error=0;
+double pid_output = 0;
+double pid_error_temp = 0;
+double pid_i_mem=0;
+double pid_last_d_error=0;
 void balance()
 {
-    pid_error_temp = roll - defaultSetpoint - pid_setpoint;
-    if(pid_output > 15 || pid_output < -1 * 15)pid_error_temp += pid_output * 0.015;
+    pid_error_temp = roll - defaultSetpoint - controlSetpoint;
+    if(pid_output > standStillAngle || pid_output < -1 * standStillAngle)pid_error_temp += pid_output * (standStillAngle/1000.0);
 
     pid_i_mem += pid_i * pid_error_temp;                                 //Calculate the I-controller value and add it to the pid_i_mem variable
     if(pid_i_mem > pidMaxSpeed)pid_i_mem = pidMaxSpeed;                                       //Limit the I-controller to the maximum controller output
@@ -85,5 +88,11 @@ void balance()
     }
     MotorController->setAcceleration(_acceleration);
 
-    MotorController->setTargetSpeed(pid_output*50, pid_output*50);
+    double leftSpeed = pid_output * 50;
+    double rightSpeed = pid_output * 50;
+
+    leftSpeed += controlSteering;
+    rightSpeed -= controlSteering;
+
+    MotorController->setTargetSpeed(leftSpeed, rightSpeed);
 }
