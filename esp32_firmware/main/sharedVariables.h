@@ -52,6 +52,9 @@ typedef struct{
         int defaultSetpoint = 10;//balk -20 - 20
         int setPoint = 0;
         int steering = 0;
+        int standStillAngle = 15;
+        int accererationAngle = 50;
+
         //servo
         uint8_t servoPosition = 80; //in degrees
 

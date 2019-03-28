@@ -54,7 +54,7 @@ while(True):
     if(uart.any()):
         data  = uart.readline()
         print(data)
-        red_led.toggle()
+        green_led.toggle()
 
     for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=50, area_threshold=50, merge=True):
           if blob.w() <= (blob.h() * 1.5):

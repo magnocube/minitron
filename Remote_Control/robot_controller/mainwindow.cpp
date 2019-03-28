@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.174");
+    robotConnection = new UDP_Connection("192.168.137.5");
 
 
     QTimer *timer = new QTimer(this);
@@ -237,6 +237,9 @@ void MainWindow::SendUdpToRobot()
         ui->progressBarCameraAngle->setValue(ui->horizontalServoSlider->value());
         robotConnection->sharedVariables.inputs.servoPosition = ui->horizontalServoSlider->value();
     }
+    if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI){
+        robotConnection->sharedVariables.inputs.servoPosition = ui->horizontalServoSlider->value();
+    }
 
 
     robotConnection->sharedVariables.inputs.PID_p = ui->PSlider->value();
@@ -247,7 +250,7 @@ void MainWindow::SendUdpToRobot()
     robotConnection->sharedVariables.inputs.pidMaxSpeed = ui->Slider_PIDMaxSpeed->value();
     robotConnection->sharedVariables.inputs.complementaryFilter = ui->Slider_ComplemetaryFilter->value();
     robotConnection->sharedVariables.inputs.loopDelay = ui->Slider_UdateFerquency->value();
-    robotConnection->sharedVariables.inputs.setPoint = ui->Slider_DefaultSetPoint->value();
+    robotConnection->sharedVariables.inputs.defaultSetpoint = ui->Slider_DefaultSetPoint->value();
 
 
     qDebug() << "sending" << endl;
