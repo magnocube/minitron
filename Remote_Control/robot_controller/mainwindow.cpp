@@ -237,8 +237,8 @@ void MainWindow::SendUdpToRobot()
         ui->progressBarCameraAngle->setValue(ui->horizontalServoSlider->value());
         robotConnection->sharedVariables.inputs.servoPosition = ui->horizontalServoSlider->value();
     }
-    if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI){
-        robotConnection->sharedVariables.inputs.servoPosition = ui->horizontalServoSlider->value();
+    if(robotConnection->sharedVariables.inputs.mode == controlModes::MANUAL_WIFI_BALANCE){
+        robotConnection->sharedVariables.outputs.servoPosition = ui->horizontalServoSlider->value();
     }
 
 
@@ -251,6 +251,9 @@ void MainWindow::SendUdpToRobot()
     robotConnection->sharedVariables.inputs.complementaryFilter = ui->Slider_ComplemetaryFilter->value();
     robotConnection->sharedVariables.inputs.loopDelay = ui->Slider_UdateFerquency->value();
     robotConnection->sharedVariables.inputs.defaultSetpoint = ui->Slider_DefaultSetPoint->value();
+
+    robotConnection->sharedVariables.inputs.accererationAngle = ui->Slider_accelerationAngle->value();
+    robotConnection->sharedVariables.inputs.standStillAngle = ui->Slider_StandStill->value();
 
 
     qDebug() << "sending" << endl;
