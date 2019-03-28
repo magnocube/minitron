@@ -32,7 +32,7 @@ uint32_t lastAngleProcessingTime = 0;
 #define workingAngle sharedVariables.inputs.workingAngle
 #define pidMaxSpeed sharedVariables.inputs.pidMaxSpeed
 #define defaultSetpoint sharedVariables.inputs.defaultSetpoint
-#define complementaryFilter sharedVariables.inputs.complementaryFilter'
+#define complementaryFilter sharedVariables.inputs.complementaryFilter
 
 void imuMathSetup()
 {
