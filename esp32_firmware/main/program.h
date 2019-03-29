@@ -117,9 +117,9 @@ void dysonMode()
 
 #define RIGHT 0
 #define LEFT 1
-#define PROXYDESIREDVALUE 300
-#define ROTATIONSPEED 6000
-#define ROTATIONDELAYS 400
+#define PROXYDESIREDVALUE 110
+#define ROTATIONSPEED 5000
+#define ROTATIONDELAYS 330
 #define ROTATIONACCELERATION 40000
 struct followWallHelperStruct{
     uint64_t lastTimeWallSeen = 0;
@@ -134,9 +134,30 @@ struct searchHelperStruct{
 }SHS;
 void stickToWall(bool direction,int sensorValue){
     if(direction == RIGHT){
-        MotorController->setTargetSpeed(3000,5000);
+        if(sensorValue >PROXYDESIREDVALUE){
+            #ifdef DEBUG_WALL_SEARCH
+            printf("RsgL\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(5000,3000);
+        }else{
+            #ifdef DEBUG_WALL_SEARCH
+            printf("RsgR\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(3000,5000);
+        }
+        
     }else{
-        MotorController->setTargetSpeed(5000,3000);
+         if(sensorValue >PROXYDESIREDVALUE){
+             #ifdef DEBUG_WALL_SEARCH
+            printf("LsgR\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(3000,5000);
+        }else{
+            #ifdef DEBUG_WALL_SEARCH
+            printf("LsgL\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(5000,3000);
+        }
     }
 }
 void followWalls(){
@@ -149,24 +170,27 @@ void followWalls(){
 
     int proxyLeft = sharedVariables.outputs.proximityLeft;
     int proxyRight = sharedVariables.outputs.proximityRight;
-    if(proxyLeft >= 150 || proxyRight >= 150){
+    if(proxyLeft >= 45 || proxyRight >= 45){
         FHS.lastTimeWallSeen = esp_timer_get_time();
     }
 
     if(esp_timer_get_time() - FHS.lastTimeWallSeen < 500000) {
         //within 500 milliseconds of detecting a wall
-        if(esp_timer_get_time() - FHS.lastTimeLookedAround > 5000000){
+        if(esp_timer_get_time() - FHS.lastTimeLookedAround > 8000000){
             
 
-            //when 5 seconds have passed
+            //when 8 seconds have passed
             FHS.lastTimeLookedAround = esp_timer_get_time();
-
+            //stop before looking around
+            MotorController->setAcceleration(10000000);
+            MotorController->setTargetSpeed(0,0);
+            vTaskDelay(200/portTICK_PERIOD_MS);
             //look around in case the target is found
             //will have a delay... dont worry, it wont take long
-            MotorController->setAcceleration(40000);
+            MotorController->setAcceleration(ROTATIONACCELERATION);
             if(FHS.lastWallFollowed == RIGHT){
                 //look left
-                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
@@ -177,14 +201,14 @@ void followWalls(){
                     return; // dont look back... otherwise the target can not be fond with automaticObjectSearch
                 }
                 //look back
-                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
 
             }else{
-                //look left
-                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+                //look right
+                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
@@ -195,7 +219,7 @@ void followWalls(){
                     return; // dont look back... otherwise the target can not be fond with automaticObjectSearch
                 }
                 //look back
-                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
@@ -204,7 +228,7 @@ void followWalls(){
             return; // return, continue next loop
         }
 
-        if(proxyLeft > 50 || proxyRight > 50){ // make sure a wall can be seen
+        //when not searching for a target,,, just drive close to the wall
             if(proxyLeft > proxyRight){
                 //stick to left wall
                 FHS.lastWallFollowed = LEFT;
@@ -216,13 +240,13 @@ void followWalls(){
                 stickToWall(RIGHT,sharedVariables.outputs.proximityRight);
                 return;
             }
-        }
+        
 
 
         // no wall in the last 500ms, and no target in sight,, go search for a wall
     } else{
         //no wall nearby.. go search for a wall
-        MotorController->setTargetSpeed(5000,5000);
+        MotorController->setTargetSpeed(3000,3000);
     }
 
 
@@ -283,7 +307,7 @@ void AutomaticObjectSearch()
         #endif
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(2147483647); // will go back to default value on next loop
+            MotorController->setAcceleration(10000000); // will go back to default value on next loop
         } 
 
 
@@ -327,9 +351,11 @@ void AutomaticObjectSearch()
 
            
         } else { // 6 seconds... just start driving now
+            
               #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
             printf("WF\n");
             #endif
+            followWalls();
             return; // dont want to update the motors again
         }        
         

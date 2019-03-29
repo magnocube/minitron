@@ -9,7 +9,7 @@ threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
 # The below thresholds track in general red/green/blue things. You may wish to tune them...
-thresholds = [(15, 78, 35, 89, -25, 39), # generic_red_thresholds
+thresholds = [(31, 64, 40, 98, -4, 72), # generic_red_thresholds
               (25, 89, -128, -31, -44, 39), # generic_green_thresholds
               (0, 30, 0, 64, -128, 0),      #generic_blue_thresholds
               (63, 100, -128, 127, 20, 127)
@@ -24,8 +24,8 @@ uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
 
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
+#sensor.set_framesize(sensor.CIF)
 sensor.set_framesize(sensor.QVGA)
-#sensor.set_framesize(sensor.QVGA)
 sensor.skip_frames(time = 2000)
 wdt.feed()
 sensor.set_auto_gain(False) # must be turned off for color tracking
@@ -56,7 +56,7 @@ while(True):
         print(data)
         green_led.toggle()
 
-    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=50, area_threshold=50, merge=True):
+    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=40, area_threshold=40, merge=True):
           if blob.w() <= (blob.h() * 1.5):
               if blob.w() >= (blob.h() * 0.5):
                   img.draw_cross(blob.cx(), blob.cy())
