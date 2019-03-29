@@ -758,7 +758,7 @@ QMenu::separator {
              <number>10000</number>
             </property>
             <property name="value">
-             <number>4000</number>
+             <number>9000</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -788,7 +788,7 @@ QMenu::separator {
              <number>999</number>
             </property>
             <property name="value">
-             <number>950</number>
+             <number>975</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
