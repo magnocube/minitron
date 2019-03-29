@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    robotConnection = new UDP_Connection("192.168.137.241");
+    robotConnection = new UDP_Connection("192.168.137.225");
 
 
     QTimer *timer = new QTimer(this);
@@ -197,18 +197,12 @@ void MainWindow::SendUdpToRobot()
     if(controlData.APressed){
        motor1Speed += steeringSensitivity;
        motor2Speed -= steeringSensitivity;
-       if(robotConnection->sharedVariables.inputs.setPoint == 0)
-       {
-           robotConnection->sharedVariables.inputs.steering += 50;
-       }
+       robotConnection->sharedVariables.inputs.steering += 2000;
     }
     if(controlData.DPressed){
         motor1Speed -= steeringSensitivity;
         motor2Speed += steeringSensitivity;
-        if(robotConnection->sharedVariables.inputs.setPoint == 0)
-        {
-            robotConnection->sharedVariables.inputs.steering += -50;
-        }
+        robotConnection->sharedVariables.inputs.steering += -2000;
     }
     if(controlData.SPressed){
         motor1Speed -= maxSpeed;

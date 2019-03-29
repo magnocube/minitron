@@ -31,7 +31,7 @@ struct Steppers
     int32_t motor2TargetSpeed = 0;			//target speed of motor 2
     uint32_t acceleration_motor1 = 1000; 				//acceleration of current speed to target speed in steps/s^1
     uint32_t acceleration_motor2 = 1000; 				//acceleration of current speed to target speed in steps/s^2
-    uint32_t acceleration = 1000;
+    uint32_t acceleration = 100000000;
 };
 typedef struct{
 
@@ -45,12 +45,12 @@ typedef struct{
         uint16_t programSpecificTuning = 0;
         //balancing
         uint8_t PID_p = 30;
-        uint8_t PID_i = 4;
-        uint8_t PID_d = 50;
+        uint8_t PID_i = 15;
+        uint8_t PID_d = 40;
         uint8_t workingAngle = 30;//balk 20 - 70
-        int pidMaxSpeed = 400;//balk 100 - 1000
-        int complementaryFilter = 950;//balk 900 - 999
-        int loopDelay = 4000;// balk 1000 - 10000
+        int pidMaxSpeed = 200;//balk 100 - 1000
+        int complementaryFilter = 975;//balk 900 - 999
+        int loopDelay = 9000;// balk 1000 - 10000
         int defaultSetpoint = 10;//balk -20 - 20
         int setPoint = 0;
         int steering = 0;
