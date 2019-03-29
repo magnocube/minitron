@@ -118,8 +118,8 @@ void dysonMode()
 #define RIGHT 0
 #define LEFT 1
 #define PROXYDESIREDVALUE 300
-#define ROTATIONSPEED 5000
-#define ROTATIONDELAYS 200
+#define ROTATIONSPEED 6000
+#define ROTATIONDELAYS 400
 #define ROTATIONACCELERATION 40000
 struct followWallHelperStruct{
     uint64_t lastTimeWallSeen = 0;
@@ -133,7 +133,11 @@ struct searchHelperStruct{
     
 }SHS;
 void stickToWall(bool direction,int sensorValue){
-
+    if(direction == RIGHT){
+        MotorController->setTargetSpeed(3000,5000);
+    }else{
+        MotorController->setTargetSpeed(5000,3000);
+    }
 }
 void followWalls(){
     // this method will be called mostly after automaticObjectSearch cant find a target
@@ -145,7 +149,7 @@ void followWalls(){
 
     int proxyLeft = sharedVariables.outputs.proximityLeft;
     int proxyRight = sharedVariables.outputs.proximityRight;
-    if(proxyLeft >= 100 || proxyRight >= 100){
+    if(proxyLeft >= 150 || proxyRight >= 150){
         FHS.lastTimeWallSeen = esp_timer_get_time();
     }
 
@@ -200,23 +204,25 @@ void followWalls(){
             return; // return, continue next loop
         }
 
-        
-        if(proxyLeft > proxyRight){
-            //stick to left wall
-            FHS.lastWallFollowed = LEFT;
-            stickToWall(LEFT,sharedVariables.outputs.proximityLeft);
-            return;
-        }else{
-            //stick to right wall4
-            FHS.lastWallFollowed = RIGHT;
-            stickToWall(RIGHT,sharedVariables.outputs.proximityRight);
-            return;
+        if(proxyLeft > 50 || proxyRight > 50){ // make sure a wall can be seen
+            if(proxyLeft > proxyRight){
+                //stick to left wall
+                FHS.lastWallFollowed = LEFT;
+                stickToWall(LEFT,sharedVariables.outputs.proximityLeft);
+                return;
+            }else{
+                //stick to right wall
+                FHS.lastWallFollowed = RIGHT;
+                stickToWall(RIGHT,sharedVariables.outputs.proximityRight);
+                return;
+            }
         }
 
 
         // no wall in the last 500ms, and no target in sight,, go search for a wall
     } else{
         //no wall nearby.. go search for a wall
+        MotorController->setTargetSpeed(5000,5000);
     }
 
 
@@ -321,8 +327,7 @@ void AutomaticObjectSearch()
 
            
         } else { // 6 seconds... just start driving now
-            followWalls();
-            #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+              #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
             printf("WF\n");
             #endif
             return; // dont want to update the motors again
