@@ -44,7 +44,7 @@ public:
 	int32_t getMotor2TargetSpeed();
 	int32_t getMotor1Speed();
 	int32_t getMotor2Speed();
-	
+	uint32_t currentAcceleration=0;
 
 	//todo:
 	//void moveToXY();

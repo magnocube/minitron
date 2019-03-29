@@ -174,6 +174,7 @@ void MotorDriver::loop(){
 
     motor1OldSpeed = motor1Speed;
     motor2OldSpeed = motor2Speed;
+    currentAcceleration = motor1Speed - motor1OldSpeed;
 
 }
 	void MotorDriver::setMotorDriverEnabled(bool b){

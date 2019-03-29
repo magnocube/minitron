@@ -24,6 +24,7 @@ void core0Task( void * pvParameters ){
         mpu9250ReadCompass();//takes 0.5ms
 
         imuCalculateAngle();
+        compareXAcceleration();
         if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI_BALANCE)
         {
             balance();
