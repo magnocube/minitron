@@ -14,7 +14,7 @@
 #include "pins.h"
 #include "settings.h"
 #include "sharedVariables.h"
-#define BUFFER_SIZE 5//larger buffer will filter better, but slow down to reaction speed
+#define BUFFER_SIZE 2//larger buffer will filter better, but slow down to reaction speed
 
 class IrDecoder
 {

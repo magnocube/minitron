@@ -117,9 +117,15 @@ void dysonMode()
 
 #define RIGHT 0
 #define LEFT 1
+<<<<<<< HEAD
 #define PROXYDESIREDVALUE 300
 #define ROTATIONSPEED 5000
 #define ROTATIONDELAYS 200
+=======
+#define PROXYDESIREDVALUE 110
+#define ROTATIONSPEED 5000
+#define ROTATIONDELAYS 330
+>>>>>>> origin/motorDriver
 #define ROTATIONACCELERATION 40000
 struct followWallHelperStruct{
     uint64_t lastTimeWallSeen = 0;
@@ -133,7 +139,36 @@ struct searchHelperStruct{
     
 }SHS;
 void stickToWall(bool direction,int sensorValue){
+<<<<<<< HEAD
 
+=======
+    if(direction == RIGHT){
+        if(sensorValue >PROXYDESIREDVALUE){
+            #ifdef DEBUG_WALL_SEARCH
+            printf("RsgL\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(5000,3000);
+        }else{
+            #ifdef DEBUG_WALL_SEARCH
+            printf("RsgR\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(3000,5000);
+        }
+        
+    }else{
+         if(sensorValue >PROXYDESIREDVALUE){
+             #ifdef DEBUG_WALL_SEARCH
+            printf("LsgR\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(3000,5000);
+        }else{
+            #ifdef DEBUG_WALL_SEARCH
+            printf("LsgL\n"); //was not searching... is following target now
+            #endif
+            MotorController->setTargetSpeed(5000,3000);
+        }
+    }
+>>>>>>> origin/motorDriver
 }
 void followWalls(){
     // this method will be called mostly after automaticObjectSearch cant find a target
@@ -145,12 +180,17 @@ void followWalls(){
 
     int proxyLeft = sharedVariables.outputs.proximityLeft;
     int proxyRight = sharedVariables.outputs.proximityRight;
+<<<<<<< HEAD
     if(proxyLeft >= 100 || proxyRight >= 100){
+=======
+    if(proxyLeft >= 45 || proxyRight >= 45){
+>>>>>>> origin/motorDriver
         FHS.lastTimeWallSeen = esp_timer_get_time();
     }
 
     if(esp_timer_get_time() - FHS.lastTimeWallSeen < 500000) {
         //within 500 milliseconds of detecting a wall
+<<<<<<< HEAD
         if(esp_timer_get_time() - FHS.lastTimeLookedAround > 5000000){
             
 
@@ -163,6 +203,23 @@ void followWalls(){
             if(FHS.lastWallFollowed == RIGHT){
                 //look left
                 MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+=======
+        if(esp_timer_get_time() - FHS.lastTimeLookedAround > 8000000){
+            
+
+            //when 8 seconds have passed
+            FHS.lastTimeLookedAround = esp_timer_get_time();
+            //stop before looking around
+            MotorController->setAcceleration(10000000);
+            MotorController->setTargetSpeed(0,0);
+            vTaskDelay(200/portTICK_PERIOD_MS);
+            //look around in case the target is found
+            //will have a delay... dont worry, it wont take long
+            MotorController->setAcceleration(ROTATIONACCELERATION);
+            if(FHS.lastWallFollowed == RIGHT){
+                //look left
+                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+>>>>>>> origin/motorDriver
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
@@ -173,14 +230,23 @@ void followWalls(){
                     return; // dont look back... otherwise the target can not be fond with automaticObjectSearch
                 }
                 //look back
+<<<<<<< HEAD
                 MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+=======
+                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+>>>>>>> origin/motorDriver
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
 
             }else{
+<<<<<<< HEAD
                 //look left
                 MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+=======
+                //look right
+                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+>>>>>>> origin/motorDriver
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
@@ -191,7 +257,11 @@ void followWalls(){
                     return; // dont look back... otherwise the target can not be fond with automaticObjectSearch
                 }
                 //look back
+<<<<<<< HEAD
                 MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+=======
+                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+>>>>>>> origin/motorDriver
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 MotorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
@@ -200,6 +270,7 @@ void followWalls(){
             return; // return, continue next loop
         }
 
+<<<<<<< HEAD
         
         if(proxyLeft > proxyRight){
             //stick to left wall
@@ -212,11 +283,30 @@ void followWalls(){
             stickToWall(RIGHT,sharedVariables.outputs.proximityRight);
             return;
         }
+=======
+        //when not searching for a target,,, just drive close to the wall
+            if(proxyLeft > proxyRight){
+                //stick to left wall
+                FHS.lastWallFollowed = LEFT;
+                stickToWall(LEFT,sharedVariables.outputs.proximityLeft);
+                return;
+            }else{
+                //stick to right wall
+                FHS.lastWallFollowed = RIGHT;
+                stickToWall(RIGHT,sharedVariables.outputs.proximityRight);
+                return;
+            }
+        
+>>>>>>> origin/motorDriver
 
 
         // no wall in the last 500ms, and no target in sight,, go search for a wall
     } else{
         //no wall nearby.. go search for a wall
+<<<<<<< HEAD
+=======
+        MotorController->setTargetSpeed(3000,3000);
+>>>>>>> origin/motorDriver
     }
 
 
@@ -277,7 +367,11 @@ void AutomaticObjectSearch()
         #endif
             m1Speed = 0;
             m2Speed = 0;
+<<<<<<< HEAD
             MotorController->setAcceleration(2147483647); // will go back to default value on next loop
+=======
+            MotorController->setAcceleration(10000000); // will go back to default value on next loop
+>>>>>>> origin/motorDriver
         } 
 
 
@@ -321,10 +415,18 @@ void AutomaticObjectSearch()
 
            
         } else { // 6 seconds... just start driving now
+<<<<<<< HEAD
             followWalls();
             #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
             printf("WF\n");
             #endif
+=======
+            
+              #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
+            printf("WF\n");
+            #endif
+            followWalls();
+>>>>>>> origin/motorDriver
             return; // dont want to update the motors again
         }        
         

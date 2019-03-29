@@ -22,4 +22,4 @@
 //#define PRINT_IR_RECEIVE_VERBOSE
 //#define PRINT_IR_RECEIVE
 //#define PRINT_IR_SEND
-
+#define DEBUG_WALL_SEARCH
