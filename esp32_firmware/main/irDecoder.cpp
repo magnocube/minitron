@@ -283,8 +283,8 @@ void IrDecoder::runProximity()
 
 	//save it in shared variables
 	//the range is between 0 to 1000
-    #define LEFT_DARK_CURRENT 220
-	#define RIGHT_DARK_CURRENT 200
+    #define LEFT_DARK_CURRENT 250
+	#define RIGHT_DARK_CURRENT 220
 	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - LEFT_DARK_CURRENT);
 	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
 	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);

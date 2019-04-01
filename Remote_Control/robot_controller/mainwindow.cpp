@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    robotConnection = new UDP_Connection("192.168.137.73");
 
-    robotConnection = new UDP_Connection("192.168.137.78");
 
 
     QTimer *timer = new QTimer(this);

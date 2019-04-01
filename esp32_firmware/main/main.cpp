@@ -39,6 +39,7 @@ void core0Task( void * pvParameters ){
         }
         irDecoder->runProximity();//takes 0.90ms
 
+
         checkBattery();
         loopCounter++;
         sharedVariables.outputs.loopUpdateRate = esp_timer_get_time() - lastTime;   
@@ -60,8 +61,7 @@ void core1Task( void * pvParameters ){
             {
                 MotorController->steppers = &sharedVariables.inputs.steppers;
                 MotorController->calculateInduvidualAcceleration();
-                printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
-
+                //printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
             }
             else
             {

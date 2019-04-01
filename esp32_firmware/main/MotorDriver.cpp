@@ -172,6 +172,7 @@ void MotorDriver::loop(){
     
     setSpeed(abs((int32_t)motor1Speed),abs((int32_t)motor2Speed));
 
+
     motor1OldSpeed = motor1Speed;
     motor2OldSpeed = motor2Speed;
 
