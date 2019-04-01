@@ -80,15 +80,17 @@ void balance()
 
     pid_last_d_error = pid_error_temp;                                        //Store the error for the next loop
 
+    double leftSpeed = pid_output * 50;
+    double rightSpeed = pid_output * 50;
+    MotorController->setAcceleration(_acceleration);
     if(roll > workingAngle || roll < -workingAngle){    //If the robot tips over or the start variable is zero or the battery is empty
         pid_output = 0;                                                         //Set the PID controller output to 0 so the motors stop moving
         pid_i_mem = 0;                                                          //Reset the I-controller memory
-        defaultSetpoint = 0;                                          //Reset the defaultSetpoint variable
+        defaultSetpoint = 0;     
+        leftSpeed = controlSetpoint * pidMaxSpeed;                                  //Reset the defaultSetpoint variable
+        rightSpeed = controlSetpoint * pidMaxSpeed;
+        MotorController->setAcceleration(_acceleration/10);
     }
-    MotorController->setAcceleration(_acceleration);
-
-    double leftSpeed = pid_output * 50;
-    double rightSpeed = pid_output * 50;
 
     leftSpeed += controlSteering;
     rightSpeed -= controlSteering;

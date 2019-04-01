@@ -552,7 +552,7 @@ public:
         sizePolicy.setHeightForWidth(accelerationSlider->sizePolicy().hasHeightForWidth());
         accelerationSlider->setSizePolicy(sizePolicy);
         accelerationSlider->setMinimum(1000);
-        accelerationSlider->setMaximum(100000000);
+        accelerationSlider->setMaximum(10000000);
         accelerationSlider->setSingleStep(100);
         accelerationSlider->setPageStep(100);
 
