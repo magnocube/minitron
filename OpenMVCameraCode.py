@@ -24,8 +24,8 @@ uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
 
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
-#sensor.set_framesize(sensor.CIF)
-sensor.set_framesize(sensor.QVGA)
+sensor.set_framesize(sensor.CIF)
+#sensor.set_framesize(sensor.QVGA)
 sensor.skip_frames(time = 2000)
 wdt.feed()
 sensor.set_auto_gain(False) # must be turned off for color tracking
