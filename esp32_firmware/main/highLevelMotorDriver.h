@@ -41,7 +41,6 @@ uint32_t lastAngleProcessingTime = 0;
 #define _acceleration sharedVariables.inputs.steppers.acceleration
 
 
-
 void imuMathSetup()
 {
     lastAngleProcessingTime = esp_timer_get_time();
@@ -95,8 +94,4 @@ void balance()
     rightSpeed -= controlSteering;
 
     MotorController->setTargetSpeed(leftSpeed, rightSpeed);
-}
-void compareXAcceleration()
-{
-    MotorDriver->
 }

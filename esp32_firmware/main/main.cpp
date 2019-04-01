@@ -24,10 +24,6 @@ void core0Task( void * pvParameters ){
         mpu9250ReadCompass();//takes 0.5ms
 
         imuCalculateAngle();
-<<<<<<< HEAD
-        compareXAcceleration();
-=======
->>>>>>> origin/motorDriver
         if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI_BALANCE)
         {
             balance();
@@ -42,6 +38,7 @@ void core0Task( void * pvParameters ){
             irDecoder->send();
         }
         irDecoder->runProximity();//takes 0.90ms
+
 
         checkBattery();
         loopCounter++;
@@ -64,8 +61,7 @@ void core1Task( void * pvParameters ){
             {
                 MotorController->steppers = &sharedVariables.inputs.steppers;
                 MotorController->calculateInduvidualAcceleration();
-                printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
-
+                //printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
             }
             else
             {

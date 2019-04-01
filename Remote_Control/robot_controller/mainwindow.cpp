@@ -8,12 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    robotConnection = new UDP_Connection("192.168.137.73");
 
-<<<<<<< HEAD
-    robotConnection = new UDP_Connection("192.168.137.200");
-=======
-    robotConnection = new UDP_Connection("192.168.137.78");
->>>>>>> origin/motorDriver
 
 
     QTimer *timer = new QTimer(this);
