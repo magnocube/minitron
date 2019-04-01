@@ -175,6 +175,24 @@ void MainWindow::udpHasAUpdate()
     compass->setRotation(robotConnection->sharedVariables.outputs.compassAngle);
     qDebug()<<robotConnection->sharedVariables.outputs.lightLeft << endl;
 
+
+
+
+    //IR receiver
+    if(robotConnection->sharedVariables.outputs.irFlowNumber != IRFlowDataOutput){  // flow number has changed
+        IRFlowDataOutput = robotConnection->sharedVariables.outputs.irFlowNumber;  // update local flow number
+        QString dataToAdd = "Received:  Adress: ";
+        dataToAdd.append(QString::number(robotConnection->sharedVariables.outputs.irLastAddress));
+        dataToAdd.append("  Command: ");
+        dataToAdd.append(QString::number(robotConnection->sharedVariables.outputs.irLastCommand));
+        dataToAdd.append("  Flow Number: ");
+        dataToAdd.append(QString::number(IRFlowDataOutput));
+
+
+        ui->IRValuesTextBrowser->append(dataToAdd);
+
+    }
+
     update();
 }
 
@@ -322,4 +340,33 @@ void MainWindow::on_pushButton_clicked() // speed preset button
           ui->accelerationSlider->setValue(15000);
       }
 
+}
+
+void MainWindow::on_ClearReceivedButton_clicked()
+{
+    ui->IRValuesTextBrowser->clear();
+}
+
+void MainWindow::on_SendIrButton_clicked()
+{
+    //increment flow number;
+    IRFlowDataInput += 1; //will auto overflow (i think)
+
+    //put data in struct
+    QString Adress = ui->IRAdressLineEdit->text();
+    QString Command = ui->IRCommandLineEdit->text();
+
+    robotConnection->sharedVariables.inputs.irAddress = Adress.toInt();
+    robotConnection->sharedVariables.inputs.irCommand = Command.toInt();
+    robotConnection->sharedVariables.inputs.irFlowNumber = IRFlowDataInput;
+
+    QString dataToAdd = "Sending:  Adress: ";
+    dataToAdd.append(QString::number(robotConnection->sharedVariables.inputs.irAddress));
+    dataToAdd.append("  Command: ");
+    dataToAdd.append(QString::number(robotConnection->sharedVariables.inputs.irCommand));
+    dataToAdd.append("  Flow Number: ");
+    dataToAdd.append(QString::number(IRFlowDataInput));
+
+
+    ui->IRValuesTextBrowser->append(dataToAdd);
 }

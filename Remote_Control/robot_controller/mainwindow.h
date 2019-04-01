@@ -44,6 +44,10 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_ClearReceivedButton_clicked();
+
+    void on_SendIrButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     UDP_Connection *robotConnection;
@@ -58,6 +62,9 @@ private:
     GraphicBattery * battery;
     graphicCamera * camera;
     graphicCompass * compass;
+
+    uint8_t IRFlowDataInput = 0;// input to robot
+    uint8_t IRFlowDataOutput = 0;// output to Gui
 
     struct ConntrolData{
         int32_t Motor1OldSpeed = 0;
