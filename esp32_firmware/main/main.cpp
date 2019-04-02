@@ -6,7 +6,6 @@
 void core0Task( void * pvParameters ){
     
     batteryCheckerSetup();
-
     irDecoder = new IrDecoder(sharedVariables);
     irDecoder->setup();
     spiSetup();
