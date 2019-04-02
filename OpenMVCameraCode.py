@@ -1,11 +1,9 @@
-
 import sensor, image, time, pyb
-
-from pyb import UART, SPI
+from machine import WDT
+from pyb import UART
 import sys
-
-
-
+wdt = WDT(timeout=2000)  # enable it with a timeout of 2s
+wdt.feed()
 threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
@@ -19,8 +17,7 @@ thresholds = [(31, 64, 40, 98, -4, 72), # generic_red_thresholds
 
 
 
-spi = SPI(2, SPI.MASTER, baudrate=500000)
-cs = pyb.Pin(pyb.Pin.board.P3, pyb.Pin.OUT)
+
 
 uart = UART(3, 115200, timeout_char=1000)                         # init with given baudrate
 uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
@@ -28,15 +25,16 @@ uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
 
-
 sensor.set_framesize(sensor.CIF)
 #sensor.set_framesize(sensor.QVGA)
 
 sensor.skip_frames(time = 2000)
+wdt.feed()
 sensor.set_auto_gain(False) # must be turned off for color tracking
 sensor.set_auto_whitebal(False) # must be turned off for color tracking
 clock = time.clock()
 
+wdt.feed()
 
 red_led = pyb.LED(1)
 green_led = pyb.LED(2)
@@ -50,6 +48,7 @@ ir_leds.on()
 found_blobs = []
 old_blob = None
 while(True):
+    wdt.feed()
     clock.tick()                    # Update the FPS clock.
     img = sensor.snapshot()         # Take a picture and return the image.
 
@@ -59,8 +58,8 @@ while(True):
         print(data)
         green_led.toggle()
 
-    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=50, area_threshold=50, merge=True):
 
+    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=40, area_threshold=40, merge=True):
           if blob.w() <= (blob.h() * 1.5):
               if blob.w() >= (blob.h() * 0.5):
                   img.draw_cross(blob.cx(), blob.cy())
@@ -98,36 +97,5 @@ while(True):
     else:
         old_blob = None
     found_blobs.clear()
-
-    cs.value(0)
-    spi.send(img)
-
-
-    cs.value(1)
-    time.sleep(1000)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
