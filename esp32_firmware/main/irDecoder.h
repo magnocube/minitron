@@ -33,6 +33,7 @@ class IrDecoder
 	rmt_config_t irSenderConfig;
 	RingbufHandle_t rxRingBuffer = NULL;
 
+	uint8_t lastFlowNumber = 0;
 
 	void setupReceiver();
 	void setupSender();

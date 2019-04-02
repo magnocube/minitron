@@ -19,7 +19,7 @@ thresholds = [(31, 64, 40, 98, -4, 72), # generic_red_thresholds
 
 
 
-spi = SPI(2, SPI.MASTER, baudrate=500000)
+spi = SPI(2, SPI.MASTER, baudrate=500000, crc = None)
 cs = pyb.Pin(pyb.Pin.board.P3, pyb.Pin.OUT)
 
 uart = UART(3, 115200, timeout_char=1000)                         # init with given baudrate
@@ -98,9 +98,10 @@ while(True):
     else:
         old_blob = None
     found_blobs.clear()
-
+    arr = bytearray(10000)
     cs.value(0)
-    spi.send(img)
+    arr = img.compressed(quality=1)
+    spi.send(arr)
 
 
     cs.value(1)

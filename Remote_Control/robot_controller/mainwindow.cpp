@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    robotConnection = new UDP_Connection("192.168.137.73");
+    robotConnection = new UDP_Connection("::ffff:192.168.137.180");
 
 
 

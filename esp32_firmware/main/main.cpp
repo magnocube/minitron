@@ -9,7 +9,7 @@ void core0Task( void * pvParameters ){
 
     irDecoder = new IrDecoder(sharedVariables);
     irDecoder->setup();
-    //spiSetup();
+    spiSetup();
     mpu9250Setup();
     compassSetup();
     tofSensor = new TOFSensor();
@@ -20,6 +20,7 @@ void core0Task( void * pvParameters ){
     imuMathSetup();
     while(true)
     {
+        spiRead();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 

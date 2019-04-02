@@ -22,6 +22,7 @@ SharedVariables sharedVariables;
 #include "TOFSensor.h"
 
 TOFSensor * tofSensor;
+#include "cameraSPI.h"
 #include "mpu9250.cpp"
 #include "wifiConnection.cpp"
 #include "program.h"

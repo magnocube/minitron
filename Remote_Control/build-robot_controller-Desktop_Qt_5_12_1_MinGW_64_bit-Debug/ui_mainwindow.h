@@ -19,10 +19,12 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLCDNumber>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
+#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -105,6 +107,16 @@ public:
     QLCDNumber *lcdStandStill;
     QSlider *Slider_StandStill;
     QLabel *label_20;
+    QFrame *line_7;
+    QGridLayout *gridLayout_5;
+    QLabel *label_22;
+    QTextBrowser *IRValuesTextBrowser;
+    QPushButton *ClearReceivedButton;
+    QHBoxLayout *horizontalLayout_3;
+    QLineEdit *IRAdressLineEdit;
+    QLineEdit *IRCommandLineEdit;
+    QPushButton *SendIrButton;
+    QLabel *label_23;
     QLabel *cameraLabel;
     QLabel *label_status_bar;
 
@@ -854,13 +866,72 @@ public:
 
         verticalLayout_3->addLayout(gridLayout_6);
 
-        cameraLabel = new QLabel(centralWidget);
-        cameraLabel->setObjectName(QString::fromUtf8("cameraLabel"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        line_7 = new QFrame(centralWidget);
+        line_7->setObjectName(QString::fromUtf8("line_7"));
+        line_7->setFrameShape(QFrame::HLine);
+        line_7->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout_3->addWidget(line_7);
+
+        gridLayout_5 = new QGridLayout();
+        gridLayout_5->setSpacing(6);
+        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
+        label_22 = new QLabel(centralWidget);
+        label_22->setObjectName(QString::fromUtf8("label_22"));
+
+        gridLayout_5->addWidget(label_22, 1, 0, 1, 1);
+
+        IRValuesTextBrowser = new QTextBrowser(centralWidget);
+        IRValuesTextBrowser->setObjectName(QString::fromUtf8("IRValuesTextBrowser"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(cameraLabel->sizePolicy().hasHeightForWidth());
-        cameraLabel->setSizePolicy(sizePolicy1);
+        sizePolicy1.setHeightForWidth(IRValuesTextBrowser->sizePolicy().hasHeightForWidth());
+        IRValuesTextBrowser->setSizePolicy(sizePolicy1);
+
+        gridLayout_5->addWidget(IRValuesTextBrowser, 1, 1, 1, 1);
+
+        ClearReceivedButton = new QPushButton(centralWidget);
+        ClearReceivedButton->setObjectName(QString::fromUtf8("ClearReceivedButton"));
+
+        gridLayout_5->addWidget(ClearReceivedButton, 1, 2, 1, 1);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        IRAdressLineEdit = new QLineEdit(centralWidget);
+        IRAdressLineEdit->setObjectName(QString::fromUtf8("IRAdressLineEdit"));
+
+        horizontalLayout_3->addWidget(IRAdressLineEdit);
+
+        IRCommandLineEdit = new QLineEdit(centralWidget);
+        IRCommandLineEdit->setObjectName(QString::fromUtf8("IRCommandLineEdit"));
+
+        horizontalLayout_3->addWidget(IRCommandLineEdit);
+
+
+        gridLayout_5->addLayout(horizontalLayout_3, 3, 1, 1, 1);
+
+        SendIrButton = new QPushButton(centralWidget);
+        SendIrButton->setObjectName(QString::fromUtf8("SendIrButton"));
+
+        gridLayout_5->addWidget(SendIrButton, 3, 2, 1, 1);
+
+        label_23 = new QLabel(centralWidget);
+        label_23->setObjectName(QString::fromUtf8("label_23"));
+
+        gridLayout_5->addWidget(label_23, 3, 0, 1, 1);
+
+
+        verticalLayout_3->addLayout(gridLayout_5);
+
+        cameraLabel = new QLabel(centralWidget);
+        cameraLabel->setObjectName(QString::fromUtf8("cameraLabel"));
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(cameraLabel->sizePolicy().hasHeightForWidth());
+        cameraLabel->setSizePolicy(sizePolicy2);
 
         verticalLayout_3->addWidget(cameraLabel);
 
@@ -936,6 +1007,10 @@ public:
         label_15->setText(QApplication::translate("MainWindow", "Default Set Point", nullptr));
         label_19->setText(QApplication::translate("MainWindow", "Working Angle", nullptr));
         label_20->setText(QApplication::translate("MainWindow", "StandStillPoint", nullptr));
+        label_22->setText(QApplication::translate("MainWindow", "Ir Received", nullptr));
+        ClearReceivedButton->setText(QApplication::translate("MainWindow", "Clear Received", nullptr));
+        SendIrButton->setText(QApplication::translate("MainWindow", "Send IR Command", nullptr));
+        label_23->setText(QApplication::translate("MainWindow", "Send IR (address + command)", nullptr));
         cameraLabel->setText(QApplication::translate("MainWindow", "imageLabel", nullptr));
         label_status_bar->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
     } // retranslateUi

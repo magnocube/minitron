@@ -200,6 +200,11 @@ void IrDecoder::send()
 #ifdef PRINT_DURARIONS
 	uint32_t startTime=esp_timer_get_time();
 #endif
+	if(sharedVariables->inputs.irFlowNumber == lastFlowNumber)
+	{	
+		return;
+	}
+	lastFlowNumber = sharedVariables->inputs.irFlowNumber;
 	ESP_ERROR_CHECK(rmt_driver_install(irSenderConfig.channel, 0, 0));
 
 	int items = 1+8*4;
@@ -210,14 +215,15 @@ void IrDecoder::send()
 	item[0].level0 = 0;
 	item[0].duration1 = 4500 * MS_TO_TICKS;
 	item[0].level1 = 1;
-	uint8_t address = 10;
-	uint8_t command = 100;
+	uint8_t address = sharedVariables->inputs.irAddress;
+	uint8_t command = sharedVariables->inputs.irCommand;
 	IrDecoderWriteByte(item + 1, address);
 	IrDecoderWriteByte(item + 9, 255 - address);
 	IrDecoderWriteByte(item + 17, command);
 	IrDecoderWriteByte(item + 25, 255 - command);
 
-    ESP_ERROR_CHECK(rmt_write_items(RMT_CHANNEL_1, item, 10, false));
+    ESP_ERROR_CHECK(rmt_write_items(RMT_CHANNEL_1, item, size, false));
+	ESP_ERROR_CHECK(rmt_wait_tx_done(RMT_CHANNEL_1, portMAX_DELAY));
 	#ifdef PRINT_IR_SEND
 		printf("ir address: %hhu command %hhu sended\n", address, command);
 	#endif
