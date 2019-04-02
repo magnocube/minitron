@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets network
+QT       += core gui widgets network printsupport
 
 TARGET = robot_controller
 TEMPLATE = app
@@ -31,7 +31,9 @@ SOURCES += \
     graphicproxysensor.cpp \
     graphicBattery.cpp \
     graphiccamera.cpp \
-    graphiccompass.cpp
+    graphiccompass.cpp \
+    qcustomplot.cpp \
+    plotutils.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +45,8 @@ HEADERS += \
     graphicBattery.h \
     graphiccamera.h \
     graphiccompasscpp \
-    graphiccompass.h
+    graphiccompass.h \
+    qcustomplot.h
 
 FORMS += \
         mainwindow.ui

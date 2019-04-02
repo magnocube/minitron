@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     scene = new QGraphicsScene(this);
     setupUI();
+    setupPlots();
     ui->graphicsView->setScene(scene);
 }
 
