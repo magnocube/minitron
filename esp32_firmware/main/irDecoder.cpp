@@ -47,29 +47,25 @@ void IrDecoder::setupReceiver()
 //https://www.sbprojects.net/knowledge/ir/nec.php
 #define TICKS_TO_MS 1.0/(80.0/255.0)
 #define MS_TO_TICKS (80.0/255.0)
-bool IrDecoder::verifyReceivedData(rmt_item32_t* item)
+int IrDecoder::findPreamble(rmt_item32_t* item, int size)
 {
-	if((item[0].duration0*TICKS_TO_MS > 8500) && (item[0].duration0*TICKS_TO_MS < 9500))
+	for(int i=0;i<size - 132;i++)
 	{
-		#ifdef PRINT_IR_RECEIVE_VERBOSE
-		printf("preamble 9ms verified\n");
-		#endif
+		if((item[i].duration0*TICKS_TO_MS > 8500) && (item[i].duration0*TICKS_TO_MS < 9500))
+		{
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			printf("preamble 9ms verified\n");
+			#endif
+			if((item[i].duration1 * TICKS_TO_MS > 4250) &&( item[i].duration1 * TICKS_TO_MS < 4750))
+			{
+				#ifdef PRINT_IR_RECEIVE_VERBOSE
+				printf("preamble 4.5ms verified\n");
+				#endif
+				return i;
+			}
+		}	
 	}
-	else
-	{
-		return false;
-	}
-	if((item[0].duration1 * TICKS_TO_MS > 4250) &&( item[0].duration1 * TICKS_TO_MS < 4750))
-	{
-		#ifdef PRINT_IR_RECEIVE_VERBOSE
-		printf("preamble 4.5ms verified\n");
-		#endif
-	}
-	else
-	{
-		return false;
-	}
-	return true;
+	return -1;
 	
 }
 uint8_t IrDecoder::translateByte(rmt_item32_t* item)
@@ -142,31 +138,39 @@ void IrDecoder::read()
 			}
 			printf("\n");
 			#endif
-			if(verifyReceivedData(item))
+			int preamblePosition = findPreamble(item, rx_size);
+			if(preamblePosition != -1)
 			{
-				uint8_t address = translateByte(item+1);
-				uint8_t invert_address = translateByte(item+9);
-				uint8_t command = translateByte(item+17);
-				uint8_t invert_command = translateByte(item+25);
+				#ifdef PRINT_IR_RECEIVE
+					printf("preamble at %d\n", preamblePosition);
+				#endif
+				uint8_t address = translateByte(item + preamblePosition + 1);
+				uint8_t invert_address = translateByte(item + preamblePosition + 9);
+				uint8_t command = translateByte(item + preamblePosition + 17);
+				uint8_t invert_command = translateByte(item + preamblePosition + 25);
 				#ifdef PRINT_IR_RECEIVE_VERBOSE
 				if(address != 255-invert_address)
 				{
 					printf("inverted address doesn't match, probably this is extended NEC\n");
 				}
 				#endif
-				#ifdef PRINT_IR_RECEIVE
+				
 				if(command == 255 - invert_command)
 				{
+					#ifdef PRINT_IR_RECEIVE
 					printf("address: %hhu command: %hhu\n", address, command);
+					#endif
 					sharedVariables->outputs.irLastAddress = address;
 					sharedVariables->outputs.irLastCommand = command;
 					sharedVariables->outputs.irFlowNumber++;
+
 				}
 				else
 				{
+					#ifdef PRINT_IR_RECEIVE
 					printf("error, inverted command doesn't match\n");
+					#endif
 				}
-				#endif
 				
 			}
 			

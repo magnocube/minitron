@@ -51,7 +51,7 @@ public:
 		setupProximity();
 	}
 	uint8_t translateByte(rmt_item32_t* item);
-	bool verifyReceivedData(rmt_item32_t* item);
+	int findPreamble(rmt_item32_t* item, int size);
 	void read();
 	void send();
 	void runProximity();
