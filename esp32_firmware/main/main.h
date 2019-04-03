@@ -15,7 +15,7 @@
 
 SerialConnection * Camera;
 IrDecoder * irDecoder;
-MotorDriver * MotorController;
+MotorDriver * motorController;
 SharedVariables sharedVariables;
 #include "highLevelMotorDriver.h"
 #include "powerManagement.h"

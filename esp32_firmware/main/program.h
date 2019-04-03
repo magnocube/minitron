@@ -2,7 +2,7 @@
 
 static uint8_t* cameraData;
 extern SharedVariables sharedVariables;
-extern MotorDriver * MotorController;
+extern MotorDriver * motorController;
 extern SerialConnection * Camera;
 #define DYSON_PROXIMITY_TARGET 150
 
@@ -96,20 +96,20 @@ void dysonMode()
         steering *=2;
         if(sharedVariables.outputs.proximityLeft<80)
         {
-            MotorController->setAcceleration(30000);
+            motorController->setAcceleration(30000);
             speed = 4000;
             steering = 3500;
         }
 
     }else
     {
-        MotorController->setAcceleration(10000);
+        motorController->setAcceleration(10000);
         steering *= 3 + sharedVariables.outputs.proximityLeft/100;
     }
     
     int leftSpeed = speed + steering;
     int rightSpeed = speed - steering;
-    MotorController->setTargetSpeed(leftSpeed, rightSpeed);
+    motorController->setTargetSpeed(leftSpeed, rightSpeed);
     //printf("%d,%d,1000\n",sharedVariables.outputs.proximityLeft, sharedVariables.outputs.proximityRight);
 
 }
@@ -119,8 +119,8 @@ void dysonMode()
 #define LEFT 1
 #define PROXYDESIREDVALUE 110
 #define ROTATIONSPEED 5000
-#define ROTATIONDELAYS 330
-#define ROTATIONACCELERATION 40000
+#define ROTATIONDELAYS 260
+#define ROTATIONACCELERATION 45000
 struct followWallHelperStruct{
     uint64_t lastTimeWallSeen = 0;
     uint64_t lastTimeLookedAround = 0;
@@ -133,17 +133,18 @@ struct searchHelperStruct{
     
 }SHS;
 void stickToWall(bool direction,int sensorValue){
+    int error  = abs(PROXYDESIREDVALUE - sensorValue) * 4; //error times error multiplyer
     if(direction == RIGHT){
         if(sensorValue >PROXYDESIREDVALUE){
             #ifdef DEBUG_WALL_SEARCH
             printf("RsgL\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(5000,3000);
+            motorController->setTargetSpeed(3000+error,3000-error); // motors are somehow inverted
         }else{
             #ifdef DEBUG_WALL_SEARCH
             printf("RsgR\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(3000,5000);
+            motorController->setTargetSpeed(3000-error,3000+error); // motors are somehow inverted
         }
         
     }else{
@@ -151,12 +152,12 @@ void stickToWall(bool direction,int sensorValue){
              #ifdef DEBUG_WALL_SEARCH
             printf("LsgR\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(3000,5000);
+            motorController->setTargetSpeed(3000-error,3000+error); // motors are somehow inverted
         }else{
             #ifdef DEBUG_WALL_SEARCH
             printf("LsgL\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(5000,3000);
+            motorController->setTargetSpeed(3000+error,3000-error);// motors are somehow inverted
         }
     }
 }
@@ -170,30 +171,30 @@ void followWalls(){
 
     int proxyLeft = sharedVariables.outputs.proximityLeft;
     int proxyRight = sharedVariables.outputs.proximityRight;
-    if(proxyLeft >= 45 || proxyRight >= 45){
+    if(proxyLeft >= 25 || proxyRight >= 25){
         FHS.lastTimeWallSeen = esp_timer_get_time();
     }
 
     if(esp_timer_get_time() - FHS.lastTimeWallSeen < 500000) {
         //within 500 milliseconds of detecting a wall
-        if(esp_timer_get_time() - FHS.lastTimeLookedAround > 8000000){
+        if(esp_timer_get_time() - FHS.lastTimeLookedAround > 5000000){
             
 
             //when 8 seconds have passed
             FHS.lastTimeLookedAround = esp_timer_get_time();
             //stop before looking around
-            MotorController->setAcceleration(10000000);
-            MotorController->setTargetSpeed(0,0);
-            vTaskDelay(200/portTICK_PERIOD_MS);
+            motorController->setAcceleration(10000000);
+            motorController->setTargetSpeed(0,0);
+            vTaskDelay(100/portTICK_PERIOD_MS);
             //look around in case the target is found
             //will have a delay... dont worry, it wont take long
-            MotorController->setAcceleration(ROTATIONACCELERATION);
+            motorController->setAcceleration(ROTATIONACCELERATION);
             if(FHS.lastWallFollowed == RIGHT){
                 //look left
-                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+                motorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
-                MotorController->setTargetSpeed(0,0);
-                vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                motorController->setTargetSpeed(0,0);
+                vTaskDelay(ROTATIONDELAYS*3/portTICK_PERIOD_MS);
                 //read uard buffer before returning to first value
                 if(Camera->dataAnvailable()){
                     cameraData = Camera->ReadData(); //also sends a confirmation which toggles the red led
@@ -201,17 +202,17 @@ void followWalls(){
                     return; // dont look back... otherwise the target can not be fond with automaticObjectSearch
                 }
                 //look back
-                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+                motorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
-                MotorController->setTargetSpeed(0,0);
+                motorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
 
             }else{
                 //look right
-                MotorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
+                motorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
-                MotorController->setTargetSpeed(0,0);
-                vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                motorController->setTargetSpeed(0,0);
+                vTaskDelay(ROTATIONDELAYS*3/portTICK_PERIOD_MS);
                 //read uard buffer before returning to first value
                 if(Camera->dataAnvailable()){
                     cameraData = Camera->ReadData(); //also sends a confirmation which toggles the red led
@@ -219,9 +220,9 @@ void followWalls(){
                     return; // dont look back... otherwise the target can not be fond with automaticObjectSearch
                 }
                 //look back
-                MotorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
+                motorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
-                MotorController->setTargetSpeed(0,0);
+                motorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
 
             }
@@ -233,11 +234,30 @@ void followWalls(){
                 //stick to left wall
                 FHS.lastWallFollowed = LEFT;
                 stickToWall(LEFT,sharedVariables.outputs.proximityLeft);
-                return;
+                
             }else{
                 //stick to right wall
                 FHS.lastWallFollowed = RIGHT;
                 stickToWall(RIGHT,sharedVariables.outputs.proximityRight);
+                
+            }
+
+            if(sharedVariables.outputs.TOFSensorDistanceMM < 65){   // when detecting a wall in fron while fillowing a wall
+                 motorController->setAcceleration(10000000);
+                motorController->setTargetSpeed(0,0);
+                vTaskDelay(100/portTICK_PERIOD_MS);
+                motorController->setAcceleration(ROTATIONACCELERATION);
+                if(FHS.lastWallFollowed == RIGHT){
+                    motorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);  //LOOK LEFT
+                    vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                    motorController->setTargetSpeed(0,0);
+                    vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                }else{  //left
+                    motorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED); //LOOK RIGHT
+                    vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                    motorController->setTargetSpeed(0,0);
+                    vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                }
                 return;
             }
         
@@ -246,7 +266,20 @@ void followWalls(){
         // no wall in the last 500ms, and no target in sight,, go search for a wall
     } else{
         //no wall nearby.. go search for a wall
-        MotorController->setTargetSpeed(3000,3000);
+        motorController->setTargetSpeed(3000,3000);
+        if(sharedVariables.outputs.TOFSensorDistanceMM < 65){   
+                 motorController->setAcceleration(10000000);
+                motorController->setTargetSpeed(0,0);
+                vTaskDelay(100/portTICK_PERIOD_MS);
+                motorController->setAcceleration(ROTATIONACCELERATION);
+                motorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);  //LOOK RIGHT
+                vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                motorController->setTargetSpeed(0,0);
+                vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
+                
+            return;
+        }
+
     }
 
 
@@ -254,7 +287,7 @@ void followWalls(){
 void AutomaticObjectSearch()
 {   
     //this method will contain blocking functions
-    MotorController->setAcceleration(10000);
+    motorController->setAcceleration(10000);
     
     //adjust servo to camera object direction
     automaticServoAim();
@@ -276,7 +309,7 @@ void AutomaticObjectSearch()
             //brake and stop
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(2147483647); // will go back to default value on next loop
+            motorController->setAcceleration(2147483647); // will go back to default value on next loop
         } else{
             #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
             printf("3"); //was not searching... is following target now
@@ -307,7 +340,7 @@ void AutomaticObjectSearch()
         #endif
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(10000000); // will go back to default value on next loop
+            motorController->setAcceleration(10000000); // will go back to default value on next loop
         } 
 
 
@@ -322,7 +355,7 @@ void AutomaticObjectSearch()
             #endif
             m1Speed = 0;
             m2Speed = 0;
-            MotorController->setAcceleration(1000000); // will go back to default value on next loop
+            motorController->setAcceleration(1000000); // will go back to default value on next loop
         }
         else if((esp_timer_get_time() - lastUpdateXAndYCoordinates < 6000000) && (lastUpdateXAndYCoordinates > 0))
         {   
@@ -361,7 +394,7 @@ void AutomaticObjectSearch()
         
         
     }
-    MotorController->setTargetSpeed(m1Speed, m2Speed);
+    motorController->setTargetSpeed(m1Speed, m2Speed);
     SHS.lastYLocation = y;
     #ifdef DEBUG_BADLY_PROGRAMMED_ALGORITM
         printf("\n");
@@ -395,14 +428,22 @@ void programLoop(){
     }
     else
     {
-        MotorController->setTargetSpeed(0,0);
+        motorController->setTargetSpeed(0,0);
     }
     
     if(oldMode != sharedVariables.inputs.mode)
     {
         if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI_BALANCE)
         {
-            MotorController->setAcceleration(10000000);
+            motorController->setAcceleration(10000000);
+        }
+        if(sharedVariables.inputs.mode == controlModes::OFF)
+        {
+            motorController->setMotorDriverEnabled(false);
+        }
+        else 
+        {
+            motorController->setMotorDriverEnabled(true);
         }
     }
     oldMode = sharedVariables.inputs.mode;

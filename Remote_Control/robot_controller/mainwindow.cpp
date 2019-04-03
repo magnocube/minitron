@@ -8,13 +8,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    robotConnection = new UDP_Connection("::ffff:192.168.137.237");
+    robotConnection = new UDP_Connection("::ffff:192.168.43.52");
 
 
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(SendUdpToRobot()));
-    timer->start(25);
+    timer->start(50);
 
     connect(robotConnection,SIGNAL(udpUpdate()),this,SLOT(udpHasAUpdate()));
 
@@ -210,22 +210,22 @@ void MainWindow::SendUdpToRobot()
     if(controlData.WPressed){
         motor1Speed += maxSpeed;
         motor2Speed += maxSpeed;
-        robotConnection->sharedVariables.inputs.setPoint = 50;
+        robotConnection->sharedVariables.inputs.setPoint = maxSpeed/1000;
     }
     if(controlData.APressed){
        motor1Speed += steeringSensitivity;
        motor2Speed -= steeringSensitivity;
-       robotConnection->sharedVariables.inputs.steering += 2000;
+       robotConnection->sharedVariables.inputs.steering += steeringSensitivity/10;
     }
     if(controlData.DPressed){
         motor1Speed -= steeringSensitivity;
         motor2Speed += steeringSensitivity;
-        robotConnection->sharedVariables.inputs.steering += -2000;
+        robotConnection->sharedVariables.inputs.steering -= steeringSensitivity/10;
     }
     if(controlData.SPressed){
         motor1Speed -= maxSpeed;
         motor2Speed -= maxSpeed;
-        robotConnection->sharedVariables.inputs.setPoint = -50;
+        robotConnection->sharedVariables.inputs.setPoint = -maxSpeed/1000;
     }
 //    qDebug() << "motor" <<robotConnection->sharedVariables.inputs.steppers.motor1TargetSpeed<< " "<<robotConnection->sharedVariables.inputs.steppers.motor2TargetSpeed;
 

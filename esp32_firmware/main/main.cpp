@@ -6,9 +6,10 @@
 void core0Task( void * pvParameters ){
     
     batteryCheckerSetup();
+
     irDecoder = new IrDecoder(sharedVariables);
     irDecoder->setup();
-    spiSetup();
+    //spiSetup();
     mpu9250Setup();
     compassSetup();
     tofSensor = new TOFSensor();
@@ -17,9 +18,11 @@ void core0Task( void * pvParameters ){
     uint32_t loopCounter=0;
     uint32_t lastTime = 0;
     imuMathSetup();
+    play();
+    play2();
     while(true)
     {
-        spiRead();
+        //spiRead();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
@@ -29,7 +32,7 @@ void core0Task( void * pvParameters ){
             balance();
         }
 
-        MotorController->loop();
+        motorController->loop();
 
         irDecoder->read();//takes 0.005ms
         if(loopCounter%10 == 0)
@@ -59,19 +62,19 @@ void core1Task( void * pvParameters ){
             udpReceived = false;
             if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
             {
-                MotorController->steppers = &sharedVariables.inputs.steppers;
-                MotorController->calculateInduvidualAcceleration();
+                motorController->steppers = &sharedVariables.inputs.steppers;
+                motorController->calculateInduvidualAcceleration();
                 //printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
             }
             else
             {
-                MotorController->steppers = &sharedVariables.outputs.steppers;
+                motorController->steppers = &sharedVariables.outputs.steppers;
             }
         }
         if(disconnected)
         {
             //printf("disconnected\n");
-            MotorController->steppers = &sharedVariables.outputs.steppers;
+            motorController->steppers = &sharedVariables.outputs.steppers;
             if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
             {
                 sharedVariables.inputs.mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
@@ -86,9 +89,9 @@ void core1Task( void * pvParameters ){
 extern "C" void app_main()
 {
     printf("minitron firmware started\n");  
-    MotorController = new MotorDriver(sharedVariables);
-    MotorController->setup();
-    MotorController->setMotorDriverEnabled(true);
+    motorController = new MotorDriver(sharedVariables);
+    motorController->setup();
+    motorController->setMotorDriverEnabled(true);
     
     Camera = new SerialConnection();
     Camera->setup();

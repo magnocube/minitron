@@ -13,7 +13,7 @@
 #include "esp_bt.h"
 #include "esp_wifi.h"
 
-extern MotorDriver* MotorController;
+extern MotorDriver* motorController;
 extern SharedVariables sharedVariables;
 int calculateVoltage()
 {
@@ -38,7 +38,7 @@ void checkBattery()
         printf("IJKEL.... DE BATTERIJ IS LEEG... RIP PROJECT\n");
         //the battery is emty and will damage when discharged more, turn everything in off or in low power mode
         esp_wifi_stop();
-        MotorController->setMotorDriverEnabled(false);
+        motorController->setMotorDriverEnabled(false);
         esp_deep_sleep(1000000000000000000);
     }
 }

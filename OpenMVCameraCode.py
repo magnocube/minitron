@@ -19,8 +19,8 @@ thresholds = [(31, 64, 40, 98, -4, 72), # generic_red_thresholds
 
 
 
-spi = SPI(2, SPI.MASTER, baudrate=500000)
-cs = pyb.Pin(pyb.Pin.board.P3, pyb.Pin.OUT)
+#spi = SPI(2, SPI.MASTER, baudrate=500000, crc = None)
+#cs = pyb.Pin(pyb.Pin.board.P3, pyb.Pin.OUT)
 
 uart = UART(3, 115200, timeout_char=1000)                         # init with given baudrate
 uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
@@ -33,7 +33,9 @@ sensor.set_framesize(sensor.CIF)
 #sensor.set_framesize(sensor.QVGA)
 
 sensor.skip_frames(time = 2000)
-sensor.set_auto_gain(False) # must be turned off for color tracking
+sensor.set_auto_gain(True) # must be turned off for color tracking
+sensor.set_auto_gain(False, gain_db = sensor.get_gain_db()-6)
+
 sensor.set_auto_whitebal(False) # must be turned off for color tracking
 clock = time.clock()
 
@@ -99,12 +101,14 @@ while(True):
         old_blob = None
     found_blobs.clear()
 
-    cs.value(0)
-    spi.send(img)
+    #arr = bytearray(10000)
+    #cs.value(0)
+    #arr = img.compressed(quality=1)
+    #spi.send(arr)
 
 
-    cs.value(1)
-    time.sleep(1000)
+    #cs.value(1)
+    #time.sleep(1000)
 
 
 
