@@ -1,11 +1,9 @@
-
 import sensor, image, time, pyb
-
-from pyb import UART, SPI
+from machine import WDT
+from pyb import UART
 import sys
-
-
-
+wdt = WDT(timeout=2000)  # enable it with a timeout of 2s
+wdt.feed()
 threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
@@ -28,17 +26,16 @@ uart.init(115200, bits=8, parity=None, stop=1, timeout_char=1000)
 sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
 
-
 sensor.set_framesize(sensor.CIF)
 #sensor.set_framesize(sensor.QVGA)
 
 sensor.skip_frames(time = 2000)
-sensor.set_auto_gain(True) # must be turned off for color tracking
-sensor.set_auto_gain(False, gain_db = sensor.get_gain_db()-6)
-
+wdt.feed()
+sensor.set_auto_gain(False) # must be turned off for color tracking
 sensor.set_auto_whitebal(False) # must be turned off for color tracking
 clock = time.clock()
 
+wdt.feed()
 
 red_led = pyb.LED(1)
 green_led = pyb.LED(2)
@@ -52,6 +49,7 @@ ir_leds.on()
 found_blobs = []
 old_blob = None
 while(True):
+    wdt.feed()
     clock.tick()                    # Update the FPS clock.
     img = sensor.snapshot()         # Take a picture and return the image.
 
@@ -61,8 +59,8 @@ while(True):
         print(data)
         green_led.toggle()
 
-    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=50, area_threshold=50, merge=True):
 
+    for blob in img.find_blobs([thresholds[threshold_index]], pixels_threshold=40, area_threshold=40, merge=True):
           if blob.w() <= (blob.h() * 1.5):
               if blob.w() >= (blob.h() * 0.5):
                   img.draw_cross(blob.cx(), blob.cy())

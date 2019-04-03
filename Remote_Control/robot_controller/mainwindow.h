@@ -1,6 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
+#pragma once
 
 
 #include <QMainWindow>
@@ -19,6 +17,7 @@
 #include "graphiccamera.h"
 #include "graphiccompass.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -28,6 +27,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    Ui::MainWindow *ui;
+
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 protected:
@@ -49,7 +50,7 @@ private slots:
     void on_SendIrButton_clicked();
 
 private:
-    Ui::MainWindow *ui;
+
     UDP_Connection *robotConnection;
     QGraphicsScene * scene;
     void setupUI();
@@ -66,6 +67,9 @@ private:
     uint8_t IRFlowDataInput = 0;// input to robot
     uint8_t IRFlowDataOutput = 0;// output to Gui
 
+    void setupPlots();
+    void updatePlots();
+
     struct ConntrolData{
         int32_t Motor1OldSpeed = 0;
         int32_t Motor2OldSpeed = 0;
@@ -80,4 +84,4 @@ private:
 
 };
 
-#endif // MAINWINDOW_H
+

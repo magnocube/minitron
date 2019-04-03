@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(SendUdpToRobot()));
     timer->start(50);
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     scene = new QGraphicsScene(this);
     setupUI();
+    setupPlots();
     ui->graphicsView->setScene(scene);
 }
 
