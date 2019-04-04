@@ -24,9 +24,11 @@
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include <qcustomplot.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -36,7 +38,14 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QHBoxLayout *horizontalLayout_2;
+    QTabWidget *tabWidget;
+    QWidget *tab;
+    QVBoxLayout *verticalLayout;
     QGraphicsView *graphicsView;
+    QWidget *tab_2;
+    QVBoxLayout *verticalLayout_5;
+    QGridLayout *gridLayout_7;
+    QCustomPlot *PlotViewerSpeeds;
     QVBoxLayout *verticalLayout_3;
     QGridLayout *gridLayout_3;
     QProgressBar *ProgressbarIRLeft;
@@ -420,10 +429,40 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        graphicsView = new QGraphicsView(centralWidget);
+        tabWidget = new QTabWidget(centralWidget);
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+        tab = new QWidget();
+        tab->setObjectName(QString::fromUtf8("tab"));
+        verticalLayout = new QVBoxLayout(tab);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        graphicsView = new QGraphicsView(tab);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
 
-        horizontalLayout_2->addWidget(graphicsView);
+        verticalLayout->addWidget(graphicsView);
+
+        tabWidget->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QString::fromUtf8("tab_2"));
+        verticalLayout_5 = new QVBoxLayout(tab_2);
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        gridLayout_7 = new QGridLayout();
+        gridLayout_7->setSpacing(6);
+        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
+        PlotViewerSpeeds = new QCustomPlot(tab_2);
+        PlotViewerSpeeds->setObjectName(QString::fromUtf8("PlotViewerSpeeds"));
+
+        gridLayout_7->addWidget(PlotViewerSpeeds, 0, 0, 1, 1);
+
+
+        verticalLayout_5->addLayout(gridLayout_7);
+
+        tabWidget->addTab(tab_2, QString());
+
+        horizontalLayout_2->addWidget(tabWidget);
 
         verticalLayout_3 = new QVBoxLayout();
         verticalLayout_3->setSpacing(6);
@@ -697,7 +736,8 @@ public:
 
         ISlider = new QSlider(centralWidget);
         ISlider->setObjectName(QString::fromUtf8("ISlider"));
-        ISlider->setValue(4);
+        ISlider->setPageStep(10);
+        ISlider->setValue(15);
         ISlider->setOrientation(Qt::Horizontal);
 
         gridLayout_2->addWidget(ISlider, 2, 1, 1, 1);
@@ -734,7 +774,7 @@ public:
 
         DSlider = new QSlider(centralWidget);
         DSlider->setObjectName(QString::fromUtf8("DSlider"));
-        DSlider->setValue(50);
+        DSlider->setValue(30);
         DSlider->setOrientation(Qt::Horizontal);
 
         gridLayout_2->addWidget(DSlider, 3, 1, 1, 1);
@@ -784,7 +824,7 @@ public:
         Slider_PIDMaxSpeed->setObjectName(QString::fromUtf8("Slider_PIDMaxSpeed"));
         Slider_PIDMaxSpeed->setMinimum(100);
         Slider_PIDMaxSpeed->setMaximum(1000);
-        Slider_PIDMaxSpeed->setValue(400);
+        Slider_PIDMaxSpeed->setValue(200);
         Slider_PIDMaxSpeed->setOrientation(Qt::Horizontal);
 
         gridLayout_6->addWidget(Slider_PIDMaxSpeed, 1, 1, 1, 1);
@@ -793,7 +833,7 @@ public:
         Slider_DefaultSetPoint->setObjectName(QString::fromUtf8("Slider_DefaultSetPoint"));
         Slider_DefaultSetPoint->setMinimum(-20);
         Slider_DefaultSetPoint->setMaximum(20);
-        Slider_DefaultSetPoint->setValue(10);
+        Slider_DefaultSetPoint->setValue(4);
         Slider_DefaultSetPoint->setOrientation(Qt::Horizontal);
 
         gridLayout_6->addWidget(Slider_DefaultSetPoint, 8, 1, 1, 1);
@@ -964,12 +1004,17 @@ public:
         QObject::connect(Slider_accelerationAngle, SIGNAL(valueChanged(int)), lcd_AccelerationAngle, SLOT(display(int)));
         QObject::connect(progressBarCameraAngle, SIGNAL(valueChanged(int)), lcdServoAngle, SLOT(display(int)));
 
+        tabWidget->setCurrentIndex(1);
+
+
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Tab 1", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Tab 2", nullptr));
         label_7->setText(QApplication::translate("MainWindow", "IR Sensor Right Background Light", nullptr));
         label_10->setText(QApplication::translate("MainWindow", "IR Distance Right", nullptr));
         label_9->setText(QApplication::translate("MainWindow", "IR Distance Left", nullptr));
@@ -980,7 +1025,7 @@ public:
         comboBox->setItemText(3, QApplication::translate("MainWindow", "Manual Balance Mode", nullptr));
         comboBox->setItemText(4, QApplication::translate("MainWindow", "Automatic Object Search", nullptr));
         comboBox->setItemText(5, QApplication::translate("MainWindow", "Automatic Dyson Mode", nullptr));
-        comboBox->setItemText(6, QApplication::translate("MainWindow", "Automatic Battle Mode", nullptr));
+        comboBox->setItemText(6, QApplication::translate("MainWindow", "Sound mode", nullptr));
         comboBox->setItemText(7, QApplication::translate("MainWindow", "Automatic Headless Mode", nullptr));
         comboBox->setItemText(8, QApplication::translate("MainWindow", "Automatic Epileptic Mode", nullptr));
         comboBox->setItemText(9, QApplication::translate("MainWindow", "Automatic Balance Object Search", nullptr));

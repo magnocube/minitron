@@ -124,8 +124,8 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
         robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
     } else if(arg1 == "Automatic Dyson Mode"){
         robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_DYSON_MODE;
-    } else if(arg1 == "Automatic Battle Mode"){
-        robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_BATTLE_MODE;
+    } else if(arg1 == "Sound mode"){
+        robotConnection->sharedVariables.inputs.mode = controlModes::SOUND_MODE;
     } else if(arg1 == "Automatic Headless Mode"){
         robotConnection->sharedVariables.inputs.mode = controlModes::AUTOMATIC_HEADLESS_MODE;
     } else if(arg1 == "Automatic Epileptic Mode"){

@@ -303,7 +303,7 @@ QMenu::separator {
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -457,7 +457,7 @@ QMenu::separator {
               </item>
               <item>
                <property name="text">
-                <string>Automatic Battle Mode</string>
+                <string>Sound mode</string>
                </property>
               </item>
               <item>
@@ -718,8 +718,11 @@ QMenu::separator {
           </item>
           <item row="2" column="1">
            <widget class="QSlider" name="ISlider">
+            <property name="pageStep">
+             <number>10</number>
+            </property>
             <property name="value">
-             <number>4</number>
+             <number>15</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -759,7 +762,7 @@ QMenu::separator {
           <item row="3" column="1">
            <widget class="QSlider" name="DSlider">
             <property name="value">
-             <number>50</number>
+             <number>30</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -832,7 +835,7 @@ QMenu::separator {
              <number>1000</number>
             </property>
             <property name="value">
-             <number>400</number>
+             <number>200</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -848,7 +851,7 @@ QMenu::separator {
              <number>20</number>
             </property>
             <property name="value">
-             <number>10</number>
+             <number>4</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>

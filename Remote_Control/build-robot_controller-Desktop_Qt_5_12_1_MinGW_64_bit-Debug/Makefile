@@ -208,6 +208,7 @@ Makefile: ../robot_controller/robot_controller.pro ../../../../Qt/5.12.1/mingw73
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/features/qt_config.prf \
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/win32-g++/qmake.conf \
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/features/exclusive_builds.prf \
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/features/toolchain.prf \
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/features/default_pre.prf \
@@ -231,6 +232,7 @@ Makefile: ../robot_controller/robot_controller.pro ../../../../Qt/5.12.1/mingw73
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/features/yacc.prf \
 		../../../../Qt/5.12.1/mingw73_64/mkspecs/features/lex.prf \
 		../robot_controller/robot_controller.pro \
+		../../../../Qt/5.12.1/mingw73_64/lib/Qt5PrintSupport.prl \
 		../../../../Qt/5.12.1/mingw73_64/lib/Qt5Widgets.prl \
 		../../../../Qt/5.12.1/mingw73_64/lib/Qt5Gui.prl \
 		../../../../Qt/5.12.1/mingw73_64/lib/Qt5Network.prl \
@@ -382,6 +384,7 @@ Makefile: ../robot_controller/robot_controller.pro ../../../../Qt/5.12.1/mingw73
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/features/qt_config.prf:
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/win32-g++/qmake.conf:
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/features/exclusive_builds.prf:
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/features/toolchain.prf:
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/features/default_pre.prf:
@@ -405,6 +408,7 @@ Makefile: ../robot_controller/robot_controller.pro ../../../../Qt/5.12.1/mingw73
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/features/yacc.prf:
 ../../../../Qt/5.12.1/mingw73_64/mkspecs/features/lex.prf:
 ../robot_controller/robot_controller.pro:
+../../../../Qt/5.12.1/mingw73_64/lib/Qt5PrintSupport.prl:
 ../../../../Qt/5.12.1/mingw73_64/lib/Qt5Widgets.prl:
 ../../../../Qt/5.12.1/mingw73_64/lib/Qt5Gui.prl:
 ../../../../Qt/5.12.1/mingw73_64/lib/Qt5Network.prl:

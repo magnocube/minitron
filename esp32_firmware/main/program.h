@@ -138,12 +138,12 @@ void stickToWall(bool direction,int sensorValue){
             #ifdef DEBUG_WALL_SEARCH
             printf("RsgL\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(5000,3000);
+            motorController->setTargetSpeed(5000,3000);
         }else{
             #ifdef DEBUG_WALL_SEARCH
             printf("RsgR\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(3000,5000);
+            motorController->setTargetSpeed(3000,5000);
         }
         
     }else{
@@ -151,12 +151,12 @@ void stickToWall(bool direction,int sensorValue){
              #ifdef DEBUG_WALL_SEARCH
             printf("LsgR\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(3000,5000);
+            motorController->setTargetSpeed(3000,5000);
         }else{
             #ifdef DEBUG_WALL_SEARCH
             printf("LsgL\n"); //was not searching... is following target now
             #endif
-            MotorController->setTargetSpeed(5000,3000);
+            motorController->setTargetSpeed(5000,3000);
         }
     }
 }
@@ -182,8 +182,8 @@ void followWalls(){
             //when 8 seconds have passed
             FHS.lastTimeLookedAround = esp_timer_get_time();
             //stop before looking around
-            MotorController->setAcceleration(10000000);
-            MotorController->setTargetSpeed(0,0);
+            motorController->setAcceleration(10000000);
+            motorController->setTargetSpeed(0,0);
             vTaskDelay(200/portTICK_PERIOD_MS);
             //look around in case the target is found
             //will have a delay... dont worry, it wont take long
@@ -192,7 +192,7 @@ void followWalls(){
                 //look left
                 motorController->setTargetSpeed(ROTATIONSPEED,-ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
-                MotorController->setTargetSpeed(0,0);
+                motorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 //read uard buffer before returning to first value
                 if(Camera->dataAnvailable()){
@@ -210,7 +210,7 @@ void followWalls(){
                 //look right
                 motorController->setTargetSpeed(-ROTATIONSPEED,ROTATIONSPEED);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
-                MotorController->setTargetSpeed(0,0);
+                motorController->setTargetSpeed(0,0);
                 vTaskDelay(ROTATIONDELAYS/portTICK_PERIOD_MS);
                 //read uard buffer before returning to first value
                 if(Camera->dataAnvailable()){
@@ -246,7 +246,7 @@ void followWalls(){
         // no wall in the last 500ms, and no target in sight,, go search for a wall
     } else{
         //no wall nearby.. go search for a wall
-        MotorController->setTargetSpeed(3000,3000);
+        motorController->setTargetSpeed(3000,3000);
     }
 
 

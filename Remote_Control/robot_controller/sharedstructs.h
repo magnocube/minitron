@@ -1,4 +1,3 @@
-
 #include <QObject>
 #pragma once
 
@@ -8,7 +7,7 @@ enum class controlModes{
     OFF = 2,
     AUTOMATIC_OBJECT_SEARCH = 3,
     AUTOMATIC_DYSON_MODE = 4,
-    AUTOMATIC_BATTLE_MODE = 5,
+    SOUND_MODE = 5,
     AUTOMATIC_HEADLESS_MODE = 6,
     AUTOMATIC_EPILEPTIC_MODE = 7,
     AUTOMATIC_BALANCE_OBJECT_SEARCH = 8,
@@ -31,7 +30,7 @@ struct Steppers
     int32_t motor2TargetSpeed = 0;			//target speed of motor 2
     uint32_t acceleration_motor1 = 1000; 				//acceleration of current speed to target speed in steps/s^1
     uint32_t acceleration_motor2 = 1000; 				//acceleration of current speed to target speed in steps/s^2
-    uint32_t acceleration = 100000000;
+    uint32_t acceleration = 1000;
 };
 typedef struct{
 
@@ -40,18 +39,15 @@ typedef struct{
         Steppers steppers;
         //todo add manual control and location
 
-        uint16_t programSpeed = 0;
-        uint16_t programAggression = 0;
-        uint16_t programSpecificTuning = 0;
-        //balancing
-        uint8_t PID_p = 30;
-        uint8_t PID_i = 15;
-        uint8_t PID_d = 40;
+       //balancing
+        uint8_t PID_p = 50;
+        uint8_t PID_i = 25;
+        uint8_t PID_d = 50;
         uint8_t workingAngle = 30;//balk 20 - 70
         int pidMaxSpeed = 200;//balk 100 - 1000
         int complementaryFilter = 975;//balk 900 - 999
         int loopDelay = 9000;// balk 1000 - 10000
-        int defaultSetpoint = 10;//balk -20 - 20
+        int defaultSetpoint = 3;//balk -20 - 20
         int setPoint = 0;
         int steering = 0;
         int standStillAngle = 15; // 0 - 100
@@ -94,6 +90,8 @@ typedef struct{
         int proximityRight;
         int lightLeft;
         int lightRight;
+        int lightLeftHigh;
+        int lightRightHigh;
 
         Steppers steppers;
 
@@ -111,7 +109,7 @@ typedef struct{
          //wifi udp
         bool wifiAvailable = false;
         bool wifiConnected = false;
-        uint8_t wifiSignalStrength = false;
+        uint8_t wifiSignalStrength = 0;
 
         //battery
         float voltage=0;
@@ -120,4 +118,3 @@ typedef struct{
 
 
 } SharedVariables;
-

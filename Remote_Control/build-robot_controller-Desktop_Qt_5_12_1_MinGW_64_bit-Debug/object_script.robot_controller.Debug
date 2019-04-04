@@ -7,6 +7,9 @@ debug/graphicproxysensor.o
 debug/graphicBattery.o
 debug/graphiccamera.o
 debug/graphiccompass.o
+debug/qcustomplot.o
+debug/plotutils.o
 debug/qrc_recources.o
 debug/moc_mainwindow.o
 debug/moc_udp_connection.o
+debug/moc_qcustomplot.o

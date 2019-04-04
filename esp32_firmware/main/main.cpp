@@ -16,10 +16,12 @@ void core0Task( void * pvParameters ){
     uint32_t loopCounter=0;
     uint32_t lastTime = 0;
     imuMathSetup();
-    play();
-    play2();
     while(true)
     {
+        if(sharedVariables.inputs.mode == controlModes::SOUND_MODE)
+        {
+            play();
+        }
         spiRead();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
