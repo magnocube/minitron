@@ -280,7 +280,7 @@ void MainWindow::SendUdpToRobot()
 
     qDebug() << "sending" << endl;
     robotConnection->send();
-    update();
+
 
 
     controlData.Motor1OldSpeed = motor1Speed;

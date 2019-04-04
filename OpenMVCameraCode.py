@@ -9,7 +9,7 @@ threshold_index = 0 # 0 for red, 1 for green, 2 for blue
 # Color Tracking Thresholds (L Min, L Max, A Min, A Max, B Min, B Max)
 # The below thresholds track in general red/green/blue things. You may wish to tune them...
 
-thresholds = [(31, 64, 40, 98, -4, 72), # generic_red_thresholds
+thresholds = [(38, 79, 41, 83, -10, 70), # generic_red_thresholds
               (25, 89, -128, -31, -44, 39), # generic_green_thresholds
               (0, 30, 0, 64, -128, 0),      #generic_blue_thresholds
               (63, 100, -128, 127, 20, 127)
