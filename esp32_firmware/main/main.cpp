@@ -1,75 +1,107 @@
 
-
 #include "main.h"
 
 
 void core0Task( void * pvParameters ){
+    
+    batteryCheckerSetup();
+    irDecoder = new IrDecoder(sharedVariables);
+    irDecoder->setup();
+    spiSetup();
     mpu9250Setup();
     compassSetup();
-    irDecoder = new IrDecoder();
-    irDecoder->setup();
-    //spiSetup();
     tofSensor = new TOFSensor();
-    //tofSensor->init();
+    tofSensor->init();
+    
     uint32_t loopCounter=0;
+    uint32_t lastTime = 0;
+    imuMathSetup();
     while(true)
     {
-       
-        MotorController->setTargetSpeed(25000,25000);
-        vTaskDelay(10000/portTICK_PERIOD_MS);
+        if(sharedVariables.inputs.mode == controlModes::SOUND_MODE)
+        {
+            play();
+        }
+        spiRead();
         mpu9250ReadMotion();//takes 0.65ms
         mpu9250ReadCompass();//takes 0.5ms
 
-        //tofSensor->measure();
+        imuCalculateAngle();
+        if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI_BALANCE)
+        {
+            balance();
+        }
+
+        motorController->loop();
 
         irDecoder->read();//takes 0.005ms
-        if(loopCounter%100 == 0)
+        if(loopCounter%10 == 0)
         {
-            irDecoder->send();//takes 0.03ms
-
+            tofSensor->measure();
+            irDecoder->send();
         }
         irDecoder->runProximity();//takes 0.90ms
 
+
+        checkBattery();
         loopCounter++;
-        //vTaskDelay(100);
+        sharedVariables.outputs.loopUpdateRate = esp_timer_get_time() - lastTime;   
+        while(esp_timer_get_time() - lastTime < sharedVariables.inputs.loopDelay);
+        lastTime = esp_timer_get_time(); 
     }
+
 }
+
 void core1Task( void * pvParameters ){
-
-    //wifiSetup();
-
+    wifiSetup();
     while(true)
     {
-        //wifiLoop();
-        MotorController->loop();
+        wifiLoop();
+        if(udpReceived ==  true)
+        {
+            udpReceived = false;
+            if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
+            {
+                motorController->steppers = &sharedVariables.inputs.steppers;
+                motorController->calculateInduvidualAcceleration();
+                //printf("manual wifi %d\n",sharedVariables.inputs.steppers.motor1TargetSpeed);
+            }
+            else
+            {
+                motorController->steppers = &sharedVariables.outputs.steppers;
+            }
+        }
+        if(disconnected)
+        {
+            //printf("disconnected\n");
+            motorController->steppers = &sharedVariables.outputs.steppers;
+            if(sharedVariables.inputs.mode == controlModes::MANUAL_WIFI)
+            {
+                sharedVariables.inputs.mode = controlModes::AUTOMATIC_OBJECT_SEARCH;
+            }
+        }
+        
         vTaskDelay(10/portTICK_PERIOD_MS);
-
-        // if(Camera->dataAnvailable()){
-        //     Camera->ReadData(); // will also sand a confirmation
-        // }
-        // MVCamera.setCameraAngle(10);
-        // vTaskDelay(800/portTICK_PERIOD_MS);
-        // MVCamera.setCameraAngle(170);
-        // vTaskDelay(800/portTICK_PERIOD_MS);
+        programLoop();
     }
 
 }
 extern "C" void app_main()
 {
     printf("minitron firmware started\n");  
-    MotorController = new MotorDriver();
-    MotorController->setup();
-
-    // Camera = new SerialConnection();
-    // Camera->setup();
-
-   xTaskCreatePinnedToCore(core0Task, "core0Task", 
+    motorController = new MotorDriver(sharedVariables);
+    motorController->setup();
+    motorController->setMotorDriverEnabled(true);
+    
+    Camera = new SerialConnection();
+    Camera->setup();
+    Camera->setCameraAngle(170);
+    xTaskCreatePinnedToCore(core0Task, "core0Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 
                     1,          // Priority of the task 
                     NULL,       // Task handle. 
-                    0); //core 0
-                    
+                    0); //core 0       
     xTaskCreatePinnedToCore(core1Task, "core1Task", 
                     100000,      // Stack size in words 
                     NULL,       // Task input parameter 

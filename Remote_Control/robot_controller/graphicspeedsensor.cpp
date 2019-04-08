@@ -45,7 +45,7 @@ void GraphicSpeedSensor::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     painter->drawRect(barX,barY,barW,barH);
     brush.setColor(Qt::red);
-    QRectF percentageBar(barX,barY,speed/100.0*barW,barH);
+    QRectF percentageBar(barX,barY,speed/10000.0*barW,barH);
     painter->fillRect(percentageBar,brush);
     painter->drawRect(percentageBar);
 

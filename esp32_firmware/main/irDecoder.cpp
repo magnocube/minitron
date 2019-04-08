@@ -1,7 +1,9 @@
 #include "irDecoder.h"
 
+
 void IrDecoder::setupSender()
 {
+	printf("setup ir sender\n");
 	irSenderConfig.rmt_mode = RMT_MODE_TX;
 	irSenderConfig.channel = RMT_CHANNEL_1;
 	irSenderConfig.clk_div = 255;
@@ -22,63 +24,213 @@ void IrDecoder::setupSender()
 }
 void IrDecoder::setupReceiver()
 {
+	printf("setup ir receiver\n");
 	irDecoderConfig.rmt_mode = RMT_MODE_RX;
 	irDecoderConfig.channel = RMT_CHANNEL_0;
 	irDecoderConfig.clk_div = 255;
 	irDecoderConfig.gpio_num = IR_DECODER_PIN;
 	irDecoderConfig.mem_block_num = 1;
 	irDecoderConfig.rx_config.filter_en = true;
-	irDecoderConfig.rx_config.filter_ticks_thresh = 255;
-	irDecoderConfig.rx_config.idle_threshold = 20000 / 10 * ((80000000/100 /100000));
+	irDecoderConfig.rx_config.filter_ticks_thresh = 150;
+	irDecoderConfig.rx_config.idle_threshold = 3000;
 	ESP_ERROR_CHECK(rmt_config(&irDecoderConfig));
-	ESP_ERROR_CHECK(rmt_driver_install(irDecoderConfig.channel, 2000, ESP_INTR_FLAG_IRAM));
+	ESP_ERROR_CHECK(rmt_driver_install(irDecoderConfig.channel, 2000, 0));
 
 	ESP_ERROR_CHECK(rmt_get_ringbuf_handle(irDecoderConfig.channel, &rxRingBuffer));
-	ESP_ERROR_CHECK(rmt_rx_start(irDecoderConfig.channel, false));
+	ESP_ERROR_CHECK(rmt_rx_start(irDecoderConfig.channel, true));
 	if (rxRingBuffer == NULL) {
         printf("Failed to create ring buffer\n");
     }
 
 }
+//for nec protocol reference
+//https://www.sbprojects.net/knowledge/ir/nec.php
+#define TICKS_TO_MS 1.0/(80.0/255.0)
+#define MS_TO_TICKS (80.0/255.0)
+int IrDecoder::findPreamble(rmt_item32_t* item, int size)
+{
+	for(int i=0;i<size - 132;i++)
+	{
+		if((item[i].duration0*TICKS_TO_MS > 8500) && (item[i].duration0*TICKS_TO_MS < 9500))
+		{
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			printf("preamble 9ms verified\n");
+			#endif
+			if((item[i].duration1 * TICKS_TO_MS > 4250) &&( item[i].duration1 * TICKS_TO_MS < 4750))
+			{
+				#ifdef PRINT_IR_RECEIVE_VERBOSE
+				printf("preamble 4.5ms verified\n");
+				#endif
+				return i;
+			}
+		}	
+	}
+	return -1;
+	
+}
+uint8_t IrDecoder::translateByte(rmt_item32_t* item)
+{
+	uint8_t result = 0;
+	for(int i=0;i<8;i++)
+	{
+		if((item[0].level0 == 1) || (item[0].level1 == 0)) //validation
+		{
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			printf("item can't have the same level\n");
+			#endif
+			return 0;
+		}
+		if((item[0].duration0 * TICKS_TO_MS < 400) || (item[0].duration0 * TICKS_TO_MS >800)) //validation
+		{
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			printf("high signal should be 560us\n");
+			#endif
+			return 0;
+		}
+		if(((item[0].duration0 + item[i].duration1) * TICKS_TO_MS > 1000) && ((item[i].duration0 + item[i].duration1) * TICKS_TO_MS < 1200))
+		{
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			printf("0 ");
+			#endif
+			result += 0<<i;
+		}
+		else if(((item[0].duration0 + item[i].duration1) * TICKS_TO_MS > 2000) && ((item[i].duration0 + item[i].duration1) * TICKS_TO_MS < 2500))
+		{
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			printf("1 ");
+			#endif
+			result += 1<<i;
+		}
+		else
+		{
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			printf("a bit should be between 1.12 and 2.25ms\n");
+			#endif
+			return 0;
+		}
+	}
+	#ifdef PRINT_IR_RECEIVE_VERBOSE
+	printf("\n");
+	#endif
+	return result;
+}
 void IrDecoder::read()
 {
+#ifdef PRINT_DURARIONS
 	uint32_t startTime = esp_timer_get_time();
+#endif
 	size_t rx_size = 0;
 	//try to receive data from ringbuffer.
 	//RMT driver will push all the data it receives to its ringbuffer.
 	//We just need to parse the value and return the spaces of ringbuffer.
 	rmt_item32_t* item = (rmt_item32_t*) xRingbufferReceiveFromISR(rxRingBuffer, &rx_size);
 	if(item) {
-		received = true;
-		// printf("received %zu\n", rx_size);
-		// for(int i=0;i<rx_size;i++)
-		// {
-		// 	printf("(%d, %d , %d, %d) ", item[i].duration0, item[i].level0, item[i].duration1, item[i].level1);
-		// }
-		// printf("\n");
-		vRingbufferReturnItem(rxRingBuffer, (void*) item);
+		 
+		#ifdef PRINT_IR_RECEIVE_VERBOSE
+		 printf("received %zu\n", rx_size);
+		#endif
+		 if(rx_size > 132)//4*(1+4*8)
+		 {
+			#ifdef PRINT_IR_RECEIVE_VERBOSE
+			for(int i=0;i<rx_size;i++)
+			{
+				printf("(%f, %d , %f, %d) ", item[i].duration0 * TICKS_TO_MS, item[i].level0, item[i].duration1 * TICKS_TO_MS, item[i].level1);
+			}
+			printf("\n");
+			#endif
+			int preamblePosition = findPreamble(item, rx_size);
+			if(preamblePosition != -1)
+			{
+				#ifdef PRINT_IR_RECEIVE
+					printf("preamble at %d\n", preamblePosition);
+				#endif
+				uint8_t address = translateByte(item + preamblePosition + 1);
+				uint8_t invert_address = translateByte(item + preamblePosition + 9);
+				uint8_t command = translateByte(item + preamblePosition + 17);
+				uint8_t invert_command = translateByte(item + preamblePosition + 25);
+				#ifdef PRINT_IR_RECEIVE_VERBOSE
+				if(address != 255-invert_address)
+				{
+					printf("inverted address doesn't match, probably this is extended NEC\n");
+				}
+				#endif
+				
+				if(command == 255 - invert_command)
+				{
+					#ifdef PRINT_IR_RECEIVE
+					printf("address: %hhu command: %hhu\n", address, command);
+					#endif
+					sharedVariables->outputs.irLastAddress = address;
+					sharedVariables->outputs.irLastCommand = command;
+					sharedVariables->outputs.irFlowNumber++;
+
+				}
+				else
+				{
+					#ifdef PRINT_IR_RECEIVE
+					printf("error, inverted command doesn't match\n");
+					#endif
+				}
+				
+			}
+			
+		 }
+		vRingbufferReturnItemFromISR(rxRingBuffer, (void*) item, NULL);
 	}
 #ifdef PRINT_DURARIONS
 	printf("- readtime: %llu\n",esp_timer_get_time()-startTime);
 #endif
-
+}
+void IrDecoderWriteByte(rmt_item32_t* item, uint8_t value)
+{
+	for(int i=0;i<8;i++)
+	{
+		item[i].duration0 = 560 * MS_TO_TICKS;
+		item[i].level0 = 0;
+		item[i].level1 = 1;
+		if(((value>>i) & BIT0) == 0) //logic 0
+		{
+			item[i].duration1 = 560 * MS_TO_TICKS;
+		}
+		else // logic 1
+		{
+			item[i].duration1 = 1572 * MS_TO_TICKS;
+		}
+	}
 }
 void IrDecoder::send()
 {
+	if(esp_timer_get_time() < timeUntilLedAvailable) return;
+#ifdef PRINT_DURARIONS
 	uint32_t startTime=esp_timer_get_time();
+#endif
+	if(sharedVariables->inputs.irFlowNumber == lastFlowNumber)
+	{	
+		return;
+	}
+	lastFlowNumber = sharedVariables->inputs.irFlowNumber;
 	ESP_ERROR_CHECK(rmt_driver_install(irSenderConfig.channel, 0, 0));
 
-	size_t size = sizeof(rmt_item32_t)*10;
+	int items = 1+8*4;
+	size_t size = sizeof(rmt_item32_t)*(items);
 	rmt_item32_t* item = (rmt_item32_t*) malloc(size);
-	for(int i=0;i<10;i++)
-	{
-		item[i].duration0=1000;
-		item[i].level0=0;
-		item[i].duration1=2000;
-		item[i].level1=1;
-	}
+	
+	item[0].duration0 = 9000 * MS_TO_TICKS;
+	item[0].level0 = 0;
+	item[0].duration1 = 4500 * MS_TO_TICKS;
+	item[0].level1 = 1;
+	uint8_t address = sharedVariables->inputs.irAddress;
+	uint8_t command = sharedVariables->inputs.irCommand;
+	IrDecoderWriteByte(item + 1, address);
+	IrDecoderWriteByte(item + 9, 255 - address);
+	IrDecoderWriteByte(item + 17, command);
+	IrDecoderWriteByte(item + 25, 255 - command);
 
-    ESP_ERROR_CHECK(rmt_write_items(RMT_CHANNEL_1, item, 10, false));
+    ESP_ERROR_CHECK(rmt_write_items(RMT_CHANNEL_1, item, size, false));
+	ESP_ERROR_CHECK(rmt_wait_tx_done(RMT_CHANNEL_1, portMAX_DELAY));
+	#ifdef PRINT_IR_SEND
+		printf("ir address: %hhu command %hhu sended\n", address, command);
+	#endif
     timeUntilLedAvailable = esp_timer_get_time() + size * 8 * 30;
 	free(item);
 	ESP_ERROR_CHECK(rmt_driver_uninstall(irSenderConfig.channel));
@@ -88,9 +240,12 @@ void IrDecoder::send()
 }
 void IrDecoder::setupProximity()
 {
+	printf("setup proximity\n");
 	//set led pin
  	gpio_pad_select_gpio(IR_LED_PIN);
 	gpio_set_direction(IR_LED_PIN, GPIO_MODE_OUTPUT);
+
+
 	//configure adc 12bit max range
     adc1_config_width(ADC_WIDTH_BIT_12);
     adc1_config_channel_atten(IR_PHOTODIODE1_PIN, ADC_ATTEN_DB_11);
@@ -99,15 +254,20 @@ void IrDecoder::setupProximity()
 void IrDecoder::runProximity()
 {
 	if(esp_timer_get_time() < timeUntilLedAvailable) return;
+#ifdef PRINT_DURARIONS
 	uint32_t startTime = esp_timer_get_time();
+#endif
 
 	//read without led
 	int lowLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
 	int lowLevel2 = adc1_get_raw(IR_PHOTODIODE2_PIN);
 
+	
 	//turn led on
     gpio_set_level(IR_LED_PIN, 1);
 
+	uint32_t startTime = esp_timer_get_time();
+	while(esp_timer_get_time() - startTime < 100);
 	//read with led
     int highLevel1 = adc1_get_raw(IR_PHOTODIODE1_PIN);
 	int highLevel2 = adc1_get_raw(IR_PHOTODIODE2_PIN);
@@ -126,28 +286,38 @@ void IrDecoder::runProximity()
     {
     	bufferIndex = 0;
     }
-
+	
 	//do aditional filtering
-	calculateProximity(&left);
-	calculateProximity(&right);
+	filterProximity(&left);
+	filterProximity(&right);
 
 	//save it in shared variables
-	sharedVariables.proximityLeft = left.highBufferSort[1] - left.lowBufferSort[1];
-    sharedVariables.proximityRight = right.highBufferSort[1] - right.lowBufferSort[1];
-    sharedVariables.lightLeft = left.lowBufferSort[1];
-    sharedVariables.lightRight = right.lowBufferSort[1];
+	//the range is between 0 to 1000
+    #define LEFT_DARK_CURRENT 250
+	#define RIGHT_DARK_CURRENT 220
+	sharedVariables->outputs.proximityLeft = (left.highBufferSort[1] - left.lowBufferSort[1] - LEFT_DARK_CURRENT);
+	sharedVariables->outputs.proximityLeft = std::max(0, sharedVariables->outputs.proximityLeft);
+	sharedVariables->outputs.proximityLeft = std::min(sharedVariables->outputs.proximityLeft, 1000);
+    sharedVariables->outputs.proximityRight = (right.highBufferSort[1] - right.lowBufferSort[1]-RIGHT_DARK_CURRENT);
+	sharedVariables->outputs.proximityRight = std::max(0, sharedVariables->outputs.proximityRight);
+	sharedVariables->outputs.proximityRight = std::min(sharedVariables->outputs.proximityRight, 1000);
+
+    sharedVariables->outputs.lightLeft = left.lowBufferSort[1];
+    sharedVariables->outputs.lightRight = right.lowBufferSort[1];
 
 #ifdef PRINT_PROXIMITY
-	printf("%d\n", left.highBufferSort[1] - left.lowBufferSort[1]);
+	printf("%d\n", sharedVariables->outputs.proximityLeft);
 #endif
 #ifdef PRINT_DURARIONS
 	printf("- proximityTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
 #ifdef PRINT_PROXIMITY_ALL
-	printf("%d,%d,%d,1200\n",left.lowBufferSort[1], left.highBufferSort[1], left.highBufferSort[1] - left.lowBufferSort[1]);
+
+	printf("%d, %d, 1200\n",right.highBufferSort[1], right.highBufferSort[1] - right.lowBufferSort[1]);
 #endif
 }
-void IrDecoder::calculateProximity(ProximitySensor* obj)//this method takes the best measurement out of the buffer as a kind of medium filter
+
+void IrDecoder::filterProximity(ProximitySensor* obj)//this method takes the best measurement out of the buffer as a kind of medium filter
 {
 	//copy the buffer into a sorted buffer
 	for(int i=0;i<BUFFER_SIZE;i++)

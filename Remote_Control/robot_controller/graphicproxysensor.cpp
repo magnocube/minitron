@@ -22,7 +22,7 @@ void graphicProxySensor::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     painter->setPen(pen);
 
-    for(int i = 0;i<proxy;i++)
+    for(int i = 0;i<=proxy;i++)
     {
         if(whichSide)
         {
@@ -40,5 +40,6 @@ void graphicProxySensor::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
 void graphicProxySensor::setProxy(int p)
 {
-    proxy = p;
+    proxy = (p/100.0) * (2 - 0.001* p);
+
 }

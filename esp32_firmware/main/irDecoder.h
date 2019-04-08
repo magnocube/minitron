@@ -9,12 +9,12 @@
 
 #include <rom/ets_sys.h>
 #include <driver/adc.h>
-
-
+#include "math.h"
+#include <algorithm>
 #include "pins.h"
 #include "settings.h"
 #include "sharedVariables.h"
-#define BUFFER_SIZE 15
+#define BUFFER_SIZE 2//larger buffer will filter better, but slow down to reaction speed
 
 class IrDecoder
 {
@@ -26,7 +26,6 @@ class IrDecoder
 		int lowBufferSort[BUFFER_SIZE];
 		int highBufferSort[BUFFER_SIZE];
 	}left,right;
-    bool received = false;
     int receiveStrength=0;
 	uint32_t timeUntilLedAvailable = 0;//in ms
 
@@ -34,20 +33,28 @@ class IrDecoder
 	rmt_config_t irSenderConfig;
 	RingbufHandle_t rxRingBuffer = NULL;
 
+	uint8_t lastFlowNumber = 0;
 
 	void setupReceiver();
 	void setupSender();
 	void setupProximity();
 public:
-	
+	SharedVariables* sharedVariables;
+	IrDecoder(SharedVariables& _sharedVariables)
+	{
+		sharedVariables = &_sharedVariables;
+	}
 	void setup()
 	{
 		setupSender();
 		setupReceiver();
 		setupProximity();
 	}
+	uint8_t translateByte(rmt_item32_t* item);
+	int findPreamble(rmt_item32_t* item, int size);
 	void read();
 	void send();
 	void runProximity();
-	void calculateProximity(ProximitySensor* obj);
+	void filterProximity(ProximitySensor* obj);
+
 };

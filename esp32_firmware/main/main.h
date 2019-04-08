@@ -2,16 +2,27 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "mpu9250.cpp"
+#include "soc/timer_group_struct.h"
+#include "soc/timer_group_reg.h"
+#include "esp_task_wdt.h"
+#include "sharedVariables.h"
+#include <string.h>
+
 #include "irDecoder.h"
 #include "SerialConnection.h"
 #include "MotorDriver.h"
 #include "esp_log.h"
-#include "TOFSensor.h"
-#include "sharedVariables.h"
-#include "wifiConnection.c"
 
 SerialConnection * Camera;
 IrDecoder * irDecoder;
-MotorDriver * MotorController;
+MotorDriver * motorController;
+SharedVariables sharedVariables;
+#include "highLevelMotorDriver.h"
+#include "powerManagement.h"
+#include "TOFSensor.h"
+
 TOFSensor * tofSensor;
+#include "cameraSPI.h"
+#include "mpu9250.cpp"
+#include "wifiConnection.cpp"
+#include "program.h"

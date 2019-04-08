@@ -29,7 +29,8 @@
 #include "pins.h"
 #include "settings.h"
 #include "sharedVariables.h"
-static const char* TAG = "mpu9250";
+
+extern SharedVariables sharedVariables;
 
 static constexpr uint32_t CLOCK_SPEED = 400000;  // range from 100 KHz ~ 400Hz
 
@@ -38,9 +39,8 @@ mpud::raw_axes_t accelRaw;   // x, y, z axes as int16
 mpud::raw_axes_t gyroRaw;    // x, y, z axes as int16
 mpud::float_axes_t accelG;   // accel axes in (g) gravity format
 mpud::float_axes_t gyroDPS;  // gyro    axes in (DPS) º/s format
-#define TIME_OUT 5
+#define TIME_OUT 4
 void mpu9250Setup (){
-
     // Initialize I2C on port 0 using I2Cbus interface
     i2c0.begin(SDA_PIN, SCL_PIN, CLOCK_SPEED);
    
@@ -52,14 +52,13 @@ void mpu9250Setup (){
     // Great! Let's verify the communication
     // (this also check if the connected MPU supports the implementation of chip selected in the component menu)
     int counter=0;
-    while (esp_err_t err = MPU.testConnection()) {
+    while (MPU.testConnection()) {
         printf( "Failed to connect to the MPU, error");
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(50 / portTICK_PERIOD_MS);
         counter++;
         if(counter >= TIME_OUT)
         {
-            sharedVariables.MPU9250ErrorOccured = true;
-            sharedVariables.MPU9250Working = false;
+            sharedVariables.outputs.MPU9250Working = false;
             printf( "Can't connect, returning");
             return;
         }
@@ -68,29 +67,34 @@ void mpu9250Setup (){
     // Initialize
     ESP_ERROR_CHECK(MPU.initialize());  // initialize the chip and set initial configurations
     // Setup with your configurations
-    // ESP_ERROR_CHECK(MPU.setSampleRate(50));  // set sample rate to 50 Hz
-    // ESP_ERROR_CHECK(MPU.setGyroFullScale(mpud::GYRO_FS_500DPS));
-    // ESP_ERROR_CHECK(MPU.setAccelFullScale(mpud::ACCEL_FS_4G));
+     ESP_ERROR_CHECK(MPU.setFchoice(mpud::FCHOICE_3));
+     ESP_ERROR_CHECK(MPU.setDigitalLowPassFilter(mpud::DLPF_256HZ_NOLPF));
+     ESP_ERROR_CHECK(MPU.setSampleRate(1000)); 
+     ESP_ERROR_CHECK(MPU.setGyroFullScale(mpud::GYRO_FS_500DPS));
+     ESP_ERROR_CHECK(MPU.setAccelFullScale(mpud::ACCEL_FS_4G));
 
     MPU.setAuxI2CBypass(true);
-    
 }
 void mpu9250ReadMotion()
 {
-        if(sharedVariables.MPU9250Working!=true) return;
+      if(sharedVariables.outputs.MPU9250Working!=true) return;
+#ifdef PRINT_DURARIONS
+      uint32_t startTime=esp_timer_get_time();
+#endif
+      // Read
+      MPU.motion(&accelRaw, &gyroRaw);  // fetch raw data from the registers
 
-        uint32_t startTime=esp_timer_get_time();
-        // Read
-        MPU.motion(&accelRaw, &gyroRaw);  // fetch raw data from the registers
-        // Convert
-        accelG = mpud::accelGravity(accelRaw, mpud::ACCEL_FS_4G);
-        sharedVariables.acceleration[0] = accelG.x;
-        sharedVariables.acceleration[1] = accelG.y;
-        sharedVariables.acceleration[2] = accelG.z;
-        gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
-        sharedVariables.gyroValues[0] = gyroDPS.x;
-        sharedVariables.gyroValues[1] = gyroDPS.y;
-        sharedVariables.gyroValues[2] = gyroDPS.z;
+      // Convert
+      accelG = mpud::accelGravity(accelRaw, mpud::ACCEL_FS_4G);
+      gyroDPS = mpud::gyroDegPerSec(gyroRaw, mpud::GYRO_FS_500DPS);
+
+      
+      sharedVariables.outputs.acceleration[0] = accelG.x;
+      sharedVariables.outputs.acceleration[1] = accelG.y;
+      sharedVariables.outputs.acceleration[2] = accelG.z;
+      sharedVariables.outputs.gyroValues[0] = gyroDPS.x + 8.0;//substract measure offset
+      sharedVariables.outputs.gyroValues[1] = gyroDPS.y - 1.2;//substract measure offset
+      sharedVariables.outputs.gyroValues[2] = gyroDPS.z + 0.7;
 
       
 #ifdef PRINT_DURARIONS
@@ -98,15 +102,17 @@ void mpu9250ReadMotion()
 #endif
 #ifdef PRINT_ACCEL
         // Debug
-        printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", accelG.x, accelG.y, accelG.z);
+        //printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", accelG.x, accelG.y, accelG.z);
         printf("gyro: [%+7.2f %+7.2f %+7.2f ] (º/s)\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
 #endif
 #ifdef PRINT_MOTION_VISUAL
         printf("%6.2f %6.2f %6.2f ", accelG.x, accelG.y, accelG.z);
         printf("%7.2f %7.2f %7.2f\n", gyroDPS[0], gyroDPS[1], gyroDPS[2]);
 #endif
-
 }
+
+
+
 
 #define MAG_MODE_POWERDOWN        0x0
 #define MAG_MODE_SINGLE           0x1
@@ -120,6 +126,7 @@ void mpu9250ReadMotion()
 #define AK8963_RA_HXL   0x03
 #define AK8963_RA_CNTL1 0x0A
 #define AK8963_RA_ASAX 0x10
+uint32_t compassLastAngleProcessingTime=0;
 void magSetMode(uint8_t mode) {
   i2c0.writeByte(AK8963_ADDRESS, AK8963_RA_CNTL1 , mode);
   vTaskDelay(10);
@@ -137,7 +144,11 @@ void magReadAdjustValues() {
 }
 void compassSetup() {//setup only possible if mpu9250 is allready initizalized, otherwise the i2c aux bypass isn't set, see datasheet for reference
    
-  if(sharedVariables.MPU9250Working!=true) return;
+  if(sharedVariables.outputs.MPU9250Working!=true) 
+  {
+    printf("can't setup compass because the mpu9250 is not working");
+    return;
+  }
   magReadAdjustValues();
   magSetMode(MAG_MODE_POWERDOWN);
   magSetMode(MAG_MODE_CONTINUOUS_8HZ);
@@ -149,23 +160,43 @@ int16_t magGet(uint8_t high, uint8_t low) {
 float adjustMagValue(int16_t value, uint8_t adjust) {
   return ((float) value * (((((float) adjust - 128) * 0.5) / 128) + 1));
 }
+
+
+#define complementaryFilter sharedVariables.inputs.complementaryFilter
+#define gyroZ sharedVariables.outputs.gyroValues[2]
+float unfilteredCompassAngle = 0;
 void mpu9250ReadCompass()
 {
-  if(sharedVariables.MPU9250Working!=true) return;
+  if(sharedVariables.outputs.MPU9250Working!=true) return;
+#ifdef PRINT_DURARIONS
   uint32_t startTime=esp_timer_get_time();
+#endif
 
   uint8_t magBuf[7];
-  i2c0.readBytes(AK8963_ADDRESS, AK8963_RA_HXL, 6, magBuf);
-  sharedVariables.magnetometerValues[0] = adjustMagValue(magGet(magBuf[1], magBuf[0]), magXAdjust);
-  sharedVariables.magnetometerValues[1] = adjustMagValue(magGet(magBuf[3], magBuf[2]), magYAdjust);
-  sharedVariables.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
-  sharedVariables.compassAngle = atan2(sharedVariables.magnetometerValues[0], sharedVariables.magnetometerValues[1])* 180 / 3.14159;
+  i2c0.readBytes(AK8963_ADDRESS, AK8963_RA_HXL, 7, magBuf);
+  sharedVariables.outputs.magnetometerValues[0] = adjustMagValue(magGet(magBuf[1], magBuf[0]), magXAdjust)+180;
+  sharedVariables.outputs.magnetometerValues[1] = adjustMagValue(magGet(magBuf[3], magBuf[2]), magYAdjust)-567;
+  sharedVariables.outputs.magnetometerValues[2] = adjustMagValue(magGet(magBuf[5], magBuf[4]), magZAdjust);
+  float compassAngle = atan2(sharedVariables.outputs.magnetometerValues[0], sharedVariables.outputs.magnetometerValues[1])* 57.3;
+
+   uint32_t deltaT = esp_timer_get_time() - compassLastAngleProcessingTime;
+   compassLastAngleProcessingTime = esp_timer_get_time();
+   //int accelPitch = -atan2(accelX, sqrt(accelY*accelY + accelZ*accelZ))* 57.3;
+   
+   double gyroAngle = unfilteredCompassAngle + (gyroZ * deltaT / 1000000); // convert angle to angle/deltaT and sum it with roll
+   float filterValue = (float)complementaryFilter/1000.0;
+   unfilteredCompassAngle = gyroAngle * filterValue + compassAngle * (1-filterValue);
+
+   sharedVariables.outputs.compassAngle += 0.04 * (unfilteredCompassAngle - sharedVariables.outputs.compassAngle);
+   #ifdef PRINT_COMPLEMENTARY_COMPASS
+   printf("%f, %f,%f\n", sharedVariables.outputs.compassAngle, unfilteredCompassAngle, compassAngle);
+   #endif
 
 #ifdef PRINT_DURARIONS
   printf("- compassTime: %llu\n",esp_timer_get_time()-startTime);
 #endif
-  //printf("accel: [%+6.2f %+6.2f %+6.2f ] (G) \t", sharedVariables.magnetometerValues[0],sharedVariables.magnetometerValues[1],sharedVariables.magnetometerValues[2]);
-#ifdef PRINT_ACCEL
-  printf("%f\n",  sharedVariables.compassAngle);
+  //printf("%6.2f %6.2f \n", sharedVariables.outputs.magnetometerValues[0],sharedVariables.outputs.magnetometerValues[1]);
+#ifdef PRINT_COMPASS
+  printf("%f\n",  sharedVariables.outputs.compassAngle);
 #endif
 }
