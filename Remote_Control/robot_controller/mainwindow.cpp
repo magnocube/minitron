@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    robotConnection = new UDP_Connection("::ffff:192.168.43.52");
+    robotConnection = new UDP_Connection("::ffff:192.168.137.21");
 
 
 
@@ -347,6 +347,8 @@ void MainWindow::on_pushButton_clicked() // speed preset button
 void MainWindow::on_ClearReceivedButton_clicked()
 {
     ui->IRValuesTextBrowser->clear();
+    updatePlots();
+
 }
 
 void MainWindow::on_SendIrButton_clicked()

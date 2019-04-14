@@ -9,8 +9,8 @@ void MainWindow::setupPlots(){
     ui->PlotViewerSpeeds->graph(1)->setPen(QPen(Qt::red)); // line color red for second graph
     //ui->PlotViewerSpeeds->graph(1)->setBrush(QBrush(QColor(255, 0, 0, 20)));
     // generate some points of data (y0 for first, y1 for second graph):
-    QVector<double> x(251), y0(251), y1(251);
-    for (int i=0; i<251; ++i)
+    QVector<double> x(2510), y0(2510), y1(2510);
+    for (int i=0; i<2510; ++i)
     {
       x[i] = i;
       y0[i] = qExp(-i/150.0)*qCos(i/10.0); // exponentially decaying cosine
